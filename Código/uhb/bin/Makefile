@@ -8,10 +8,6 @@ CFLAGS = -Wall -Wextra -O2
 SRCDIR = ../src
 SOURCES = $(wildcard $(SRCDIR)/*.c)
 
-# Object files
-OBJDIR = ../obj
-OBJECTS = $(SOURCES:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
-
 # Executable
 BINDIR = ../bin
 EXECUTABLE = $(BINDIR)/uhb
@@ -19,17 +15,13 @@ EXECUTABLE = $(BINDIR)/uhb
 # Default target
 all: $(EXECUTABLE)
 
-# Link
-$(EXECUTABLE): $(OBJECTS)
+# Link and compile
+$(EXECUTABLE): $(SOURCES)
+	mkdir -p $(BINDIR)
 	$(CC) $(CFLAGS) -o $@ $^
-
-# Compile
-$(OBJDIR)/%.o: $(SRCDIR)/%.c
-	mkdir -p $(OBJDIR)
-	$(CC) $(CFLAGS) -c -o $@ $<
 
 # Clean
 clean:
-	rm -f $(OBJECTS) $(EXECUTABLE)
+	rm -f $(EXECUTABLE)
 
 .PHONY: all clean
