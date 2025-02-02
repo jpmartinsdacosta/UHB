@@ -3,6 +3,8 @@
 #include <string.h>
 #include <stdbool.h>
 #include <so_detect.h>
+#include <imp_bsd.h>
+#include <imp_deb.h>
 
 int main() {
     int os = 0;

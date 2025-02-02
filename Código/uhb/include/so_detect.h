@@ -1,3 +1,6 @@
+#ifndef SO_DETECT_H
+#define SO_DETECT_H
+
 /**
  * @brief Detect the operating system using uname -s.
  * 
@@ -8,3 +11,5 @@
  */
 
 int so_detect();
+
+#endif // SO_DETECT_H

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "so_detect.h"
 
 int so_detect(){
     FILE *fp;

@@ -1,31 +1,31 @@
-# Compiler
-CC = /usr/local/bin/gcc
+# Compilador y banderas
+CC = gcc
+CFLAGS = -Wall -Wextra -std=c11 -I../include
 
-# Compiler flags
-CFLAGS = -Wall -Wextra -O2
+# Ubicación de los fuentes: en ../src (respecto al directorio del Makefile)
+SRC = $(wildcard ../src/*.c)
+# Definimos los objetos reemplazando la ruta y extensión
+OBJ = $(patsubst ../src/%.c, %.o, $(SRC))
 
-# Source files
-SRCDIR = ../src
-SOURCES = $(wildcard $(SRCDIR)/*.c)
+# Nombre del binario a generar (en el directorio actual, /root/uhb/bin)
+BIN = security_check
 
-# Executable
-BINDIR = ../bin
-EXECUTABLE = $(BINDIR)/uhb
+# Regla por defecto: compila el binario
+all: $(BIN)
 
-# Default target
-all: $(EXECUTABLE)
+# Enlaza los objetos para crear el binario
+$(BIN): $(OBJ)
+	$(CC) $(CFLAGS) -o $(BIN) $(OBJ)
 
-# Debug information
-print-%:
-	@echo $* = $($*)
+# Regla genérica para compilar archivos .c a .o
+# Los archivos objeto se generarán en el directorio actual (/root/uhb/bin)
+%.o: ../src/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
-# Link and compile
-$(EXECUTABLE): $(SOURCES)
-	mkdir -p $(BINDIR)
-	$(CC) $(CFLAGS) -o $@ $^
-
-# Clean
+# Regla para limpiar los archivos generados (objetos y binario)
 clean:
-	rm -f $(EXECUTABLE)
+	rm -f $(OBJ) $(BIN)
 
-.PHONY: all clean print-%
+# Regla para compilar y ejecutar el binario (requiere permisos de root)
+run: all
+	sudo ./$(BIN)
