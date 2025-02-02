@@ -25,6 +25,7 @@ $(EXECUTABLE): $(OBJECTS)
 
 # Compile
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
+	mkdir -p $(OBJDIR)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 # Clean
