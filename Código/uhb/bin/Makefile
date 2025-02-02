@@ -20,7 +20,7 @@ SRC = $(SRC_COMMON) $(SRC_OS)
 OBJ = $(patsubst ../src/%.c, %.o, $(SRC))
 
 # Nombre del binario
-BIN = security_check
+BIN = uhb
 
 # Regla por defecto: compilar el binario
 all: $(BIN)
