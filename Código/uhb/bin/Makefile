@@ -8,7 +8,7 @@ SRC = $(wildcard ../src/*.c)
 OBJ = $(patsubst ../src/%.c, %.o, $(SRC))
 
 # Nombre del binario a generar (en el directorio actual, /root/uhb/bin)
-BIN = security_check
+BIN = uhb
 
 # Regla por defecto: compila el binario
 all: $(BIN)
@@ -28,4 +28,4 @@ clean:
 
 # Regla para compilar y ejecutar el binario (requiere permisos de root)
 run: all
-	sudo ./$(BIN)
+	./$(BIN)
