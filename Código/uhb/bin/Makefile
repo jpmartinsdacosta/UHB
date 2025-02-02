@@ -15,6 +15,10 @@ EXECUTABLE = $(BINDIR)/uhb
 # Default target
 all: $(EXECUTABLE)
 
+# Debug information
+print-%:
+	@echo $* = $($*)
+
 # Link and compile
 $(EXECUTABLE): $(SOURCES)
 	mkdir -p $(BINDIR)
@@ -24,4 +28,4 @@ $(EXECUTABLE): $(SOURCES)
 clean:
 	rm -f $(EXECUTABLE)
 
-.PHONY: all clean
+.PHONY: all clean print-%
