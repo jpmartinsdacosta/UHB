@@ -7,7 +7,7 @@
  * This function attempts to detect the operating system by executing the 
  * 'uname -s' command. It returns an integer representing the detected OS.
  * 
- * @return int - Returns 0 if the OS is detected successfully, -1 otherwise.
+ * @return int -1 if the OS is unknown, 0 if FreeBSD, 1 if Linux.
  */
 
 int so_detect();

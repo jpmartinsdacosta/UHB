@@ -2,14 +2,19 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include <so_detect.h>
-#include <imp_bsd.h>
-#include <imp_deb.h>
+#ifdef _WIN32
+#include <io.h>
+#include <windows.h>
+#else
+#include <unistd.h>
+#endif
+#include "so_detect.h"
+#include "imp_bsd.h"
+#include "imp_deb.h"
 
 int main() {
     int os = 0;
-    bool eop = false;
-    
+    int deb, bsd;
     // Check if UHB is being executed by the root user.
     // TODO: Check if UHB is being executed by the uhb user, using the getpwnam function.
     if(getuid() != 0) {
@@ -17,14 +22,23 @@ int main() {
         return -1;
     }
 
-    // Detect the operating system and return its name.
-    if((os = so_detect()) == -1) {
-        printf("Failed to detect the operating system\n");
-        return 1;
-    }else if(os == 0){
-        printf("FreeBSD\n");
-    }else if(os == 1){
-        printf("Debian\n");
+    // Detect the operating system and execute its respective implementation.
+     
+    switch (os = so_detect()) {
+        case -1:
+            printf("Failed to detect or unknown operating system\n");
+            return 1;
+        case 0:
+            printf("FreeBSD\n");
+            bsd = imp_bsd();
+            break;
+        case 1:
+            printf("Debian\n");
+            deb = imp_deb();
+            break;
+    }
+    if (bsd == 1 || deb == 1) {
+        printf("Success\n");
     }
     return 0;
 }

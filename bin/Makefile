@@ -9,43 +9,19 @@ INCLUDE_DIR = ../include
 # Archivos fuente comunes
 SRC_COMMON = $(SRC_DIR)/main.c $(SRC_DIR)/so_detect.c $(SRC_DIR)/utils.c
 
-# Detectar el sistema operativo
-OS := $(shell uname)
-
 # Archivos fuente específicos para cada sistema operativo
-ifeq ($(OS), FreeBSD)
-    SRC_OS = $(SRC_DIR)/imp_bsd.c
-else ifeq ($(OS), Linux)
-    SRC_OS = $(SRC_DIR)/imp_deb.c
-else
-    $(warning No se definió un archivo específico para $(OS), compilando solo archivos comunes)
-    SRC_OS = # No se incluye archivo específico
-endif
+SRC_OS = $(SRC_DIR)/imp_bsd.c $(SRC_DIR)/imp_deb.c
 
-
-# Combinar archivos comunes y específicos del SO
+# Todos los archivos fuente
 SRC = $(SRC_COMMON) $(SRC_OS)
-OBJ = $(SRC:$(SRC_DIR)/%.c=$(SRC_DIR)/%.o)
 
-# Nombre del binario
-BIN = uhb
+# Archivo ejecutable
+TARGET = uhb
 
-# Regla por defecto
-all: $(BIN)
+# Regla para compilar el programa
+$(TARGET): $(SRC)
+	$(CC) $(CFLAGS) -o $(TARGET) $(SRC)
 
-# Compilar el binario
-$(BIN): $(OBJ)
-	$(CC) $(CFLAGS) -o $(BIN) $(OBJ)
-
-# Compilar archivos .c a .o
-$(SRC_DIR)/%.o: $(SRC_DIR)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
-# Limpiar archivos compilados
+# Regla para limpiar archivos compilados
 clean:
-	rm -f $(OBJ) $(BIN)
-
-# Ejecutar el binario
-run: all
-	./$(BIN)
-
+	rm -f $(TARGET)
