@@ -9,8 +9,17 @@ INCLUDE_DIR = ../include
 # Archivos fuente comunes
 SRC_COMMON = $(SRC_DIR)/main.c $(SRC_DIR)/so_detect.c $(SRC_DIR)/utils.c
 
+# Detect the operating system
+UNAME_S := $(shell uname -s)
+
 # Archivos fuente específicos para cada sistema operativo
-SRC_OS = $(SRC_DIR)/imp_bsd.c $(SRC_DIR)/imp_deb.c
+ifeq ($(UNAME_S),FreeBSD)
+	SRC_OS = $(SRC_DIR)/imp_bsd.c
+	CFLAGS += -D__FreeBSD__
+else ifeq ($(UNAME_S),Linux)
+	SRC_OS = $(SRC_DIR)/imp_deb.c
+	CFLAGS += -D__linux__
+endif
 
 # Todos los archivos fuente
 SRC = $(SRC_COMMON) $(SRC_OS)
