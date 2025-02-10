@@ -26,7 +26,7 @@ int main() {
 
     // Provide the user with a menu to choose the desired action.
     if(os != -1){
-        show_menu(os);
+        show_menu();
     }else{
         printf("Failed to detect or unsupported OS.\n");
         return -1;

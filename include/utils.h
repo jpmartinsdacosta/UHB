@@ -26,7 +26,7 @@ int so_detect();
  * accordingly in utils.c to 0 or 1 if the executable exists.
  */
 
-void exec_exists_common(int so);
+void exec_exists_common();
 
 /**
  * @brief Check if a file exists.
@@ -50,6 +50,6 @@ void get_dac_common();
  * @param exec The value retuned by exec_exists_common.
  * This function shows the menu to the user, based on the operating system detected.
  */
-void show_menu(int so);
+void show_menu();
 
 #endif // UTILS_H

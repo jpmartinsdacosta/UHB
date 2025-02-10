@@ -40,16 +40,12 @@ int so_detect() {
     #endif
 }
 
-void exec_exists_common (int so){
-    // TODO: Add the MAC executables to the array.
-    const char *programs[2][4] = { {"getfacl", "ipfw", "rsyslogd","auditd"}, {"getfacl", "ufw", "rsyslogd","auditd"} };
-    for(int i = 0; i < 4; i++){
-        char command[50];
-        snprintf(command, sizeof(command), "which -s %s", programs[so][i]);
-        if(system(command) == 0){
-           option[i] = 1;
-        }
-    }
+void exec_exists_common (){
+    #ifdef defined __FreeBSD__
+        exec_exists_bsd(option);
+    #elif defined (__linux__)
+        exec_exists_deb(option);
+    #endif
 }
 
 bool path_exists(char *path) {
@@ -85,9 +81,9 @@ void get_dac_common() {
     }
 }
 
-void show_menu (int so){
+void show_menu (){
     int choice = -1;
-    exec_exists_common(so);
+    exec_exists_common();
     while(choice != 0){
         printf("\nUHB Menu:\n");
         printf("1. Get DAC of a file.\n");
