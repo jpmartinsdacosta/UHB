@@ -7,7 +7,7 @@ SRC_DIR = ../src
 INCLUDE_DIR = ../include
 
 # Archivos fuente comunes
-SRC_COMMON = $(SRC_DIR)/main.c $(SRC_DIR)/so_detect.c $(SRC_DIR)/utils.c
+SRC_COMMON = $(SRC_DIR)/main.c $(SRC_DIR)/utils.c
 
 # Detect the operating system
 UNAME_S := $(shell uname -s)

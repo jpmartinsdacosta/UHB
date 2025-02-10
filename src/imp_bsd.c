@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include "imp_bsd.h"
 #ifdef _WIN32
 #include <io.h>
