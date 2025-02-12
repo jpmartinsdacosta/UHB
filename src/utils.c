@@ -59,25 +59,25 @@ bool path_exists(char *path) {
 }
 
 void get_dac_common() {
-    char path[100];
-    char command[150];
-    FILE *file;
-    printf("Please enter the path to test: ");
-    scanf("%s", path);
+    char path[256];
+    char command[300];
+
+    printf("Please enter the path to the file: ");
+
+    // Read user input safely
+    if (scanf("%255s", path) != 1) {  // Limit input size to avoid overflow
+        printf("Error reading input.\n");
+        return;  // This return statement is used to exit the function early in case of an error
+    }
+
     if (path_exists(path)) {
-        snprintf(command, sizeof(command), "ls -l %s", path);
-        file = popen(command, "r");
-        if (file) {
-            char buffer[256];
-            while (fgets(buffer, sizeof(buffer), file) != NULL) {
-                printf("%s", buffer);
-            }
-            pclose(file);
-        } else {
-            printf("Failed to run command.\n");
-        }
+        // Securely construct the command
+        snprintf(command, sizeof(command), "ls -l -- \"%s\"", path);
+
+        // Execute safely
+        system(command);
     } else {
-        printf("Path does not exist.\n");
+        printf("File does not exist.\n");
     }
 }
 

@@ -37,14 +37,6 @@ void exec_exists_common();
 bool path_exists(char *path);
 
 /**
- * @brief Get the DAC of a file.
- * 
- * Common implementation for all operating systems.
- */
-
-void get_dac_common();
-
-/**
  * @brief Show the menu to the user.
  * @param so The operating system detected by so_detect.
  * @param exec The value retuned by exec_exists_common.
