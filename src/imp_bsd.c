@@ -20,7 +20,8 @@ void exec_exists_bsd (int option[4]){
         char command[50];
         snprintf(command, sizeof(command), "which -s %s", programs[i]);
         if(system(command) == 0){
-           option[i] = 1;
+            printf("%s exists.\n", programs[i]);
+            option[i] = 1;
         }
     }
 }

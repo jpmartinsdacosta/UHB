@@ -58,27 +58,33 @@ bool path_exists(char *path) {
     }
 }
 
+void get_user_input(char *path) {
+    printf("Please enter the path to the file: ");
+    // Read user input safely
+    if (scanf("%255s", path) != 1) {  // Limit input size to avoid overflow
+        printf("Error reading input.\n");
+        path[0] = '\0';  // Set path to empty string to indicate error
+    }
+}
+
 void get_dac_common() {
     char path[256];
     char command[300];
 
-    printf("Please enter the path to the file: ");
-
-    // Read user input safely
-    if (scanf("%255s", path) != 1) {  // Limit input size to avoid overflow
-        printf("Error reading input.\n");
-        return;  // This return statement is used to exit the function early in case of an error
-    }
-
-    if (path_exists(path)) {
-        // Securely construct the command
-        snprintf(command, sizeof(command), "ls -l -- \"%s\"", path);
-
-        // Execute safely
-        system(command);
+    get_user_input(path);
+    if (path[0] == '\0') {
+        return;
     } else {
-        printf("File does not exist.\n");
-    }
+        if (path_exists(path)) {
+            // Securely construct the command
+            snprintf(command, sizeof(command), "ls -l -- \"%s\"", path);
+    
+            // Execute safely
+            system(command);
+        } else {
+            printf("File does not exist.\n");
+        }
+    } 
 }
 
 void show_menu (){

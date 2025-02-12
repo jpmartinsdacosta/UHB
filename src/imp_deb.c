@@ -20,7 +20,8 @@ void exec_exists_deb (int option[4]){
         char command[50];
         snprintf(command, sizeof(command), "command -v %s >/dev/null 2>&1", programs[i]);
         if(system(command) == 0){
-           option[i] = 1;
+            printf("%s exists.\n", programs[i]);
+            option[i] = 1;
         }
     }
 }

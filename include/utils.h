@@ -37,6 +37,20 @@ void exec_exists_common();
 bool path_exists(char *path);
 
 /**
+ * @brief Get the user's input for a path.
+ * @param path The path to store the user's input.
+ */
+
+void get_user_input(char *path);
+
+/**
+ * @brief Get the DAC of a file.
+ * This function gets the DAC of a file by executing "ls -l --" on the file.
+ */
+
+void get_dac_common();
+
+/**
  * @brief Show the menu to the user.
  * @param so The operating system detected by so_detect.
  * @param exec The value retuned by exec_exists_common.
