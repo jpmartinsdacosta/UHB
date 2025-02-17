@@ -2,18 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-
-// Custom headers.
 #include "utils.h"
-
-// OS-specific headers, including the ones needed for VS Code.
-#ifdef _WIN32
-#include <io.h>
-#include <windows.h>
-#else
-// Headers needed for FreeBSD/Debian in main.c.
-#endif
-
+#include "config.h"
 
 int main() {
     // Check if UHB is being executed by the root user.
@@ -26,7 +16,8 @@ int main() {
 
     // Provide the user with a menu to choose the desired action.
     if(os != -1){
-        show_menu();
+        config_exists();    // Check if the configuration file exists.
+        show_menu();        // Show the menu to the user.
     }else{
         printf("Failed to detect or unsupported OS.\n");
         return -1;

@@ -37,6 +37,14 @@ void exec_exists_common();
 bool path_exists(char *path);
 
 /**
+ * @brief Check if the configuration file exists.
+ * If the configuration file does not exist, the file is created. 
+ * Otherwise, the function does nothing.
+ */
+
+void config_exists();
+
+/**
  * @brief Get the user's input for a path.
  * @param path The path to store the user's input.
  */
@@ -49,6 +57,8 @@ void get_user_input(char *path);
  */
 
 void get_dac_common();
+
+
 
 /**
  * @brief Show the menu to the user.

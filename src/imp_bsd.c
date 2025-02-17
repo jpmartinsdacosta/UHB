@@ -15,7 +15,7 @@ int imp_bsd() {
 }
 
 void exec_exists_bsd (int option[4]){
-    const char *programs[4] = {"getfacl", "ipfw", "rsyslogd","auditd"};
+    const char *programs[4] = {"getfacl", "ipfw", "rsyslog","auditd"};
     for(int i = 0; i < 4; i++){
         char command[50];
         snprintf(command, sizeof(command), "which -s %s", programs[i]);
