@@ -9,7 +9,7 @@ void config_exists(){
         printf("Configuration file does not exist. Creating...\n");
         FILE *file = fopen("../config/uhb_config.txt", "w");
         if (file) {
-            fprintf(file, "This is the configuration file for UHB.\n");
+            fprintf(file, "## This is the configuration file for UHB.\n");
             fclose(file);
         } else {
             printf("Error creating configuration file.\n");

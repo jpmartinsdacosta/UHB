@@ -28,3 +28,13 @@ void exec_exists_bsd (int option[4]){
         }
     }
 }
+
+bool check_ug_bsd(char *target){
+    char command[50];
+    snprintf(command, sizeof(command), "id -u %s >/dev/null 2>&1", target);
+    if(system(command) == 0){
+        return true;
+    }else{
+        return false;
+    }
+}

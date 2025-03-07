@@ -20,4 +20,12 @@ int imp_bsd(); // Test dummy function that returns 0.
 
 void exec_exists_bsd(int option[4]);
 
+/**
+ * @brief Check if the user and group exist on the FreeBSD OS.
+ * @param target The user or group to check.
+ * @return True if the user or group exists, false otherwise.
+ */
+
+bool check_ug_bsd(char *target);
+
 #endif // IMP_BSD_H

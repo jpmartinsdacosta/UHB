@@ -96,16 +96,83 @@ void get_dac_common() {
     } 
 }
 
+bool check_permission(char *permission){
+    if (strlen(permission) != 4) {
+        return false;
+    }
+    for (int i = 0; i < 4; i++) {
+        if (permission[i] < '0' || permission[i] > '7') {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool check_ug_common(char *target){
+    bool result = false;
+    if (strlen(target) == 0) {
+        return false;
+    }
+    #ifdef __FreeBSD__
+        result = check_ug_bsd(target);
+    #elif defined (__linux__)
+        result = check_ug_deb(target);
+    #endif
+    return result;
+}
+
+void set_dac_common() {
+    char path[50];
+    char permission[4];
+    char user[50];
+    char group[50];
+    char command[300];
+
+    get_user_input(path);
+    if (path[0] == '\0') {
+        printf("Invalid path.\n");
+        return;
+    }
+
+    if (path_exists(path)) {
+        printf("Please enter file permissions in octal format (srwx): ");
+        scanf("%4s", permission);
+        if (!check_permission(permission)) {
+            printf("Invalid permission format. Exiting.\n");
+        }
+
+        printf("Please enter user: ");
+        scanf("%50s", user);
+        printf("Please enter group: ");
+        scanf("%50s", group);
+        if (!check_ug_common(user) || !check_ug_common(group)) {
+            printf("Invalid user and/or group. Exiting.\n");
+        }else{
+            printf("DAC added to config file.\n");
+            snprintf(command, sizeof(command), "chown %s %s", user, path);
+            add_config_command(command);
+            snprintf(command, sizeof(command), "chgrp %s %s", group, path);
+            add_config_command(command);
+            snprintf(command, sizeof(command), "chmod %s %s\n", permission, path);
+            add_config_command(command);
+        }
+    } else {
+        printf("File does not exist.\n");
+    }
+}
+
+
 void show_menu (){
     int choice = -1;
     exec_exists_common();
     while(choice != 0){
         printf("\nUHB Menu:\n");
         printf("1. Get DAC of a file.\n");
-        if(option[0] == 1){ printf("2. Get ACL of a file.\n"); }
-        if(option[1] == 1){ printf("3. Configure firewall.\n"); }
-        if(option[2] == 1){ printf("4. Configure logging.\n"); }
-        if(option[3] == 1){ printf("5. Configure auditing.\n"); }
+        printf("2. Set DAC of a file.\n");
+        if(option[0] == 1){ printf("3. Set ACL of a file.\n"); }
+        if(option[1] == 1){ printf("4. Configure firewall.\n"); }
+        if(option[2] == 1){ printf("5. Configure logging.\n"); }
+        if(option[3] == 1){ printf("6. Configure auditing.\n"); }
         printf("0. Exit.\n");	
         printf("Please select an option: ");
         scanf("%d", &choice);
@@ -114,7 +181,7 @@ void show_menu (){
                 get_dac_common();
                 break;
             case 2:
-                printf("Option not implmented yet.\n");
+                set_dac_common();
                 break;
             case 3:
                 printf("Option not implmented yet.\n");
