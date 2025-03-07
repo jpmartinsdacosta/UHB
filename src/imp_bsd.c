@@ -15,13 +15,16 @@ int imp_bsd() {
 }
 
 void exec_exists_bsd (int option[4]){
-    const char *programs[4] = {"getfacl", "ipfw", "rsyslog","auditd"};
+    const char *programs[4] = {"getfacl", "ipfw", "rsyslogd","auditd"};
     for(int i = 0; i < 4; i++){
         char command[50];
-        snprintf(command, sizeof(command), "which -s %s", programs[i]);
+        snprintf(command, sizeof(command), "command -v %s >/dev/null 2>&1", programs[i]);
         if(system(command) == 0){
             printf("%s exists.\n", programs[i]);
             option[i] = 1;
+        }else{
+            printf("%s does NOT exist.\n", programs[i]);
+            option[i] = 0;
         }
     }
 }

@@ -20,6 +20,9 @@
 // Array to store the menu options available to the user.
 int option[4] = {0, 0, 0, 0};
 
+// Boolean to store if the rc.local file exists.
+bool rc_local = false;
+
 int so_detect() {
     #ifdef _WIN32
     return -1;
@@ -41,11 +44,13 @@ int so_detect() {
 }
 
 void exec_exists_common (){
-    #ifdef defined __FreeBSD__
+    printf("DETECTED SUPPORTED PROGRAMS:\n");
+    #ifdef __FreeBSD__
         exec_exists_bsd(option);
     #elif defined (__linux__)
         exec_exists_deb(option);
     #endif
+    
 }
 
 bool path_exists(char *path) {
@@ -56,6 +61,10 @@ bool path_exists(char *path) {
     } else {
         return false;
     }
+}
+
+void rc_local_exists_common(){
+    rc_local = path_exists("/etc/rc.local");
 }
 
 void get_user_input(char *path) {
@@ -93,18 +102,10 @@ void show_menu (){
     while(choice != 0){
         printf("\nUHB Menu:\n");
         printf("1. Get DAC of a file.\n");
-        if(option[0] == 1){
-            printf("2. Get ACL of a file.\n");
-        }
-        if(option[1] == 1){
-            printf("3. Configure firewall.\n");
-        }
-        if(option[2] == 1){
-            printf("4. Configure logging.\n");
-        }
-        if(option[3] == 1){
-            printf("5. Configure auditing.\n");
-        }
+        if(option[0] == 1){ printf("2. Get ACL of a file.\n"); }
+        if(option[1] == 1){ printf("3. Configure firewall.\n"); }
+        if(option[2] == 1){ printf("4. Configure logging.\n"); }
+        if(option[3] == 1){ printf("5. Configure auditing.\n"); }
         printf("0. Exit.\n");	
         printf("Please select an option: ");
         scanf("%d", &choice);

@@ -12,4 +12,12 @@
 
 int imp_bsd(); // Test dummy function that returns 0.
 
+/**
+ * @brief Check if supported executables exist on the FreeBSD OS.
+ * @param option The array to store the results of the check.
+ * 
+ */
+
+void exec_exists_bsd(int option[4]);
+
 #endif // IMP_BSD_H

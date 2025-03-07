@@ -37,6 +37,13 @@ void exec_exists_common();
 bool path_exists(char *path);
 
 /**
+ * @brief Check if the rc.local file exists.
+ * If it exists, it updates the rc_local variable in utils.c to true.
+ */
+
+void rc_local_exists_common();
+
+/**
  * @brief Check if the configuration file exists.
  * If the configuration file does not exist, the file is created. 
  * Otherwise, the function does nothing.
@@ -50,6 +57,14 @@ void config_exists();
  */
 
 void get_user_input(char *path);
+
+/**
+ * @brief Test user command if it works before adding it to the configuration file.
+ * @param command The command to test.
+ * @return int 0 if the command works, -1 otherwise.
+ */
+
+int test_user_command(char *command);
 
 /**
  * @brief Get the DAC of a file.

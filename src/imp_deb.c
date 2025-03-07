@@ -22,6 +22,9 @@ void exec_exists_deb (int option[4]){
         if(system(command) == 0){
             printf("%s exists.\n", programs[i]);
             option[i] = 1;
+        }else{
+            printf("%s does NOT exist.\n", programs[i]);
+            option[i] = 0;
         }
     }
 }

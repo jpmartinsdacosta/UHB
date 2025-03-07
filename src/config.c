@@ -17,4 +17,16 @@ void config_exists(){
     }
 }
 
+int add_config_command(char *command){
+    FILE *file = fopen("../config/uhb_config.txt", "a");
+    if (file) {
+        fprintf(file, "%s\n", command);
+        fclose(file);
+        return 0;
+    } else {
+        printf("Error adding command to configuration file.\n");
+        return -1;
+    }
+}
+
 
