@@ -9,6 +9,8 @@
 // Debian headers.
 #endif
 
+#define MAX_CMD 300             // Maximum length of a command.
+
 int imp_deb() {
     printf("DEB implementation\n");
     return 1;
@@ -17,21 +19,21 @@ int imp_deb() {
 void exec_exists_deb (int option[4]){
     const char *programs[4] = {"getfacl", "ufw", "rsyslogd","auditd"};
     for(int i = 0; i < 4; i++){
-        char command[50];
-        snprintf(command, sizeof(command), "command -v %s >/dev/null 2>&1", programs[i]);
+        char command[MAX_CMD];
+        snprintf(command, sizeof(command), "command -v \"%s\" >/dev/null 2>&1", programs[i]);
         if(system(command) == 0){
             printf("%s exists.\n", programs[i]);
             option[i] = 1;
         }else{
-            printf("%s does NOT exist.\n", programs[i]);
+            printf("ERR: %s does NOT exist.\n", programs[i]);
             option[i] = 0;
         }
     }
 }
 
 bool check_ug_deb(char *target){
-    char command[50];
-    snprintf(command, sizeof(command), "id -u %s >/dev/null 2>&1", target);
+    char command[MAX_CMD];
+    snprintf(command, sizeof(command), "id -u \"%s\" >/dev/null 2>&1", target);
     if(system(command) == 0){
         return true;
     }else{

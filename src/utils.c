@@ -8,15 +8,24 @@
 #ifdef _WIN32
 #include <io.h>
 #include <windows.h>
+const int OS = -1;
 #elif defined (__FreeBSD__)
 #include <unistd.h>
 #include <sys/utsname.h>
 #include "imp_bsd.h"
+const int OS = 0;
 #elif defined (__linux__)
 #include <unistd.h>
 #include <sys/utsname.h>
 #include "imp_deb.h"
+const int OS = 1;
+#else
+const int OS = -1;
 #endif
+
+#define MAX_FILE_PATH 256       // Maximum length of a file path.
+#define MAX_CMD 300             // Maximum length of a command.
+#define MAX_NAME 50             // Maximum length of a username/groupname.
 
 // Array to store the menu options available to the user.
 int option[4] = {0, 0, 0, 0};
@@ -24,28 +33,22 @@ int option[4] = {0, 0, 0, 0};
 // Boolean to store if the rc.local file exists.
 bool rc_local = false;
 
-int so_detect() {
-    #ifdef _WIN32
-    return -1;
-    #else
-    struct utsname uts;
-    if (uname(&uts) == -1) {
-        return -1;
+int so_detect(int OS){
+    switch (OS) {
+        case 1:
+            printf("MSG: FreeBSD detected.\n");
+            return 0;
+        case 2:
+            printf("MSG: Debian detected.\n");
+            return 1;
+        default:
+            printf("MSG: Unsupported OS.\n");
+            return -1;
     }
-    if (strcmp(uts.sysname, "FreeBSD") == 0) {
-        printf("FreeBSD OS detected.\n");
-        return 0;
-    } else if (strcmp(uts.sysname, "Linux") == 0) {
-        printf("Debian OS detected.\n");
-        return 1;
-    }
-    printf("Failed to detect or unsupported OS.\n");
-    return -1;
-    #endif
 }
 
 void exec_exists_common (){
-    printf("DETECTED SUPPORTED PROGRAMS:\n");
+    printf("MSG: Detected supported programs:\n");
     #ifdef __FreeBSD__
         exec_exists_bsd(option);
     #elif defined (__linux__)
@@ -68,29 +71,26 @@ void rc_local_exists_common(){
     rc_local = path_exists("/etc/rc.local");
 }
 
-void get_user_input(char *path) {
-    printf("Please enter the path to the file: ");
+bool get_user_input(char *path){
+    printf("MSG: Please enter the path to the file:");
     if (scanf("%255s", path) != 1) {
-        printf("Error reading input.\n");
-        path[0] = '\0';
+        printf("ERR: Error reading input.\n");
+        return false;
     }
+    return true;
 }
 
-void get_dac_common() {
-    char path[256];
-    char command[300];
-
-    get_user_input(path);
-    if (path[0] == '\0') {
-        return;
-    } else {
-        if (path_exists(path)) {
-            snprintf(command, sizeof(command), "ls -l -- \"%s\"", path);
-            system(command);
-        } else {
-            printf("File does not exist.\n");
-        }
-    } 
+bool get_dac_common(){ 
+    char path[MAX_FILE_PATH];
+    char command[MAX_CMD];
+    if(get_user_input(path) && path_exists(path)){
+        snprintf(command, sizeof(command), "ls -l -- \"%s\" | less", path);
+        system(command);
+        return true;
+    }else{
+        printf("ERR: Invalid/non existent path.\n");
+        return false;
+    }
 }
 
 bool check_permission(char *permission){
@@ -118,43 +118,36 @@ bool check_ug_common(char *target){
     return result;
 }
 
-void set_dac_common() {
-    char path[50];
-    char test[50];
-    char permission[4];
-    char user[50];
-    char group[50];
-    char command[300];
+void set_dac_common(){
+    char path[MAX_FILE_PATH];
+    char permission[5];
+    char command[MAX_CMD];
+    char user[MAX_NAME];
+    char group[MAX_NAME];
 
-    get_user_input(path);
-    if (path[0] == '\0') {
-        printf("Invalid path.\n");
-        return;
-    }
-    if (path_exists(path)) {
-        printf("Please enter file permissions in octal format (srwx): ");
-        scanf("%4s", permission);
-        if (!check_permission(permission)) {
-            printf("Invalid permission format. Exiting.\n");
+    if(get_user_input(path) && path_exists(path)){
+        printf("MSG: Please enter the permission (e.g. 0777):");
+        if (scanf("%4s", permission) != 1 || !check_permission(permission)) {
+            printf("ERR: Invalid permissions set.\n");
+            return;
         }
-
-        printf("Please enter user: ");
-        scanf("%50s", user);
-        printf("Please enter group: ");
-        scanf("%50s", group);
-        if (!check_ug_common(user) || !check_ug_common(group)) {
-            printf("Invalid user and/or group. Exiting.\n");
-        }else{
-            snprintf(command, sizeof(command), "chown %s %s", user, path);
-            add_config_command(command);
-            snprintf(command, sizeof(command), "chgrp %s %s", group, path);
-            add_config_command(command);
-            snprintf(command, sizeof(command), "chmod %s %s\n", permission, path);
-            add_config_command(command);
-            printf("DAC added to config file.\n");
+        printf("MSG: Please enter the target user:");
+        if (scanf("%50s", user) != 1 || !check_ug_common(user)) {
+            printf("ERR: Invalid/non existent user.\n");
+            return;
         }
-    } else {
-        printf("File does not exist.\n");
+        printf("MSG: Please enter the target group:");
+        if (scanf("%50s", group) != 1 || !check_ug_common(group)) {
+            printf("ERR: Invalid/non existent user.\n");
+            return;
+        }
+        printf("MSG: Setting DAC...\n");
+        snprintf(command, sizeof(command), "chmod %s %s", permission, path);
+        add_config_command(command);
+        snprintf(command, sizeof(command), "chown %s:%s %s\n", user, group, path);
+        add_config_command(command);
+    }else{
+        printf("ERR: Invalid/non existent path.\n");
     }
 }
 
