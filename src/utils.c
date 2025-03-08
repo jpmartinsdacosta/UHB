@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include "utils.h"
+#include "config.h"
 
 #ifdef _WIN32
 #include <io.h>
@@ -69,10 +70,9 @@ void rc_local_exists_common(){
 
 void get_user_input(char *path) {
     printf("Please enter the path to the file: ");
-    // Read user input safely
-    if (scanf("%255s", path) != 1) {  // Limit input size to avoid overflow
+    if (scanf("%255s", path) != 1) {
         printf("Error reading input.\n");
-        path[0] = '\0';  // Set path to empty string to indicate error
+        path[0] = '\0';
     }
 }
 
@@ -85,10 +85,7 @@ void get_dac_common() {
         return;
     } else {
         if (path_exists(path)) {
-            // Securely construct the command
             snprintf(command, sizeof(command), "ls -l -- \"%s\"", path);
-    
-            // Execute safely
             system(command);
         } else {
             printf("File does not exist.\n");
@@ -123,6 +120,7 @@ bool check_ug_common(char *target){
 
 void set_dac_common() {
     char path[50];
+    char test[50];
     char permission[4];
     char user[50];
     char group[50];
@@ -133,7 +131,6 @@ void set_dac_common() {
         printf("Invalid path.\n");
         return;
     }
-
     if (path_exists(path)) {
         printf("Please enter file permissions in octal format (srwx): ");
         scanf("%4s", permission);
@@ -148,19 +145,18 @@ void set_dac_common() {
         if (!check_ug_common(user) || !check_ug_common(group)) {
             printf("Invalid user and/or group. Exiting.\n");
         }else{
-            printf("DAC added to config file.\n");
             snprintf(command, sizeof(command), "chown %s %s", user, path);
             add_config_command(command);
             snprintf(command, sizeof(command), "chgrp %s %s", group, path);
             add_config_command(command);
             snprintf(command, sizeof(command), "chmod %s %s\n", permission, path);
             add_config_command(command);
+            printf("DAC added to config file.\n");
         }
     } else {
         printf("File does not exist.\n");
     }
 }
-
 
 void show_menu (){
     int choice = -1;
@@ -173,6 +169,9 @@ void show_menu (){
         if(option[1] == 1){ printf("4. Configure firewall.\n"); }
         if(option[2] == 1){ printf("5. Configure logging.\n"); }
         if(option[3] == 1){ printf("6. Configure auditing.\n"); }
+        printf("7. View configuration file.\n");
+        printf("8. Apply changes to system from configuration file.\n");
+        printf("9. Clear configuration file.\n");
         printf("0. Exit.\n");	
         printf("Please select an option: ");
         scanf("%d", &choice);
@@ -191,6 +190,18 @@ void show_menu (){
                 break;
             case 5: 
                 printf("Option not implmented yet.\n");
+                break;
+            case 6:
+                printf("Option not implmented yet.\n");
+                break;
+            case 7:
+                view_config();
+                break;
+            case 8:
+                printf("Option not implmented yet.\n");
+                break;
+            case 9:
+                clear_config();
                 break;
             case 0:
                 printf("\nGoodbye!\n");

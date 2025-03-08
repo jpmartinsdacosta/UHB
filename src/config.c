@@ -17,6 +17,17 @@ void config_exists(){
     }
 }
 
+void clear_config(){
+    FILE *file = fopen("../config/uhb_config.txt", "w");
+    if (file) {
+        fprintf(file, "## This is the configuration file for UHB.\n");
+        fclose(file);
+        printf("Configuration file cleared.\n");
+    } else {
+        printf("Error clearing configuration file.\n");
+    }
+}
+
 int add_config_command(char *command){
     FILE *file = fopen("../config/uhb_config.txt", "a");
     if (file) {
@@ -29,4 +40,11 @@ int add_config_command(char *command){
     }
 }
 
+void view_config(){
+    if(!path_exists("../config/uhb_config.txt")){
+        printf("Configuration file does not exist.\n");
+    }else{
+        system("cat ../config/uhb_config.txt | less");
+    }
+}
 

@@ -13,6 +13,13 @@
 void config_exists();
 
 /**
+ * @brief Clear the configuration file.
+ * This function will remove all the content from the configuration file.
+ */
+
+void clear_config();
+
+/**
  * @brief Add a command to the configuration file.
  * @param command The command to be added to the configuration file.
  */
@@ -20,19 +27,11 @@ void config_exists();
 int add_config_command(char *command);
 
 /**
-  * @brief Save the configuration to the default path.
-  * The default path is "../config/uhb_config.txt".
-  * @return 0 if the configuration was saved successfully, -1 otherwise.
-  */
+ * @brief View the configuration file.
+ * This function will print the content of the configuration file.
+ * If the file does not exist, it will print an error message.
+ */
 
-int save_config_default();
-
-/**
-* @brief Save the configuration to a custom path.
-* @param path The path to save the configuration file.
-* @return 0 if the configuration was saved successfully, -1 otherwise.
-*/
-
-int save_config_custom(char *path);
+void view_config();
 
 #endif // CONFIG_H
