@@ -10,8 +10,6 @@
  * 
  */
 
-int imp_deb(); // Test dummy function that returns 0.
-
 /**
  * @brief Check if supported executables exist on the Debian OS.
  * @param option The array to store the results of the check.
@@ -19,13 +17,5 @@ int imp_deb(); // Test dummy function that returns 0.
  */
 
 void exec_exists_deb(int option[4]);
-
-/**
- * @brief Check if the user and group exist on the Debian OS.
- * @param target The user or group to check.
- * @return True if the user or group exists, false otherwise.
- */
-
- bool check_ug_deb(char *target);
 
 #endif // IMP_DEB_H

@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <ctype.h>
+#include <limits.h>
+
 #include "utils.h"
 #include "config.h"
 
@@ -23,9 +26,10 @@ const int OS = 1;
 const int OS = -1;
 #endif
 
-#define MAX_FILE_PATH 256       // Maximum length of a file path.
+#define MAX_FILE_PATH 200       // Maximum length of a file path.
 #define MAX_CMD 300             // Maximum length of a command.
-#define MAX_NAME 50             // Maximum length of a username/groupname.
+#define MAX_OPTIONS_LENGTH 20   // Maximum length reserved for options to the user.
+#define MAX_NAME 30             // Maximum length of a username/groupname.
 
 // Array to store the menu options available to the user.
 int option[4] = {0, 0, 0, 0};
@@ -33,28 +37,47 @@ int option[4] = {0, 0, 0, 0};
 // Boolean to store if the rc.local file exists.
 bool rc_local = false;
 
-int so_detect(int OS){
+int os_detect(){
     switch (OS) {
-        case 1:
-            printf("MSG: FreeBSD detected.\n");
+        case 0:
+            printf("INI: FreeBSD detected.\n");
             return 0;
-        case 2:
-            printf("MSG: Debian detected.\n");
+        case 1:
+            printf("INI: Debian detected.\n");
             return 1;
-        default:
-            printf("MSG: Unsupported OS.\n");
+        case -1:
+            printf("INI: Unsupported OS.\n");
             return -1;
     }
 }
 
+bool sanitize_name(char *input) {
+    for (int i = 0; i < strlen(input); i++) {
+        if (!isalnum(input[i])) {
+            printf("ERR: Non-sanitized name.\n");
+            return false;
+        }
+    }
+    return true;
+}
+
+bool sanitize_options(char *input) {
+    for (int i = 0; i < strlen(input); i++) {
+        if (!isalnum(input[i]) && !input[i] == '-' && !input[i] == ' ') {
+            printf("ERR: Non-sanitized options.\n");
+            return false;
+        }
+    }
+    return true;
+}
+
 void exec_exists_common (){
-    printf("MSG: Detected supported programs:\n");
+    printf("INI: Detected supported programs:\n");
     #ifdef __FreeBSD__
         exec_exists_bsd(option);
     #elif defined (__linux__)
         exec_exists_deb(option);
-    #endif
-    
+    #endif  
 }
 
 bool path_exists(char *path) {
@@ -63,6 +86,7 @@ bool path_exists(char *path) {
         fclose(file);
         return true;
     } else {
+        printf("INF: File path %s does not exist.\n", path);
         return false;
     }
 }
@@ -71,34 +95,65 @@ void rc_local_exists_common(){
     rc_local = path_exists("/etc/rc.local");
 }
 
-bool get_user_input(char *path){
-    printf("MSG: Please enter the path to the file:");
-    if (scanf("%255s", path) != 1) {
-        printf("ERR: Error reading input.\n");
+int get_user_input(char *prompt, char *buffer, size_t bufferSize) {
+    int answer = 0;
+    if (buffer == NULL || bufferSize == 0) {
+        answer = -1;                                // Error: Invalid buffer
+    }
+    printf("%s", prompt);
+    fflush(stdout);                                 // Ensure the prompt is printed before reading input
+    if (fgets(buffer, bufferSize, stdin) == NULL) {
+        answer = -1;                                // Error reading input
+    }
+    buffer[strcspn(buffer, "\n")] = '\0';           // Remove the newline character if present
+    if (buffer[0] == '\0') {                        // Check if the input is empty
+        answer = 0;                                 // Valid empty input
+    }
+    answer = 1;                                     // Valid non-empty input
+    return answer;
+}
+
+bool get_filepath(char *path){
+    if(get_user_input("Please enter the file path: ", path, MAX_FILE_PATH) == 1){
+        return path_exists(path);
+    }else{
+        printf("ERR: Invalid/non-existent path.\n");
         return false;
     }
-    return true;
+}
+
+bool get_option(char *option){
+    if(get_user_input("MSG: Please options prefixed by a SINGLE '-', leave blank for none:", option, MAX_OPTIONS_LENGTH) != -1){
+        return sanitize_options(option);
+    }else{
+        printf("ERR: Invalid options.\n");
+        return false;
+    }
 }
 
 bool get_dac_common(){ 
     char path[MAX_FILE_PATH];
+    char options[MAX_CMD];
     char command[MAX_CMD];
-    if(get_user_input(path) && path_exists(path)){
-        snprintf(command, sizeof(command), "ls -l -- \"%s\" | less", path);
+    if(get_filepath(path) && get_option(options)){
+        printf("MSG: Press q to exit current view.\n");
+        snprintf(command, sizeof(command), "ls \"%s\" -- \"%s\" | less", options, path);
         system(command);
         return true;
     }else{
-        printf("ERR: Invalid/non existent path.\n");
+        printf("ERR: DAC could not be retrieved.\n");
         return false;
     }
 }
 
 bool check_permission(char *permission){
     if (strlen(permission) != 4) {
+        printf("ERR: Invalid permissions set.\n");
         return false;
     }
     for (int i = 0; i < 4; i++) {
         if (permission[i] < '0' || permission[i] > '7') {
+            printf("ERR: Invalid permissions set.\n");
             return false;
         }
     }
@@ -106,53 +161,50 @@ bool check_permission(char *permission){
 }
 
 bool check_ug_common(char *target){
-    bool result = false;
-    if (strlen(target) == 0) {
+    char command[MAX_CMD];
+    if (sanitize_name(target)){
+        snprintf(command, sizeof(command), "id -u \"%s\" >/dev/null 2>&1", target);
+    }else{
+        printf("ERR: Invalid user/group.\n");
         return false;
     }
-    #ifdef __FreeBSD__
-        result = check_ug_bsd(target);
-    #elif defined (__linux__)
-        result = check_ug_deb(target);
-    #endif
-    return result;
+    if(system(command) == 0){
+        return true;
+    }else{
+        return false;
+    }
 }
 
-void set_dac_common(){
+bool set_dac_common(){
     char path[MAX_FILE_PATH];
     char permission[5];
     char command[MAX_CMD];
     char user[MAX_NAME];
     char group[MAX_NAME];
-
-    if(get_user_input(path) && path_exists(path)){
-        printf("MSG: Please enter the permission (e.g. 0777):");
-        if (scanf("%4s", permission) != 1 || !check_permission(permission)) {
-            printf("ERR: Invalid permissions set.\n");
-            return;
+    if(get_filepath(path) && path_exists(path)){
+        get_user_input("MSG: Please enter the permission (e.g. 0777):", permission, 5);
+        get_user_input("MSG: Please enter the target user:", user, MAX_NAME);
+        get_user_input("MSG: Please enter the target group:", group, MAX_NAME);
+        if(check_permission(permission) && check_ug_common(user) && check_ug_common(group)){
+            printf("MSG: Setting DAC...\n");
+            snprintf(command, sizeof(command), "chmod %s %s", permission, path);
+            add_config_command(command);
+            snprintf(command, sizeof(command), "chown %s:%s %s\n", user, group, path);
+            add_config_command(command);
+            return true;
+        }else{
+            printf("ERR: DAC could not be set.\n");
+            return false;
         }
-        printf("MSG: Please enter the target user:");
-        if (scanf("%50s", user) != 1 || !check_ug_common(user)) {
-            printf("ERR: Invalid/non existent user.\n");
-            return;
-        }
-        printf("MSG: Please enter the target group:");
-        if (scanf("%50s", group) != 1 || !check_ug_common(group)) {
-            printf("ERR: Invalid/non existent user.\n");
-            return;
-        }
-        printf("MSG: Setting DAC...\n");
-        snprintf(command, sizeof(command), "chmod %s %s", permission, path);
-        add_config_command(command);
-        snprintf(command, sizeof(command), "chown %s:%s %s\n", user, group, path);
-        add_config_command(command);
     }else{
-        printf("ERR: Invalid/non existent path.\n");
+        printf("ERR: Invalid/non-existent path.\n");
+        return false;
     }
 }
 
 void show_menu (){
     int choice = -1;
+    char input[3]; // Buffer to store user input
     exec_exists_common();
     while(choice != 0){
         printf("\nUHB Menu:\n");
@@ -165,9 +217,11 @@ void show_menu (){
         printf("7. View configuration file.\n");
         printf("8. Apply changes to system from configuration file.\n");
         printf("9. Clear configuration file.\n");
-        printf("0. Exit.\n");	
-        printf("Please select an option: ");
-        scanf("%d", &choice);
+        printf("0. Exit.\n");
+        if(get_user_input("Please select an option: ", input, sizeof(input)) == -1){
+            continue;
+        }
+        choice = atoi(input); // Convert input to integer
         switch(choice){
             case 1:
                 get_dac_common();
@@ -176,25 +230,26 @@ void show_menu (){
                 set_dac_common();
                 break;
             case 3:
-                printf("Option not implmented yet.\n");
+                printf("Option not implemented yet.\n");
                 break;
             case 4:
-                printf("Option not implmented yet.\n");
+                printf("Option not implemented yet.\n");
                 break;
             case 5: 
-                printf("Option not implmented yet.\n");
+                printf("Option not implemented yet.\n");
                 break;
             case 6:
-                printf("Option not implmented yet.\n");
+                printf("Option not implemented yet.\n");
                 break;
             case 7:
+                printf("MSG: Press q to exit current view.\n");
                 view_config();
                 break;
             case 8:
-                printf("Option not implmented yet.\n");
+                printf("Option not implemented yet.\n");
                 break;
             case 9:
-                clear_config();
+                set_initial_config();
                 break;
             case 0:
                 printf("\nGoodbye!\n");

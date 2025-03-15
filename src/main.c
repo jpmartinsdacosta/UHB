@@ -12,7 +12,7 @@ int main() {
         printf("ERR: UHB must be executed by the root user\n");
         return -1;
     }
-    int os = so_detect();
+    int os = os_detect();
 
     // Provide the user with a menu to choose the desired action.
     if(os != -1){

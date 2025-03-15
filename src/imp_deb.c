@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "imp_deb.h"
+
 #ifdef _WIN32
 #include <io.h>
 #include <windows.h>
@@ -11,32 +12,17 @@
 
 #define MAX_CMD 300             // Maximum length of a command.
 
-int imp_deb() {
-    printf("DEB implementation\n");
-    return 1;
-}
-
 void exec_exists_deb (int option[4]){
     const char *programs[4] = {"getfacl", "ufw", "rsyslogd","auditd"};
+    char command[MAX_CMD];
     for(int i = 0; i < 4; i++){
-        char command[MAX_CMD];
         snprintf(command, sizeof(command), "command -v \"%s\" >/dev/null 2>&1", programs[i]);
         if(system(command) == 0){
-            printf("%s exists.\n", programs[i]);
+            printf("INI: %s exists.\n", programs[i]);
             option[i] = 1;
         }else{
-            printf("ERR: %s does NOT exist.\n", programs[i]);
+            printf("INI: %s does NOT exist.\n", programs[i]);
             option[i] = 0;
         }
-    }
-}
-
-bool check_ug_deb(char *target){
-    char command[MAX_CMD];
-    snprintf(command, sizeof(command), "id -u \"%s\" >/dev/null 2>&1", target);
-    if(system(command) == 0){
-        return true;
-    }else{
-        return false;
     }
 }
