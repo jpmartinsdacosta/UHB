@@ -86,7 +86,7 @@ bool path_exists(char *path) {
         fclose(file);
         return true;
     } else {
-        printf("INF: File path %s does not exist.\n", path);
+        printf("MSG: File path %s does not exist.\n", path);
         return false;
     }
 }

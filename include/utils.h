@@ -40,7 +40,6 @@ bool sanitize_options(char *input);
 
 /**
  * @brief Check if an executable exists.
- * @param so The operating system detected by os_detect.
  * 
  * This function checks from an array of executables if they exist in the system,
  * using "which -s" to check if the executable exists. It modifies option array
@@ -92,11 +91,11 @@ bool get_filepath(char *path);
 
 /**
  * @brief Get the user's input for DAC options.
- * @param options The options to store the user's input.
+ * @param option The options to store the user's input.
  * @return true if the user's input is valid, false otherwise.
  */
 
-bool get_option(char *options);
+bool get_option(char *option);
 
 /**
  * @brief Get the DAC of a file.
@@ -133,8 +132,6 @@ bool set_dac_common();
 
 /**
  * @brief Show the menu to the user.
- * @param so The operating system detected by os_detect.
- * @param exec The value retuned by exec_exists_common.
  * This function shows the menu to the user, based on the operating system detected.
  */
 void show_menu();

@@ -14,7 +14,7 @@
  * @return true if the configuration file was created successfully, false otherwise.
  */
 
- bool set_initial_config();
+bool set_initial_config();
 
 /**
  * @brief Check if the configuration file exists.
@@ -26,9 +26,10 @@ void config_exists();
 /**
  * @brief Add a command to the configuration file.
  * @param command The command to be added to the configuration file.
+ * @return true if the command was added successfully, false otherwise.
  */
 
-int add_config_command(char *command);
+bool add_config_command(char *command);
 
 /**
  * @brief View the configuration file.

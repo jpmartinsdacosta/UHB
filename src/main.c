@@ -9,7 +9,7 @@ int main() {
     // Check if UHB is being executed by the root user.
     // TODO: Check if UHB is being executed by the uhb user, using the getpwnam function.
     if (getuid() != 0) {
-        printf("ERR: UHB must be executed by the root user\n");
+        printf("ERR: UHB must be executed by the root user.\n");
         return -1;
     }
     int os = os_detect();
