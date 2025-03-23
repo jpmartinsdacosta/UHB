@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include "utils.h"
 #include "config.h"
+#include "input.h"
 
 int main() {
     // Check if UHB is being executed by the root user.

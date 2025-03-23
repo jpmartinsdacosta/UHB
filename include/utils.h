@@ -71,33 +71,6 @@ bool path_exists(char *path);
 void rc_local_exists_common();
 
 /**
- * @brief Get the user's input.
- * @param prompt The prompt to show to the user.
- * @param buffer The buffer to store the user's input.
- * @param bufferSize The size of the buffer.
- * @return 1 if the user's input is valid, 0 if the user's input is empty, -1 if there was an error reading the input.
- * Used for any and all user inputs throughout the program.
- */
-
- int get_user_input(char *prompt, char *buffer, size_t bufferSize);
-
-/**
- * @brief Get the user's input for a path.
- * @param path The path to store the user's input.
- * @return true if the user's input is valid, false otherwise.
- */
-
-bool get_filepath(char *path);
-
-/**
- * @brief Get the user's input for DAC options.
- * @param option The options to store the user's input.
- * @return true if the user's input is valid, false otherwise.
- */
-
-bool get_option(char *option);
-
-/**
  * @brief Get the DAC of a file.
  * This function gets the DAC of a file by executing "ls -l --" on the file.
  * @return true if the file exists, false otherwise.

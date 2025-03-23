@@ -7,6 +7,7 @@
 
 #include "utils.h"
 #include "config.h"
+#include "input.h"
 
 #ifdef _WIN32
 #include <io.h>
@@ -95,42 +96,6 @@ void rc_local_exists_common(){
     rc_local = path_exists("/etc/rc.local");
 }
 
-int get_user_input(char *prompt, char *buffer, size_t bufferSize) {
-    int answer = 0;
-    if (buffer == NULL || bufferSize == 0) {
-        answer = -1;                                // Error: Invalid buffer
-    }
-    printf("%s", prompt);
-    fflush(stdout);                                 // Ensure the prompt is printed before reading input
-    if (fgets(buffer, bufferSize, stdin) == NULL) {
-        answer = -1;                                // Error reading input
-    }
-    buffer[strcspn(buffer, "\n")] = '\0';           // Remove the newline character if present
-    if (buffer[0] == '\0') {                        // Check if the input is empty
-        answer = 0;                                 // Valid empty input
-    }
-    answer = 1;                                     // Valid non-empty input
-    return answer;
-}
-
-bool get_filepath(char *path){
-    if(get_user_input("Please enter the file path: ", path, MAX_FILE_PATH) == 1){
-        return path_exists(path);
-    }else{
-        printf("ERR: Invalid/non-existent path.\n");
-        return false;
-    }
-}
-
-bool get_option(char *option){
-    if(get_user_input("MSG: Please options prefixed by a SINGLE '-', leave blank for none:", option, MAX_OPTIONS_LENGTH) != -1){
-        return sanitize_options(option);
-    }else{
-        printf("ERR: Invalid options.\n");
-        return false;
-    }
-}
-
 bool get_dac_common(){ 
     char path[MAX_FILE_PATH];
     char options[MAX_CMD];
@@ -177,19 +142,21 @@ bool check_ug_common(char *target){
 
 bool set_dac_common(){
     char path[MAX_FILE_PATH];
-    char permission[5];
+    char permission[6];                 // For some reason, this works only if size = 6. Go figure.
     char command[MAX_CMD];
     char user[MAX_NAME];
     char group[MAX_NAME];
-    if(get_filepath(path) && path_exists(path)){
-        get_user_input("MSG: Please enter the permission (e.g. 0777):", permission, 5);
+    char options[MAX_CMD];
+
+    if(get_filepath(path) && path_exists(path) && get_option(options)){
+        get_user_input("MSG: Please enter the permission (e.g. 0777):", permission, 6);
         get_user_input("MSG: Please enter the target user:", user, MAX_NAME);
         get_user_input("MSG: Please enter the target group:", group, MAX_NAME);
         if(check_permission(permission) && check_ug_common(user) && check_ug_common(group)){
             printf("MSG: Setting DAC...\n");
-            snprintf(command, sizeof(command), "chmod %s %s", permission, path);
+            snprintf(command, sizeof(command), "chmod %s %s %s", options, permission, path);
             add_config_command(command);
-            snprintf(command, sizeof(command), "chown %s:%s %s\n", user, group, path);
+            snprintf(command, sizeof(command), "chown %s %s:%s %s\n", options, user, group, path);
             add_config_command(command);
             return true;
         }else{
@@ -205,6 +172,7 @@ bool set_dac_common(){
 void show_menu (){
     int choice = -1;
     char input[3]; // Buffer to store user input
+    system("clear");
     exec_exists_common();
     while(choice != 0){
         printf("\nUHB Menu:\n");
@@ -215,7 +183,7 @@ void show_menu (){
         if(option[2] == 1){ printf("5. Configure logging.\n"); }
         if(option[3] == 1){ printf("6. Configure auditing.\n"); }
         printf("7. View configuration file.\n");
-        printf("8. Apply changes to system from configuration file.\n");
+        printf("8. Apply changes to configuration file.\n");
         printf("9. Clear configuration file.\n");
         printf("0. Exit.\n");
         if(get_user_input("Please select an option: ", input, sizeof(input)) == -1){
@@ -224,38 +192,49 @@ void show_menu (){
         choice = atoi(input); // Convert input to integer
         switch(choice){
             case 1:
+                system("clear");
                 get_dac_common();
                 break;
             case 2:
+                system("clear");
                 set_dac_common();
                 break;
             case 3:
-                printf("Option not implemented yet.\n");
+                system("clear");
+                printf("MSG: Option not implemented yet.\n");
                 break;
             case 4:
-                printf("Option not implemented yet.\n");
+                system("clear");
+                printf("MSG: Option not implemented yet.\n");
                 break;
-            case 5: 
-                printf("Option not implemented yet.\n");
+            case 5:
+                system("clear"); 
+                printf("MSG: Option not implemented yet.\n");
                 break;
             case 6:
-                printf("Option not implemented yet.\n");
+                system("clear");
+                printf("MSG: Option not implemented yet.\n");
                 break;
             case 7:
+                system("clear");
                 printf("MSG: Press q to exit current view.\n");
                 view_config();
                 break;
             case 8:
-                printf("Option not implemented yet.\n");
+                system("clear");
+                apply_config(OS);
                 break;
             case 9:
+                system("clear");
                 set_initial_config();
                 break;
             case 0:
+                system("clear");
                 printf("\nGoodbye!\n");
                 break;
             default:
-                printf("Invalid option.\n");
+                system("clear");
+                printf("MSG: Invalid option.\n");
                 break;
         }
     }    
