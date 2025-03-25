@@ -5,10 +5,6 @@
 #include <ctype.h>
 #include <limits.h>
 
-#include "utils.h"
-#include "config.h"
-#include "input.h"
-
 #ifdef _WIN32
 #include <io.h>
 #include <windows.h>
@@ -16,27 +12,21 @@ const int OS = -1;
 #elif defined (__FreeBSD__)
 #include <unistd.h>
 #include <sys/utsname.h>
-#include "imp_bsd.h"
 const int OS = 0;
 #elif defined (__linux__)
 #include <unistd.h>
 #include <sys/utsname.h>
-#include "imp_deb.h"
 const int OS = 1;
 #else
 const int OS = -1;
 #endif
 
-#define MAX_FILE_PATH 200       // Maximum length of a file path.
-#define MAX_CMD 300             // Maximum length of a command.
-#define MAX_OPTIONS_LENGTH 20   // Maximum length reserved for options to the user.
-#define MAX_NAME 30             // Maximum length of a username/groupname.
+#define MAX_FILE_PATH 200           // Maximum length of a file path.
+#define MAX_CMD 300                 // Maximum length of a command.
+#define MAX_OPTIONS_LENGTH 20       // Maximum length reserved for options to the user.
+#define MAX_NAME 30                 // Maximum length of a username/groupname.
 
-// Array to store the menu options available to the user.
-int option[4] = {0, 0, 0, 0};
-
-// Boolean to store if the rc.local file exists.
-bool rc_local = false;
+bool rc_local = false;              // Boolean to store if the rc.local file exists.
 
 int os_detect(){
     switch (OS) {
@@ -70,15 +60,6 @@ bool sanitize_options(char *input) {
         }
     }
     return true;
-}
-
-void exec_exists_common (){
-    printf("INI: Detected supported programs:\n");
-    #ifdef __FreeBSD__
-        exec_exists_bsd(option);
-    #elif defined (__linux__)
-        exec_exists_deb(option);
-    #endif  
 }
 
 bool path_exists(char *path) {
@@ -142,7 +123,7 @@ bool check_ug_common(char *target){
 
 bool set_dac_common(){
     char path[MAX_FILE_PATH];
-    char permission[6];                 // For some reason, this works only if size = 6. Go figure.
+    char permission[6];                 // Needed for /n and /0?
     char command[MAX_CMD];
     char user[MAX_NAME];
     char group[MAX_NAME];
@@ -169,73 +150,3 @@ bool set_dac_common(){
     }
 }
 
-void show_menu (){
-    int choice = -1;
-    char input[3]; // Buffer to store user input
-    system("clear");
-    exec_exists_common();
-    while(choice != 0){
-        printf("\nUHB Menu:\n");
-        printf("1. Get DAC of a file.\n");
-        printf("2. Set DAC of a file.\n");
-        if(option[0] == 1){ printf("3. Set ACL of a file.\n"); }
-        if(option[1] == 1){ printf("4. Configure firewall.\n"); }
-        if(option[2] == 1){ printf("5. Configure logging.\n"); }
-        if(option[3] == 1){ printf("6. Configure auditing.\n"); }
-        printf("7. View configuration file.\n");
-        printf("8. Apply changes to configuration file.\n");
-        printf("9. Clear configuration file.\n");
-        printf("0. Exit.\n");
-        if(get_user_input("Please select an option: ", input, sizeof(input)) == -1){
-            continue;
-        }
-        choice = atoi(input); // Convert input to integer
-        switch(choice){
-            case 1:
-                system("clear");
-                get_dac_common();
-                break;
-            case 2:
-                system("clear");
-                set_dac_common();
-                break;
-            case 3:
-                system("clear");
-                printf("MSG: Option not implemented yet.\n");
-                break;
-            case 4:
-                system("clear");
-                printf("MSG: Option not implemented yet.\n");
-                break;
-            case 5:
-                system("clear"); 
-                printf("MSG: Option not implemented yet.\n");
-                break;
-            case 6:
-                system("clear");
-                printf("MSG: Option not implemented yet.\n");
-                break;
-            case 7:
-                system("clear");
-                printf("MSG: Press q to exit current view.\n");
-                view_config();
-                break;
-            case 8:
-                system("clear");
-                apply_config(OS);
-                break;
-            case 9:
-                system("clear");
-                set_initial_config();
-                break;
-            case 0:
-                system("clear");
-                printf("\nGoodbye!\n");
-                break;
-            default:
-                system("clear");
-                printf("MSG: Invalid option.\n");
-                break;
-        }
-    }    
-}

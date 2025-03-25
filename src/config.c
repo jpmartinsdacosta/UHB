@@ -2,12 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include "utils.h"
-#include "input.h"
 
 #define LINE_MAX 256
 
 bool config_modified = false;
+
+bool is_config_modified(){
+    return config_modified;
+}
 
 bool set_initial_config(){
     FILE *file = fopen("../config/uhb_config.sh", "w");
@@ -64,6 +66,7 @@ void view_config(){
     if(!path_exists("../config/uhb_config.sh")){
         printf("ERR: Configuration file does not exist.\n");
     }else{
+        printf("MSG: Press q to exit current view.\n");
         system("cat ../config/uhb_config.sh | less");
     }
 }
@@ -99,13 +102,13 @@ void user_find_first_config(){
 }
 
 bool apply_config(int os){
-    FILE *file = fopen("../config/uhb/uhb_config.sh", "r");
+    FILE *file = fopen("../config/uhb_config.sh", "r");
     if(file){
         switch(os){
             case 0:
                 if(find_first_config("##uhb_os = BSD") != 4){         // Line must be 4, for more details check header info.
                     printf("MSG: Applying BSD configuration.\n");
-                    system("bash ../config/uhb/uhb_config.sh");
+                    system("bash ../config/uhb_config.sh");
                     return true;
                 }else{
                     printf("ERR: BSD configuration not found.\n");
@@ -115,7 +118,7 @@ bool apply_config(int os){
             case 1:
                 if(find_first_config("##uhb_os = DEB") != 4){         // Line must be 4, for more details check header info.
                     printf("MSG: Applying DEB configuration.\n");
-                    system("bash ../config/uhb/uhb_config.sh");
+                    system("bash ../config/uhb_config.sh");
                     return true;
                 }else{
                     printf("ERR: DEB configuration not found.\n");

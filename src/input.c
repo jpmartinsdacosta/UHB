@@ -3,8 +3,6 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
-#include "input.h"
-#include "utils.h"
 
 #define MAX_FILE_PATH 200       // Maximum length of a file path.
 #define MAX_CMD 300             // Maximum length of a command.
@@ -60,9 +58,9 @@ bool get_filepath(char *path) {
     }
 }
 
-bool get_option(char *option) {
-    if (get_user_input("MSG: Please insert options prefixed by a SINGLE '-', leave blank for none:", option, MAX_OPTIONS_LENGTH) != -1) {
-        return sanitize_options(option);
+bool get_option(char *exec) {
+    if (get_user_input("MSG: Please insert options prefixed by a SINGLE '-', leave blank for none:", exec, MAX_OPTIONS_LENGTH) != -1) {
+        return sanitize_options(exec);
     } else {
         printf("ERR: Invalid options.\n");
         return false;

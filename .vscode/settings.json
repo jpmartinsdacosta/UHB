@@ -3,6 +3,8 @@
         "stdio.h": "c",
         "windows.h": "c",
         "imp_deb.h": "c",
-        "utils.h": "c"
+        "utils.h": "c",
+        "stdlib.h": "c",
+        "stdbool.h": "c"
     }
 }

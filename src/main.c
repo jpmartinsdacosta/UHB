@@ -2,9 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include "utils.h"
-#include "config.h"
-#include "input.h"
 
 int main() {
     // Check if UHB is being executed by the root user.
@@ -18,7 +15,7 @@ int main() {
     // Provide the user with a menu to choose the desired action.
     if(os != -1){
         config_exists();    // Check if the configuration file exists.
-        show_menu();        // Show the menu to the user.
+        main_menu();        // Show the menu to the user.
     }else{
         return -1;
     }

@@ -1,9 +1,19 @@
+#include <stdbool.h>
+
 #ifndef CONFIG_H
 #define CONFIG_H
 
 /**
  * @brief Functions regarding the UHB configuration file.
  */
+
+/**
+ * @brief Returns whether the configuration file was modified or not.
+ * @return true if modified, false otherwise.
+ * @note Needed for the final_prompt() function.
+ */
+
+ bool is_config_modified();
 
 /**
  * @brief Sets the configuration file to an initial state.

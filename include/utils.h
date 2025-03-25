@@ -1,3 +1,5 @@
+#include <stdbool.h>
+
 #ifndef SO_UTILS_H
 #define SO_UTILS_H
 
@@ -37,16 +39,6 @@ bool sanitize_name(char *input);
  */
 
 bool sanitize_options(char *input);
-
-/**
- * @brief Check if an executable exists.
- * 
- * This function checks from an array of executables if they exist in the system,
- * using "which -s" to check if the executable exists. It modifies option array
- * accordingly in utils.c to 0 or 1 if the executable exists.
- */
-
-void exec_exists_common();
 
 /**
  * @brief Check if a file exists.
@@ -102,11 +94,5 @@ bool check_ug_common(char *target);
  */
 
 bool set_dac_common();
-
-/**
- * @brief Show the menu to the user.
- * This function shows the menu to the user, based on the operating system detected.
- */
-void show_menu();
 
 #endif // UTILS_H
