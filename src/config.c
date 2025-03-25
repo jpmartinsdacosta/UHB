@@ -108,7 +108,7 @@ bool apply_config(int os){
             case 0:
                 if(find_first_config("##uhb_os = BSD") != 4){         // Line must be 4, for more details check header info.
                     printf("MSG: Applying BSD configuration.\n");
-                    system("bash ../config/uhb_config.sh");
+                    system("sh ../config/uhb_config.sh");
                     return true;
                 }else{
                     printf("ERR: BSD configuration not found.\n");
@@ -118,7 +118,7 @@ bool apply_config(int os){
             case 1:
                 if(find_first_config("##uhb_os = DEB") != 4){         // Line must be 4, for more details check header info.
                     printf("MSG: Applying DEB configuration.\n");
-                    system("bash ../config/uhb_config.sh");
+                    system("sh ../config/uhb_config.sh");
                     return true;
                 }else{
                     printf("ERR: DEB configuration not found.\n");

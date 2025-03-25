@@ -7,9 +7,9 @@
 
 bool exec[4] = {false, false, false, false};    // Array of detected executables.
 
-const char *main_menu_options[] = {             // Constant array of main menu options.
-    "1. Get/Set DAC on a file/directory",
-    "2. Get/Set ACLs on a file/directory",
+const char *main_menu_options[] = {
+    "1. Get/Set Discretionary Access Control on a file/directory",
+    "2. Get/Set Access Control List(s) on a file/directory",
     "3. Firewall configuration",
     "4. Logging configuration",
     "5. Auditing configuration",
@@ -34,6 +34,13 @@ const char *conf_menu_options[] = {
     NULL
 };
 
+const char *acl_menu_options[] = {
+    "1. Get ACL of a file/directory",
+    "2. Set ACL of a file/directory",
+    "0. Return to Main Menu",
+    NULL
+};
+
 void exec_exists_common (){
     printf("INI: Detected supported programs:\n"); // Change this printf's place
     #ifdef __FreeBSD__
@@ -49,6 +56,20 @@ int get_menu_size(const char **options){
         size++;
     }
     return size;
+}
+
+void clear_conf_prompt(){
+    int choice = -1;
+    char input[3];
+    while(choice == -1){
+        choice = get_yes_no_input("MSG: Are you sure that you want to clear the config file? (y/n):\n");
+        if(choice == 0){
+            set_initial_config();
+            printf("MSG: Config file cleared...\n");
+        }else{
+            printf("MSG: Exiting UHB...\n");
+        }
+    }
 }
 
 void final_prompt(){
@@ -101,6 +122,26 @@ void dac_menu(){
     }
 }
 
+void acl_menu(){
+    int choice = -1;
+    while(choice != 0){
+        choice = display_menu("ACL Menu", acl_menu_options);
+        switch(choice){
+            case 1:
+                printf("MSG: Option not implemented yet.\n");
+                break;
+            case 2:
+                printf("MSG: Option not implemented yet.\n");
+                break;
+            case 0:
+                break;
+            default:
+                printf("ERR: Invalid input.\n");
+                break;
+        }
+    }
+}
+
 void conf_menu(){
     int choice = -1;
     while(choice != 0){
@@ -110,7 +151,7 @@ void conf_menu(){
                 view_config();
                 break;
             case 2:
-                set_initial_config();
+                clear_conf_prompt();
                 break;
             case 3:
                 apply_config(os_detect());

@@ -4,7 +4,8 @@
 #define CONFIG_H
 
 /**
- * @brief Functions regarding the UHB configuration file.
+ * @file config.h
+ * @brief This file provides headers for functions regarding the configuration file.
  */
 
 /**
@@ -12,8 +13,7 @@
  * @return true if modified, false otherwise.
  * @note Needed for the final_prompt() function.
  */
-
- bool is_config_modified();
+bool is_config_modified();
 
 /**
  * @brief Sets the configuration file to an initial state.
@@ -23,14 +23,12 @@
  * The function also writes the operating system detected by the program.
  * @return true if the configuration file was created successfully, false otherwise.
  */
-
 bool set_initial_config();
 
 /**
  * @brief Check if the configuration file exists.
  * If the file does not exist, create it, otherwise print an error message.
  */
-
 void config_exists();
 
 /**
@@ -38,7 +36,6 @@ void config_exists();
  * @param command The command to be added to the configuration file.
  * @return true if the command was added successfully, false otherwise.
  */
-
 bool add_config_command(char *command);
 
 /**
@@ -46,7 +43,6 @@ bool add_config_command(char *command);
  * This function will print the content of the configuration file.
  * If the file does not exist, it will print an error message.
  */
-
 void view_config();
 
 /**
@@ -54,26 +50,23 @@ void view_config();
  * @param target The target to be found in the configuration file.
  * @return the line number where the target was found, -1 if the target was not found or an error occurred.
  */
+int find_first_config(char *target);
 
- int find_first_config(char *target);
+/**
+ * @brief Function to be used by the user to find the first instance of a target in the configuration file. 
+ * @note This is a test function that will be deprecated in the future.
+ */
+void user_find_first_config();
 
- /**
-  * @brief Function to be used by the user to find the first instance of a target in the configuration file. 
-  * @note This is a test function that will be deprecated in the future.
-  */
-
-  void user_find_first_config();
-
-  /**
-   * @brief Apply the configuration file.
-   * @param os The operating system detected by the program.
-   * This function will apply the configuration file to the system.
-   * @return true if the configuration file was applied successfully, false otherwise.
-   * 
-   * @note This function checks if uhb_os = XXX is in line 3 to ensure that the configuration file is being applied correctly.
-   * Otherwise, it could execute the configuration file in the wrong operating system if a file has the same name as "uhb_os = XXX".
-   */
-
-  bool apply_config(int os);
+/**
+ * @brief Apply the configuration file.
+ * @param os The operating system detected by the program.
+ * This function will apply the configuration file to the system.
+ * @return true if the configuration file was applied successfully, false otherwise.
+ * 
+ * @note This function checks if uhb_os = XXX is in line 3 to ensure that the configuration file is being applied correctly.
+ * Otherwise, it could execute the configuration file in the wrong operating system if a file has the same name as "uhb_os = XXX".
+ */
+bool apply_config(int os);
 
 #endif // CONFIG_H

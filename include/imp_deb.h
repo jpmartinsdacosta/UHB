@@ -4,12 +4,9 @@
 #define IMP_DEB_H
 
 /**
- *  @file imp_bsd.h
- *  @brief The Debian implementation.
- * 
- *  This function is called when the operating system is detected as Debian.
- *  It provides UHB functions that are specific to the Debian operating system.
- * 
+ *  @file imp_deb.h
+ *  @brief This file provides headers for functions specific to Debian.
+ *  @note This file is compiled when the operating system is detected as Debian.
  */
 
 /**
@@ -17,7 +14,6 @@
  * @param exec The array to store the results of the check.
  * 
  */
-
 void exec_exists_deb(bool exec[4]);
 
 #endif // IMP_DEB_H
