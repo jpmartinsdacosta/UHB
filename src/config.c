@@ -71,31 +71,11 @@ void view_config(){
     }
 }
 
-int find_first_config(char *target){
-    FILE *file = fopen("../config/uhb_config.sh", "r");
-    char line[LINE_MAX];
-    int position = 0;
-    bool found = false;
-    if (file) {
-        while (fgets(line, LINE_MAX, file)) {
-            if (strstr(line, target)) {
-                break;
-            }
-            position += !found;                     
-        }
-        fclose(file);
-        return position;
-    }else{
-        printf("ERR: Error reading configuration file.\n");
-        return -1;
-    }
-}
-
 void user_find_first_config(){
     char target[LINE_MAX];
     int answer = -1;
     get_user_input("MSG: Test search config file:",target,LINE_MAX);
-    answer = find_first_config(target);
+    answer = find_first_in_file(target,"../config/uhb_config.sh");
     if(answer != -1){
         printf("MSG: Found %s at line %d in configuration file.\n",target, answer);
     }
@@ -106,7 +86,7 @@ bool apply_config(int os){
     if(file){
         switch(os){
             case 0:
-                if(find_first_config("##uhb_os = BSD") != 4){         // Line must be 4, for more details check header info.
+                if(find_first_in_file("##uhb_os = BSD","../config/uhb_config.sh") != 4){
                     printf("MSG: Applying BSD configuration.\n");
                     system("sh ../config/uhb_config.sh");
                     return true;
@@ -116,7 +96,7 @@ bool apply_config(int os){
                 }
                 break;
             case 1:
-                if(find_first_config("##uhb_os = DEB") != 4){         // Line must be 4, for more details check header info.
+                if(find_first_in_file("##uhb_os = DEB","../config/uhb_config.sh") != 4){
                     printf("MSG: Applying DEB configuration.\n");
                     system("sh ../config/uhb_config.sh");
                     return true;

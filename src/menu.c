@@ -15,6 +15,7 @@ const char *main_menu_options[] = {
     "5. Auditing configuration",
     "6. MAC configuration",
     "7. Configuration file options",
+    "8. Test specific function",
     "0. Exit UHB",
     NULL
 };
@@ -41,7 +42,7 @@ const char *acl_menu_options[] = {
     NULL
 };
 
-void exec_exists_common (){
+void exec_exists_common(){
     printf("INI: Detected supported programs:\n"); // Change this printf's place
     #ifdef __FreeBSD__
         exec_exists_bsd(exec);
@@ -128,10 +129,10 @@ void acl_menu(){
         choice = display_menu("ACL Menu", acl_menu_options);
         switch(choice){
             case 1:
-                printf("MSG: Option not implemented yet.\n");
+                get_acl_common();
                 break;
             case 2:
-                printf("MSG: Option not implemented yet.\n");
+                set_acl_common();
                 break;
             case 0:
                 break;
@@ -174,7 +175,7 @@ void main_menu(){
                 dac_menu();
                 break;
             case 2:
-                exec[0] ? printf("MSG: Option not implemented yet.\n") : printf("MSG: Option not implemented yet.\n");
+                exec[0] ? acl_menu() : printf("MSG: Option not implemented yet.\n");
                 break;
             case 3:
                 exec[1] ? printf("MSG: Option not implemented yet.\n") : printf("MSG: Option not implemented yet.\n");
@@ -190,6 +191,9 @@ void main_menu(){
                 break;
             case 7:
                 conf_menu();
+                break;
+            case 8:
+                test_function();
                 break;
             case 0:
                 final_prompt();

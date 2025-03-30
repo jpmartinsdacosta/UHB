@@ -25,3 +25,7 @@ void exec_exists_deb (bool exec[4]){
         }
     }
 }
+
+bool get_acl_deb(char *target){
+
+}

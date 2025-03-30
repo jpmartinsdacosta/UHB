@@ -21,6 +21,14 @@ const int OS = 1;
 const int OS = -1;
 #endif
 
+/**
+ * @note TO DO LIST: Create a function that searches for incompatible fstab filesystems for acl 
+ * Then create and test get_acl_bsd. If it works, proceed with get_acl_deb.
+ * 
+ * If all goes well, create a new config file or segment to add acl entires.
+ * Then create set_acl_bsd and deb respectively.
+ * */ 
+
 #define MAX_FILE_PATH 200           // Maximum length of a file path.
 #define MAX_CMD 300                 // Maximum length of a command.
 #define MAX_OPTIONS_LENGTH 20       // Maximum length reserved for options to the user.
@@ -136,6 +144,7 @@ bool check_group_common(char *group){
     }
 }
 
+//@TODO: DEBUG THIS!
 bool set_dac_common(){
     char path[MAX_FILE_PATH];
     char permission[6];                 // Needed for /n and /0?
@@ -164,4 +173,3 @@ bool set_dac_common(){
         return false;
     }
 }
-

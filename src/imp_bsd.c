@@ -9,7 +9,8 @@
 // FreeBSD headers.
 #endif
 
-#define MAX_CMD 300             // Maximum length of a command.
+#define MAX_FILE_PATH 200           // Maximum length of a file path.
+#define MAX_CMD 300                 // Maximum length of a command.
 
 void exec_exists_bsd (bool exec[4]){
     const char *programs[4] = {"getfacl", "ipfw", "rsyslogd","auditd"};
@@ -25,3 +26,10 @@ void exec_exists_bsd (bool exec[4]){
         }
     }
 }
+
+bool get_acl_bsd(char *target){
+    char path[MAX_FILE_PATH];
+    char command[MAX_CMD];
+    
+}
+

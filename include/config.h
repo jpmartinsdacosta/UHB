@@ -46,13 +46,6 @@ bool add_config_command(char *command);
 void view_config();
 
 /**
- * @brief Find a target in the configuration file.
- * @param target The target to be found in the configuration file.
- * @return the line number where the target was found, -1 if the target was not found or an error occurred.
- */
-int find_first_config(char *target);
-
-/**
  * @brief Function to be used by the user to find the first instance of a target in the configuration file. 
  * @note This is a test function that will be deprecated in the future.
  */

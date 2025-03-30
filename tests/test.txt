@@ -1,0 +1,6 @@
+## This is a test text file that simulates the fstab file.
+## This file is to test some string searching functions.
+
+# Device        Mountpoint      FStype  Options Dump    Pass#
+/dev/ada0       /anony          tmpfs   ro      1       1
+/dev/ada1       /nonexis        ext4    rw      1       0

@@ -14,6 +14,7 @@ int main() {
 
     // Provide the user with a menu to choose the desired action.
     if(os != -1){
+        exec_exists_common();
         config_exists();    // Check if the configuration file exists.
         main_menu();        // Show the menu to the user.
     }else{
