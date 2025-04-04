@@ -4,6 +4,7 @@
 #include <stdbool.h>
 
 #define LINE_MAX 256
+#define MAX_CMD 300
 
 int find_first_in_file(char *target, char *filepath){
     char line[LINE_MAX];
@@ -58,6 +59,24 @@ bool find_strings_in_line(char *a, char *b, char *filepath) {
     }
 }
 
+char* find_partition_from_file(char *filepath){
+    FILE* pipe;
+    char command[MAX_CMD];
+    char filesystem[LINE_MAX];
+    snprintf(command,sizeof(command),"df \"%s\" | tail -1 | awk '{print $1}'",filepath);
+    pipe = popen(command, "r");
+    if(pipe == NULL){
+        perror("popen");
+        return NULL;
+    }
+    if (fgets(filesystem, sizeof(filesystem), pipe) != NULL) {
+        filesystem[strcspn(filesystem, "\n")] = 0;
+    }
+    pclose(pipe);
+    return strdup(filesystem);
+}
+
 void test_function(){
    find_strings_in_line("/anony","tmpfs","../tests/test.txt");
 }
+

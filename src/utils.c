@@ -144,7 +144,6 @@ bool check_group_common(char *group){
     }
 }
 
-//@TODO: DEBUG THIS!
 bool set_dac_common(){
     char path[MAX_FILE_PATH];
     char permission[6];                 // Needed for /n and /0?

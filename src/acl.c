@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include "imp_bsd.h"
 
 #define MAX_FILE_PATH 200           // Maximum length of a file path.
 #define MAX_CMD 300                 // Maximum length of a command.
@@ -27,7 +28,7 @@ bool acl_incompatible_fs(char *filepath){
     }
     return result;
 }
-
+/*
 void get_acl_common(){
     char path[MAX_FILE_PATH];
     char options[MAX_CMD];
@@ -43,19 +44,25 @@ void get_acl_common(){
     }
 }
 
-bool set_acl_common(){
+bool set_acl_common(int os){
     char path[MAX_FILE_PATH];
     char options[MAX_CMD];
     char command[MAX_CMD];
-    if(get_filepath(path) && path_exists(path) && !acl_incompatible_fs(path)){
-        get_user_input("MSG: Please enter setfacl options;",options,MAX_CMD);
-        printf("MSG: Setting ACL...\n");
-        snprintf(command, sizeof(command), "setfacl %s %s", options, path);
-        add_config_command(command);
-        return true;
+    get_filepath(path);
+    if(os == 0 && !is_acl_enabled_bsd(path)){
+        printf("ERR: ACLs are not enabled in the filesystem of the given file.\n");
+        printf("ERR: Make sure the enable them in your BSD system visa fstab.\n");
     }else{
-        printf("ERR: ACLs could not be set.\n");
-        return false;
+        if(path_exists(path) && !acl_incompatible_fs(path)){
+            get_user_input("MSG: Please enter setfacl options;",options,MAX_CMD);
+            printf("MSG: Setting ACL...\n");
+            snprintf(command, sizeof(command), "setfacl %s %s", options, path);
+            add_config_command(command);
+            return true;
+        }else{
+            printf("ERR: ACLs could not be set.\n");
+            return false;
+        }
     }
 }
-
+*/

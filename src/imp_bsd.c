@@ -27,9 +27,9 @@ void exec_exists_bsd (bool exec[4]){
     }
 }
 
-bool get_acl_bsd(char *target){
-    char path[MAX_FILE_PATH];
-    char command[MAX_CMD];
-    
+bool is_acl_enabled_bsd(char *filepath){
+    char* filesystem;
+    filesystem = find_partition_from_file(filepath);
+    return find_strings_in_line(filesystem,"acls","/etc/fstab");
 }
 

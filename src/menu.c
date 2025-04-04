@@ -129,10 +129,10 @@ void acl_menu(){
         choice = display_menu("ACL Menu", acl_menu_options);
         switch(choice){
             case 1:
-                get_acl_common();
+                //get_acl_common();
                 break;
             case 2:
-                set_acl_common();
+                //set_acl_common(os_detect());
                 break;
             case 0:
                 break;
