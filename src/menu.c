@@ -109,10 +109,10 @@ void dac_menu(){
         choice = display_menu("DAC Menu", dac_menu_options);
         switch(choice){
             case 1:
-                get_dac_common();
+                get_dac();
                 break;
             case 2:
-                set_dac_common();
+                set_dac();
                 break;
             case 0:
                 break;
@@ -129,10 +129,10 @@ void acl_menu(){
         choice = display_menu("ACL Menu", acl_menu_options);
         switch(choice){
             case 1:
-                //get_acl_common();
+                get_acl();
                 break;
             case 2:
-                //set_acl_common(os_detect());
+                set_acl();
                 break;
             case 0:
                 break;

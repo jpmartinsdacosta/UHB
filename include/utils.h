@@ -62,7 +62,7 @@ void rc_local_exists_common();
  * This function gets the DAC of a file by executing "ls -l --" on the file.
  * @return true if the file exists, false otherwise.
  */
-bool get_dac_common();
+bool get_dac();
 
 /**
  * @brief Checks if the given permission is in a valid octal format.
@@ -76,14 +76,14 @@ bool check_permission(char *permission);
  * @param user The user to check.
  * @return true if the user exists, false otherwise.
  */
-bool check_user_common(char *user);
+bool check_user(char *user);
 
 /**
  * @brief Check if the group exists.
  * @param group The group to check.
  * @return true if the group exists, false otherwise.
  */
-bool check_group_common(char *group);
+bool check_group(char *group);
 
 /**
  * @brief Set the DAC of a file.
@@ -91,6 +91,6 @@ bool check_group_common(char *group);
  * It also adds the commands to the configuration file.
  * @return true if the DAC is set, false otherwise.
  */
-bool set_dac_common();
+bool set_dac();
 
 #endif // UTILS_H

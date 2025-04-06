@@ -85,7 +85,7 @@ void rc_local_exists_common(){
     rc_local = path_exists("/etc/rc.local");
 }
 
-bool get_dac_common(){ 
+bool get_dac(){ 
     char path[MAX_FILE_PATH];
     char options[MAX_CMD];
     char command[MAX_CMD];
@@ -114,7 +114,7 @@ bool check_permission(char *permission){
     return true;
 }
 
-bool check_user_common(char *user){
+bool check_user(char *user){
     char command[MAX_CMD];
     if (sanitize_name(user)){
         snprintf(command, sizeof(command), "getent passwd \"%s\" >/dev/null 2>&1", user);
@@ -129,7 +129,7 @@ bool check_user_common(char *user){
     }
 }
 
-bool check_group_common(char *group){
+bool check_group(char *group){
     char command[MAX_CMD];
     if (sanitize_name(group)){
         snprintf(command, sizeof(command), "getent group \"%s\" >/dev/null 2>&1", group);
@@ -144,7 +144,7 @@ bool check_group_common(char *group){
     }
 }
 
-bool set_dac_common(){
+bool set_dac(){
     char path[MAX_FILE_PATH];
     char permission[6];                 // Needed for /n and /0?
     char command[MAX_CMD];
@@ -156,7 +156,7 @@ bool set_dac_common(){
         get_user_input("MSG: Please enter the permission (e.g. 0777):", permission, 6);
         get_user_input("MSG: Please enter the target user:", user, MAX_NAME);
         get_user_input("MSG: Please enter the target group:", group, MAX_NAME);
-        if(check_permission(permission) && check_user_common(user) && check_group_common(group)){
+        if(check_permission(permission) && check_user(user) && check_group(group)){
             printf("MSG: Setting DAC...\n");
             snprintf(command, sizeof(command), "chmod %s %s %s", options, permission, path);
             add_config_command(command);

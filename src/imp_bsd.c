@@ -33,3 +33,29 @@ bool is_acl_enabled_bsd(char *filepath){
     return find_strings_in_line(filesystem,"acls","/etc/fstab");
 }
 
+bool set_acl(){
+    char path[MAX_FILE_PATH];
+    char options[MAX_CMD];
+    char command[MAX_CMD];
+    get_filepath(path);
+    if(!is_acl_enabled_bsd(path)){
+        printf("ERR: ACLs are not enabled in the filesystem of the given file.\n");
+        printf("ERR: Make sure the enable them in your BSD system visa fstab.\n");
+    }else{
+        if(path_exists(path) && !acl_incompatible_fs(path)){
+            get_user_input("MSG: Please enter setfacl options;",options,MAX_CMD);
+            printf("MSG: Setting ACL...\n");
+            snprintf(command, sizeof(command), "setfacl %s %s", options, path);
+            add_config_command(command);
+            return true;
+        }else{
+            printf("ERR: ACLs could not be set.\n");
+            return false;
+        }
+    }
+}
+
+
+void test_function(){
+    printf("BSD: Test function executed.\n");
+}

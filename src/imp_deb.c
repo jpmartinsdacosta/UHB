@@ -9,7 +9,8 @@
 // Debian headers.
 #endif
 
-#define MAX_CMD 300             // Maximum length of a command.
+#define MAX_FILE_PATH 200           // Maximum length of a file path.
+#define MAX_CMD 300                 // Maximum length of a command.
 
 void exec_exists_deb (bool exec[4]){
     const char *programs[4] = {"getfacl", "ufw", "rsyslogd","auditd"};
@@ -24,4 +25,26 @@ void exec_exists_deb (bool exec[4]){
             exec[i] = false;
         }
     }
+}
+
+bool set_acl(){
+    char path[MAX_FILE_PATH];
+    char options[MAX_CMD];
+    char command[MAX_CMD];
+    get_filepath(path);
+    if(path_exists(path) && !acl_incompatible_fs(path)){
+        get_user_input("MSG: Please enter setfacl options;",options,MAX_CMD);
+        printf("MSG: Setting ACL...\n");
+        snprintf(command, sizeof(command), "setfacl %s %s", options, path);
+        add_config_command(command);
+        return true;
+    }else{
+        printf("ERR: ACLs could not be set.\n");
+        return false;
+    }
+}
+
+
+void test_function(){
+    printf("DEB: Test function executed.\n");
 }

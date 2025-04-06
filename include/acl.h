@@ -7,24 +7,15 @@
  */
 
 /**
- * @brief Checks in fstab whether the filesystem is compatible with ACLs.
- * @param filepath The filepath to be checked.
- * @return True if compatible, false otherwise.
- * @note Incompatible filesystems are declared at incompatible_acl_fs in acl.c.
- */
-bool acl_incompatible_fs(char *filepath);
-
-/**
  * @brief Gets the current ACL settings of a file.
  */
-//void get_acl_common();
+void get_acl();
 
 /**
- * @brief Sets the ACL settings of a file.
- * @param os Current OS.
- * @return True if successful, false otherwise.
- * @note The implementation of this function in BSD needs to check if ACLs are enabled in fstab.
+ * @brief Checks if the filesystem of a given file is compatible with ACLs.
+ * @param filepath The path to the file to check.
+ * @return true if the filesystem is compatible with ACLs, false otherwise.
  */
-//bool set_acl_common(int os);
+bool acl_incompatible_fs(char *filepath);
 
 #endif // ACL_H

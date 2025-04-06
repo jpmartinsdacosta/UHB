@@ -76,7 +76,3 @@ char* find_partition_from_file(char *filepath){
     return strdup(filesystem);
 }
 
-void test_function(){
-   find_strings_in_line("/anony","tmpfs","../tests/test.txt");
-}
-
