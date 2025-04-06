@@ -3,6 +3,13 @@
 #include <string.h>
 #include <stdbool.h>
 
+#include "menu.h"
+#include "file.h"
+#include "acl.h"
+#include "config.h"
+#include "utils.h"
+#include "input.h"
+
 #define MAX_FILE_PATH 200           // Maximum length of a file path.
 #define MAX_CMD 300                 // Maximum length of a command.
 #define MAX_OPTIONS_LENGTH 20       // Maximum length reserved for options to the user.

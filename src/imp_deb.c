@@ -2,6 +2,13 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include "menu.h"
+#include "file.h"
+#include "acl.h"
+#include "config.h"
+#include "utils.h"
+#include "input.h"
+
 #ifdef _WIN32
 #include <io.h>
 #include <windows.h>
@@ -12,7 +19,7 @@
 #define MAX_FILE_PATH 200           // Maximum length of a file path.
 #define MAX_CMD 300                 // Maximum length of a command.
 
-void exec_exists_deb (bool exec[4]){
+void exec_exists (bool exec[4]){
     const char *programs[4] = {"getfacl", "ufw", "rsyslogd","auditd"};
     char command[MAX_CMD];
     for(int i = 0; i < 4; i++){

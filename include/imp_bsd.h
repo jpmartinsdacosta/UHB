@@ -16,13 +16,13 @@
  * @param exec The array to store the results of the check.
  * 
  */
-void exec_exists_bsd(bool exec[4]);
+void exec_exists(bool exec[4]);
 
 /**
  * @brief Check if Access Control Lists are enabled in a given filesystem in FreeBSD.
  * @param filesystem Filesystem provided by the user.
  * @note This function is necessary in BSD due to the need for a fstab entry.
  */
-bool is_acl_enabled_bsd(char *filesystem);
+bool is_acl_enabled_bsd(char* filesystem);
 
 #endif // IMP_BSD_H

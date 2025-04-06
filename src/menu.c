@@ -5,6 +5,13 @@
 #include <ctype.h>
 #include <limits.h>
 
+#include "menu.h"
+#include "file.h"
+#include "acl.h"
+#include "config.h"
+#include "utils.h"
+#include "input.h"
+
 bool exec[4] = {false, false, false, false};    // Array of detected executables.
 
 const char *main_menu_options[] = {
@@ -44,11 +51,7 @@ const char *acl_menu_options[] = {
 
 void exec_exists_common(){
     printf("INI: Detected supported programs:\n"); // Change this printf's place
-    #ifdef __FreeBSD__
-        exec_exists_bsd(exec);
-    #elif defined (__linux__)
-        exec_exists_deb(exec);
-    #endif  
+    exec_exists(exec); 
 }
 
 int get_menu_size(const char **options){
@@ -193,7 +196,7 @@ void main_menu(){
                 conf_menu();
                 break;
             case 8:
-                test_function();
+                printf("MSG: Option not implemented yet.\n");
                 break;
             case 0:
                 final_prompt();

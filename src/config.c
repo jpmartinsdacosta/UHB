@@ -3,6 +3,13 @@
 #include <string.h>
 #include <stdbool.h>
 
+#include "menu.h"
+#include "file.h"
+#include "acl.h"
+#include "config.h"
+#include "utils.h"
+#include "input.h"
+
 #define LINE_MAX 256
 
 bool config_modified = false;

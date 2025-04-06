@@ -16,6 +16,6 @@
  * @param exec The array to store the results of the check.
  * 
  */
-void exec_exists_deb(bool exec[4]);
+void exec_exists(bool exec[4]);
 
 #endif // IMP_DEB_H

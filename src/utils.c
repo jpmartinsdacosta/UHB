@@ -5,6 +5,13 @@
 #include <ctype.h>
 #include <limits.h>
 
+#include "menu.h"
+#include "file.h"
+#include "acl.h"
+#include "config.h"
+#include "utils.h"
+#include "input.h"
+
 #ifdef _WIN32
 #include <io.h>
 #include <windows.h>
