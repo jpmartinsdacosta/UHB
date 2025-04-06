@@ -36,7 +36,6 @@ void exec_exists (bool exec[4]){
 
 bool is_acl_enabled_bsd(char* filepath){
     char *filesystem = find_fs_from_path(filepath);
-    //printf("DBG: OK until here.\n");
     if (filesystem == NULL) {
         printf("ERR: Unable to find the filesystem for the given file path.\n");
         return false;

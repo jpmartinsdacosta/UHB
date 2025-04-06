@@ -90,23 +90,3 @@ char* find_fs_from_path(char *filepath){
     pclose(pipe);
     return result;
 }
-
-/*
-char* find_fs_from_path(char* filepath) {
-    char command[MAX_CMD];
-    static char output[MAX_CMD]; // Use static to ensure the memory persists after the function returns
-    snprintf(command, sizeof(command), "df %s | tail -n 1 | awk '{print $1}'", filepath);
-    FILE* pipe = popen(command, "r");
-    if (pipe == NULL) {
-        perror("popen");
-        return NULL;
-    }
-    if (fgets(output, MAX_CMD, pipe) != NULL) {
-        output[strcspn(output, "\n")] = 0; // Remove newline character
-    } else {
-        output[0] = '\0'; // Ensure output is empty if no data is read
-    }
-    pclose(pipe);
-    return output;
-}
-*/
