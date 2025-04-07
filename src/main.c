@@ -1,7 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
 
 int main() {
     int os = os_detect();
@@ -12,7 +9,6 @@ int main() {
         return -1;
     }
     
-
     // Provide the user with a menu to choose the desired action.
     if(os != -1){
         exec_exists_common();

@@ -49,3 +49,11 @@ bool acl_incompatible_fs(char *filepath){
     }
     return result;
 }
+
+/**
+ * TODO: Implement function(s) that check if there are conflicts between ACL
+ * and the current DAC policy. This is important because DAC can override the
+ * current ACL policy, which can lead to security issues.
+ * Linux does not warn about this, but it is a good practice to check for conflicts.
+ * This is especially important for the root user, as it can override any ACL policy.
+ */
