@@ -38,7 +38,7 @@ void final_prompt();
  * @param options The const char menu options declared at the start of menu.c
  * @return -1 if error, selected option otherwise. 
  */
-int display_menu(char *prompt, const char **options);
+int display_menu(const char *prompt, const char **options);
 
 /**
  * @brief Sub-menu for Discretionary Access Control options.

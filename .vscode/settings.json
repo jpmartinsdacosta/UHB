@@ -6,6 +6,7 @@
         "utils.h": "c",
         "stdlib.h": "c",
         "stdbool.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "config.h": "c"
     }
 }

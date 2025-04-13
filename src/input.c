@@ -10,13 +10,14 @@
 #include "config.h"
 #include "utils.h"
 #include "input.h"
+#include "os_interface.h"
 
 #define MAX_FILE_PATH 200       // Maximum length of a file path.
 #define MAX_CMD 300             // Maximum length of a command.
 #define MAX_OPTIONS_LENGTH 20   // Maximum length reserved for options to the user.
 #define MAX_NAME 30             // Maximum length of a username/groupname.
 
-int get_yes_no_input(char *prompt) {
+int get_yes_no_input(const char *prompt) {
     char input[3];
     int answer = -1;
     printf("%s", prompt);
@@ -38,7 +39,7 @@ int get_yes_no_input(char *prompt) {
     return answer;
 }
 
-int get_user_input(char *prompt, char *buffer, size_t bufferSize) {
+int get_user_input(const char *prompt, char *buffer, size_t bufferSize) {
     int result = 0;
     printf("%s", prompt);
     fflush(stdout); // Ensure the prompt is printed before reading input
@@ -56,7 +57,7 @@ int get_user_input(char *prompt, char *buffer, size_t bufferSize) {
     return result;
 }
 
-bool get_filepath(char *path) {
+bool get_filepath(const char *path) {
     if (get_user_input("Please enter the file path: ", path, MAX_FILE_PATH) == 1) {
         return path_exists(path);
     } else {
@@ -65,7 +66,7 @@ bool get_filepath(char *path) {
     }
 }
 
-bool get_option(char *exec) {
+bool get_option(const char *exec) {
     if (get_user_input("MSG: Please insert options prefixed by a SINGLE '-', leave blank for none:", exec, MAX_OPTIONS_LENGTH) != -1) {
         return sanitize_options(exec);
     } else {

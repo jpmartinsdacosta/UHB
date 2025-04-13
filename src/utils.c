@@ -11,6 +11,7 @@
 #include "config.h"
 #include "utils.h"
 #include "input.h"
+#include "os_interface.h"
 
 #ifdef _WIN32
 #include <io.h>
@@ -57,7 +58,7 @@ int os_detect(){
     }
 }
 
-bool sanitize_name(char *input) {
+bool sanitize_name(const char *input) {
     for (int i = 0; i < strlen(input); i++) {
         if (!isalnum(input[i])) {
             printf("ERR: Non-sanitized name.\n");
@@ -67,7 +68,7 @@ bool sanitize_name(char *input) {
     return true;
 }
 
-bool sanitize_options(char *input) {
+bool sanitize_options(const char *input) {
     for (int i = 0; i < strlen(input); i++) {
         if (!isalnum(input[i]) && !input[i] == '-' && !input[i] == ' ') {
             printf("ERR: Non-sanitized options.\n");
@@ -77,7 +78,7 @@ bool sanitize_options(char *input) {
     return true;
 }
 
-bool path_exists(char *path) {
+bool path_exists(const char *path) {
     FILE *file = fopen(path, "r");
     if (file) {
         fclose(file);
@@ -107,7 +108,7 @@ bool get_dac(){
     }
 }
 
-bool check_permission(char *permission){
+bool check_permission(const char *permission){
     if (strlen(permission) != 4) {
         printf("ERR: Invalid permissions set.\n");
         return false;
@@ -121,7 +122,7 @@ bool check_permission(char *permission){
     return true;
 }
 
-bool check_user(char *user){
+bool check_user(const char *user){
     char command[MAX_CMD];
     if (sanitize_name(user)){
         snprintf(command, sizeof(command), "getent passwd \"%s\" >/dev/null 2>&1", user);
@@ -136,7 +137,7 @@ bool check_user(char *user){
     }
 }
 
-bool check_group(char *group){
+bool check_group(const char *group){
     char command[MAX_CMD];
     if (sanitize_name(group)){
         snprintf(command, sizeof(command), "getent group \"%s\" >/dev/null 2>&1", group);

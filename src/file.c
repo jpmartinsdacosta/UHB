@@ -9,16 +9,17 @@
 #include "config.h"
 #include "utils.h"
 #include "input.h"
+#include "os_interface.h"
 
 #define LINE_MAX 256
 #define MAX_CMD 300
 
-int find_first_in_file(char *target, char *filepath){
+int find_first_in_file(const char *target, const char *filepath){
     char line[LINE_MAX];
     int position = 0;
     bool found = false;
     if(!path_exists(filepath)){
-        printf("ERR: The selected file does not exist.\n");
+        printf("ERR: find_first_in_file(): The selected file does not exist.\n");
         return -1;
     }else{
         FILE *file = fopen(filepath, "r");
@@ -33,13 +34,13 @@ int find_first_in_file(char *target, char *filepath){
             fclose(file);
             return found ? position : -1;
         }else{
-            printf("ERR: Error reading %s file.\n",filepath);
+            printf("ERR: find_first_in_file(): Error reading %s file.\n",filepath);
             return -1;
         }
     }
 }
 
-bool find_strings_in_line(char *a, char *b, char *filepath) {
+bool find_strings_in_line(const char *a, const char *b, const char *filepath) {
     char line[LINE_MAX];
     int position = 0;
 
@@ -66,7 +67,7 @@ bool find_strings_in_line(char *a, char *b, char *filepath) {
     }
 }
 
-char* find_fs_from_path(char *filepath){
+char* find_fs_from_path(const char *filepath){
     char command[MAX_CMD];
     char *result = malloc(MAX_CMD * sizeof(char));
     if (result == NULL) {
@@ -89,4 +90,79 @@ char* find_fs_from_path(char *filepath){
     }
     pclose(pipe);
     return result;
+}
+
+bool copy_file(const char *source, const char *destination) {
+    FILE *src = fopen(source, "r");
+    if (src == NULL) {
+        return false;
+    }
+
+    FILE *dst = fopen(destination, "w");
+    if (dst == NULL) {
+        fclose(src);
+        return false;
+    }
+
+    int ch;
+    while ((ch = fgetc(src)) != EOF) {
+        if (fputc(ch, dst) == EOF) {
+            fclose(src);
+            fclose(dst);
+            return false;
+        }
+    }
+
+    fclose(src);
+    if (fclose(dst) == EOF) {
+        return false;
+    }
+
+    return true;
+}
+
+bool find_first_and_replace(const char *filepath, const char *target, char *replacement) {
+    FILE *file = fopen(filepath,"r");
+    FILE *temp = tmpfile();
+    char buffer[LINE_MAX];
+    bool found = false;
+    if(file == NULL){
+        perror("perror");
+        return false;
+    }
+    if(temp == NULL){
+        perror("perror");
+        fclose(file);
+        return false;
+    }
+    while(fgets(buffer,sizeof(buffer),file)){
+        if(!found){
+            char *pos = strstr(buffer, target);
+            if(pos != NULL){
+                memmove(pos + strlen(replacement), pos + strlen(target), strlen(pos + strlen(target)) + 1);
+                memcpy(pos, replacement, strlen(replacement));
+                found = true;
+            }
+        }
+        fputs(buffer, temp);
+    }
+    fclose(file);
+    file = fopen(filepath,"w");
+    if(file == NULL){
+        perror("perror");
+        fclose(temp);
+        return false;
+    }
+    rewind(temp);
+    while(fgets(buffer,sizeof(buffer),temp)){
+        fputs(buffer,file);
+    }
+    fclose(temp);
+    fclose(file);
+    if(!found){
+        printf("String not found\n");
+        return false;
+    }else{
+        return true;
+    }
 }

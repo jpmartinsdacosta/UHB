@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include "os_interface.h"
 
 #ifndef IMP_DEB_H
 #define IMP_DEB_H

@@ -11,6 +11,7 @@
 #include "config.h"
 #include "utils.h"
 #include "input.h"
+#include "os_interface.h"
 
 bool exec[4] = {false, false, false, false};    // Array of detected executables.
 
@@ -90,7 +91,7 @@ void final_prompt(){
     }
 }
 
-int display_menu(char *prompt, const char **options){
+int display_menu(const char *prompt, const char **options){
     int choice = -1;
     char input[3];
     printf("%s\n", prompt);

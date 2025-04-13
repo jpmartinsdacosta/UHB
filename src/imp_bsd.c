@@ -8,6 +8,7 @@
 #include "config.h"
 #include "utils.h"
 #include "input.h"
+#include "os_interface.h"
 
 #ifdef _WIN32
 #include <io.h>
@@ -18,6 +19,12 @@
 
 #define MAX_FILE_PATH 200           // Maximum length of a file path.
 #define MAX_CMD 300                 // Maximum length of a command.
+
+char os[] = "##uhb_os = BSD";
+
+char* get_os(){
+    return os;
+}
 
 void exec_exists (bool exec[4]){
     const char *programs[4] = {"getfacl", "ipfw", "rsyslogd","auditd"};
@@ -34,7 +41,7 @@ void exec_exists (bool exec[4]){
     }
 }
 
-bool is_acl_enabled_bsd(char* filepath){
+bool is_acl_enabled_bsd(const char* filepath){
     char *filesystem = find_fs_from_path(filepath);
     if (filesystem == NULL) {
         printf("ERR: Unable to find the filesystem for the given file path.\n");
@@ -66,8 +73,4 @@ bool set_acl(){
             return false;
         }
     }
-}
-
-void test_function(){
-    printf("BSD: Test function executed.\n");
 }

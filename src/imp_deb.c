@@ -8,6 +8,7 @@
 #include "config.h"
 #include "utils.h"
 #include "input.h"
+#include "os_interface.h"
 
 #ifdef _WIN32
 #include <io.h>
@@ -18,6 +19,12 @@
 
 #define MAX_FILE_PATH 200           // Maximum length of a file path.
 #define MAX_CMD 300                 // Maximum length of a command.
+
+char os[] = "##uhb_os = DEB";
+
+char* get_os(){
+    return os;
+}
 
 void exec_exists (bool exec[4]){
     const char *programs[4] = {"getfacl", "ufw", "rsyslogd","auditd"};
@@ -49,9 +56,4 @@ bool set_acl(){
         printf("ERR: ACLs could not be set.\n");
         return false;
     }
-}
-
-
-void test_function(){
-    printf("DEB: Test function executed.\n");
 }

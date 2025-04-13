@@ -36,7 +36,7 @@ void config_exists();
  * @param command The command to be added to the configuration file.
  * @return true if the command was added successfully, false otherwise.
  */
-bool add_config_command(char *command);
+bool add_config_command(const char *command);
 
 /**
  * @brief View the configuration file.
@@ -52,14 +52,12 @@ void view_config();
 void user_find_first_config();
 
 /**
- * @brief Apply the configuration file.
- * @param os The operating system detected by the program.
- * This function will apply the configuration file to the system.
+ * @brief This function will apply the configuration file to the system.
  * @return true if the configuration file was applied successfully, false otherwise.
  * 
  * @note This function checks if uhb_os = XXX is in line 3 to ensure that the configuration file is being applied correctly.
  * Otherwise, it could execute the configuration file in the wrong operating system if a file has the same name as "uhb_os = XXX".
  */
-bool apply_config(int os);
+bool apply_config();
 
 #endif // CONFIG_H

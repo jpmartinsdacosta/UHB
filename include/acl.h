@@ -9,7 +9,7 @@
 /**
  * @brief Gets the current ACL settings of a file.
  */
-void get_acl();
+bool get_acl();
 
 /**
  * @brief Checks if the filesystem of a given file is compatible with ACLs.

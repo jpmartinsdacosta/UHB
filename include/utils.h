@@ -24,7 +24,7 @@ int os_detect();
  * ATTENTION:
  * THIS FUNCTION SHOULD ONLY BE USED FOR USER OR GROUP NAMES.
  */
-bool sanitize_name(char *input);
+bool sanitize_name(const char *input);
 
 /**
  * @brief Sanitizes options filtering out non-alphanumeric characters and the hyphen,
@@ -35,7 +35,7 @@ bool sanitize_name(char *input);
  * ATTENTION:
  * THIS FUNCTION SHOULD ONLY BE USED WHEN ADDING FLAGS WHEN EXECUTING COMMANDS.
  */
-bool sanitize_options(char *input);
+bool sanitize_options(const char *input);
 
 /**
  * @brief Check if a file exists.
@@ -49,7 +49,7 @@ bool sanitize_options(char *input);
  * Considering that the user is the system administrator, it is assumed that the user
  * knows what they are doing. ~João
  */
-bool path_exists(char *path);
+bool path_exists(const char *path);
 
 /**
  * @brief Check if the rc.local file exists.
@@ -69,21 +69,21 @@ bool get_dac();
  * @param permission The permission to check.
  * @return true if the permission is valid, false otherwise.
  */
-bool check_permission(char *permission);
+bool check_permission(const char *permission);
 
 /**
  * @brief Check if the user exists.
  * @param user The user to check.
  * @return true if the user exists, false otherwise.
  */
-bool check_user(char *user);
+bool check_user(const char *user);
 
 /**
  * @brief Check if the group exists.
  * @param group The group to check.
  * @return true if the group exists, false otherwise.
  */
-bool check_group(char *group);
+bool check_group(const char *group);
 
 /**
  * @brief Set the DAC of a file.

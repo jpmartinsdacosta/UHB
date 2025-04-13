@@ -9,6 +9,7 @@
 #include "config.h"
 #include "utils.h"
 #include "input.h"
+#include "os_interface.h"
 
 #define MAX_FILE_PATH 200           // Maximum length of a file path.
 #define MAX_CMD 300                 // Maximum length of a command.
@@ -27,7 +28,7 @@ const char *no_acl_fs[] = {         // Filesystems that do not support ACLs.
     NULL
 };
 
-void get_acl(){
+bool get_acl(){
     char path[MAX_FILE_PATH];
     char options[MAX_CMD];
     char command[MAX_CMD];
