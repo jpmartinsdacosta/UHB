@@ -121,7 +121,7 @@ bool copy_file(const char *source, const char *destination) {
     return true;
 }
 
-bool find_first_and_replace(const char *filepath, const char *target, char *replacement) {
+bool find_first_and_replace(const char *filepath, const char *target, const char *replacement) {
     FILE *file = fopen(filepath,"r");
     FILE *temp = tmpfile();
     char buffer[LINE_MAX];
@@ -163,6 +163,24 @@ bool find_first_and_replace(const char *filepath, const char *target, char *repl
         printf("String not found\n");
         return false;
     }else{
+        return true;
+    }
+}
+
+bool find_n_and_replace(const char *filepath, const char *target, const char *replacement, int num){
+    if(num <= 0){
+        printf("ERR: Cannot find 0 or less instances of \"%s\" in a file.\n",target);
+        return false;
+    }else{
+        int aux = 0;
+        bool possible = true;
+        while(aux != num && possible){
+            possible = find_first_and_replace(filepath,target,replacement);
+            if(possible){
+                aux++;
+            }       
+        }
+        printf("MSG: Searched: %d, replaced: %d\n",num,aux);
         return true;
     }
 }

@@ -37,6 +37,8 @@ char* find_fs_from_path(const char *filepath);
  */
 bool copy_file(const char *source, const char *destination);
 
-bool find_first_and_replace(const char *filepath, const char *target, char *replacement);
+bool find_first_and_replace(const char *filepath, const char *target, const char *replacement);
+
+bool find_n_and_replace(const char *filepath, const char *target, const char *replacement, int num);
 
 #endif // FILE_H

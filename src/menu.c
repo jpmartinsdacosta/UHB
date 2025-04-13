@@ -159,7 +159,7 @@ void conf_menu(){
                 clear_conf_prompt();
                 break;
             case 3:
-                apply_config(os_detect());
+                apply_config();
                 break;
             case 0:
                 break;

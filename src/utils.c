@@ -29,14 +29,6 @@ const int OS = 1;
 const int OS = -1;
 #endif
 
-/**
- * @note TO DO LIST: Create a function that searches for incompatible fstab filesystems for acl 
- * Then create and test get_acl_bsd. If it works, proceed with get_acl_deb.
- * 
- * If all goes well, create a new config file or segment to add acl entires.
- * Then create set_acl_bsd and deb respectively.
- * */ 
-
 #define MAX_FILE_PATH 200           // Maximum length of a file path.
 #define MAX_CMD 300                 // Maximum length of a command.
 #define MAX_OPTIONS_LENGTH 20       // Maximum length reserved for options to the user.
@@ -44,6 +36,18 @@ const int OS = -1;
 
 bool rc_local = false;              // Boolean to store if the rc.local file exists.
 
+// Struct declaration to streamline DAC, ACL and other functions
+typedef struct {
+    char filepath[MAX_FILE_PATH];
+    char user[MAX_NAME];
+    char group[MAX_NAME];
+    char dac[6];
+    char acl[6]; // Check this size
+    char fs[30];
+    // Declare a position variable and assign to the file?
+} UhbStruct;
+
+// TO DO: Deprecate this function
 int os_detect(){
     switch (OS) {
         case 0:

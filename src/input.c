@@ -42,17 +42,17 @@ int get_yes_no_input(const char *prompt) {
 int get_user_input(const char *prompt, char *buffer, size_t bufferSize) {
     int result = 0;
     printf("%s", prompt);
-    fflush(stdout); // Ensure the prompt is printed before reading input
+    fflush(stdout);
     if (fgets(buffer, bufferSize, stdin) != NULL) {
-        buffer[strcspn(buffer, "\n")] = '\0'; // Remove newline character
+        buffer[strcspn(buffer, "\n")] = '\0';
         if (strlen(buffer) > 0) {
-            result = 1; // Non-empty valid input
+            result = 1;
         } else {
-            result = 0; // Empty valid input
+            result = 0;
         }
     } else {
         printf("Error reading input.\n");
-        result = -1; // Invalid input
+        result = -1;
     }
     return result;
 }
