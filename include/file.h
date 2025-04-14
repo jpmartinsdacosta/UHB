@@ -7,6 +7,13 @@
  */
 
 /**
+ * @brief Check if a file exists.
+ * @param path The path to the file.
+ * @return true if the file exists, false otherwise.
+ */
+bool path_exists(const char *path);
+
+/**
  * @brief Finds the first instance of a string inside a file.
  * @param target the string to be found inside the file.
  * @param filepath the filepath of the file where to search.
@@ -37,8 +44,22 @@ char* find_fs_from_path(const char *filepath);
  */
 bool copy_file(const char *source, const char *destination);
 
+/**
+ * @brief Finds and replaces the first occurence of a given string in a file.
+ * @param filepath File in which to make replacements.
+ * @param target String to be replaced.
+ * @param replacement Replacment.
+ * @return True if successful, false otherwise.
+ */
 bool find_first_and_replace(const char *filepath, const char *target, const char *replacement);
 
+/**
+ * @brief Finds and replaces the first occurence of a given string in a file.
+ * @param filepath File in which to make replacements.
+ * @param target String to be replaced.
+ * @param replacement Replacment.
+ * @return True if successful, false otherwise.
+ */
 bool find_n_and_replace(const char *filepath, const char *target, const char *replacement, int num);
 
 #endif // FILE_H

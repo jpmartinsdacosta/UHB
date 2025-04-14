@@ -82,17 +82,6 @@ bool sanitize_options(const char *input) {
     return true;
 }
 
-bool path_exists(const char *path) {
-    FILE *file = fopen(path, "r");
-    if (file) {
-        fclose(file);
-        return true;
-    } else {
-        printf("MSG: File path %s does not exist.\n", path);
-        return false;
-    }
-}
-
 void rc_local_exists_common(){
     rc_local = path_exists("/etc/rc.local");
 }

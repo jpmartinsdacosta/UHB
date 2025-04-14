@@ -38,20 +38,6 @@ bool sanitize_name(const char *input);
 bool sanitize_options(const char *input);
 
 /**
- * @brief Check if a file exists.
- * @param path The path to the file.
- * @return true if the file exists, false otherwise.
- * 
- * NOTE: The path_exists function does not have a function to sanitize the path.
- * This is due to the fact that too many types of characters are allowed in a path.
- * 
- * Thus, it is the responsibility of the user NOT to input any malicious paths.
- * Considering that the user is the system administrator, it is assumed that the user
- * knows what they are doing. ~João
- */
-bool path_exists(const char *path);
-
-/**
  * @brief Check if the rc.local file exists.
  * If it exists, it updates the global rc_local variable in utils.c to true.
  */

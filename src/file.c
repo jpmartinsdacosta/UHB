@@ -14,6 +14,17 @@
 #define LINE_MAX 256
 #define MAX_CMD 300
 
+bool path_exists(const char *path) {
+    FILE *file = fopen(path, "r");
+    if (file) {
+        fclose(file);
+        return true;
+    } else {
+        printf("MSG: File path %s does not exist.\n", path);
+        return false;
+    }
+}
+
 int find_first_in_file(const char *target, const char *filepath){
     char line[LINE_MAX];
     int position = 0;
