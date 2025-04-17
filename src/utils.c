@@ -7,11 +7,11 @@
 
 #include "menu.h"
 #include "file.h"
-#include "acl.h"
 #include "config.h"
 #include "utils.h"
 #include "input.h"
 #include "os_interface.h"
+#include "global_var.h"
 
 #ifdef _WIN32
 #include <io.h>
@@ -29,41 +29,33 @@ const int OS = 1;
 const int OS = -1;
 #endif
 
-#define MAX_FILE_PATH 200           // Maximum length of a file path.
-#define MAX_CMD 300                 // Maximum length of a command.
-#define MAX_OPTIONS_LENGTH 20       // Maximum length reserved for options to the user.
-#define MAX_NAME 30                 // Maximum length of a username/groupname.
-
 bool rc_local = false;              // Boolean to store if the rc.local file exists.
 
-// Struct declaration to streamline DAC, ACL and other functions
-typedef struct {
-    char filepath[MAX_FILE_PATH];
-    char user[MAX_NAME];
-    char group[MAX_NAME];
-    char dac[6];
-    char acl[6]; // Check this size
-    char fs[30];
-    // Declare a position variable and assign to the file?
-} UhbStruct;
-
-// TO DO: Deprecate this function
+// TODO: Deprecate this function
 int os_detect(){
+    int ans = -1;
     switch (OS) {
         case 0:
             printf("INI: FreeBSD detected.\n");
-            return 0;
+            ans = 0;
+            break;
         case 1:
             printf("INI: Debian detected.\n");
-            return 1;
+            ans = 1;
+            break;
         case -1:
             printf("INI: Unsupported OS.\n");
-            return -1;
-    }
+            ans = -1;
+            break;
+        default:
+            ans = -1;
+            break;
+    }  
+    return ans;
 }
 
 bool sanitize_name(const char *input) {
-    for (int i = 0; i < strlen(input); i++) {
+    for (size_t i = 0; i < strlen(input); i++) {
         if (!isalnum(input[i])) {
             printf("ERR: Non-sanitized name.\n");
             return false;
@@ -73,32 +65,13 @@ bool sanitize_name(const char *input) {
 }
 
 bool sanitize_options(const char *input) {
-    for (int i = 0; i < strlen(input); i++) {
-        if (!isalnum(input[i]) && !input[i] == '-' && !input[i] == ' ') {
+    for (size_t i = 0; i < strlen(input); i++) {
+        if (!isalnum((unsigned char)input[i]) && input[i] != '-' && input[i] != ' ') {
             printf("ERR: Non-sanitized options.\n");
             return false;
         }
     }
     return true;
-}
-
-void rc_local_exists_common(){
-    rc_local = path_exists("/etc/rc.local");
-}
-
-bool get_dac(){ 
-    char path[MAX_FILE_PATH];
-    char options[MAX_CMD];
-    char command[MAX_CMD];
-    if(get_filepath(path) && get_option(options)){
-        printf("MSG: Press q to exit current view.\n");
-        snprintf(command, sizeof(command), "ls \"%s\" -- \"%s\" | less", options, path);
-        system(command);
-        return true;
-    }else{
-        printf("ERR: DAC could not be retrieved.\n");
-        return false;
-    }
 }
 
 bool check_permission(const char *permission){
@@ -116,7 +89,7 @@ bool check_permission(const char *permission){
 }
 
 bool check_user(const char *user){
-    char command[MAX_CMD];
+    char command[MAX_LINE_LENGTH];
     if (sanitize_name(user)){
         snprintf(command, sizeof(command), "getent passwd \"%s\" >/dev/null 2>&1", user);
     }else{
@@ -131,7 +104,7 @@ bool check_user(const char *user){
 }
 
 bool check_group(const char *group){
-    char command[MAX_CMD];
+    char command[MAX_LINE_LENGTH];
     if (sanitize_name(group)){
         snprintf(command, sizeof(command), "getent group \"%s\" >/dev/null 2>&1", group);
     }else{
@@ -141,35 +114,6 @@ bool check_group(const char *group){
     if(system(command) == 0){
         return true;
     }else{
-        return false;
-    }
-}
-
-bool set_dac(){
-    char path[MAX_FILE_PATH];
-    char permission[6];                 // Needed for /n and /0?
-    char command[MAX_CMD];
-    char user[MAX_NAME];
-    char group[MAX_NAME];
-    char options[MAX_CMD];
-
-    if(get_filepath(path) && path_exists(path) && get_option(options)){
-        get_user_input("MSG: Please enter the permission (e.g. 0777):", permission, 6);
-        get_user_input("MSG: Please enter the target user:", user, MAX_NAME);
-        get_user_input("MSG: Please enter the target group:", group, MAX_NAME);
-        if(check_permission(permission) && check_user(user) && check_group(group)){
-            printf("MSG: Setting DAC...\n");
-            snprintf(command, sizeof(command), "chmod %s %s %s", options, permission, path);
-            add_config_command(command);
-            snprintf(command, sizeof(command), "chown %s %s:%s %s\n", options, user, group, path);
-            add_config_command(command);
-            return true;
-        }else{
-            printf("ERR: DAC could not be set.\n");
-            return false;
-        }
-    }else{
-        printf("ERR: Invalid/non-existent path.\n");
         return false;
     }
 }

@@ -7,7 +7,6 @@
 
 #include "menu.h"
 #include "file.h"
-#include "acl.h"
 #include "config.h"
 #include "utils.h"
 #include "input.h"
@@ -55,7 +54,7 @@ void exec_exists_common(){
     exec_exists(exec); 
 }
 
-int get_menu_size(const char **options){
+int get_diccionary_size(const char **options){
     int size = 0;
     while(options[size] != NULL){
         size++;
@@ -65,7 +64,6 @@ int get_menu_size(const char **options){
 
 void clear_conf_prompt(){
     int choice = -1;
-    char input[3];
     while(choice == -1){
         choice = get_yes_no_input("MSG: Are you sure that you want to clear the config file? (y/n):\n");
         if(choice == 0){
@@ -79,7 +77,6 @@ void clear_conf_prompt(){
 
 void final_prompt(){
     int choice = -1;
-    char input[3];
     while(choice == -1 && is_config_modified()){
         choice = get_yes_no_input("MSG: Clear the config file before leaving? (y/n):\n");
         if(choice == 0){
@@ -95,16 +92,17 @@ int display_menu(const char *prompt, const char **options){
     int choice = -1;
     char input[3];
     printf("%s\n", prompt);
-    for(int i = 0; i < get_menu_size(options); i++){
+    for(int i = 0; i < get_diccionary_size(options); i++){
         printf("%s\n", options[i]);
     }
     if(get_user_input("MSG: Please select an option:", input, sizeof(input)) != -1){
         choice = atoi(input);
         system("clear");
         return choice;
-    }else
+    }else{
         system("clear");
         return -1;
+    }  
 }
 
 void dac_menu(){

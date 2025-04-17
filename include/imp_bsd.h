@@ -24,6 +24,6 @@ void exec_exists(bool exec[4]);
  * @param filesystem Filesystem provided by the user.
  * @note This function is necessary in BSD due to the need for a fstab entry.
  */
-bool is_acl_enabled_bsd(const char* filepath);
+bool is_acl_enabled_bsd(const char* fp);
 
 #endif // IMP_BSD_H

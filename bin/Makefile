@@ -7,7 +7,7 @@ SRC_DIR = ../src
 INCLUDE_DIR = ../include
 
 # Archivos fuente comunes
-SRC_COMMON = $(SRC_DIR)/utils.c $(SRC_DIR)/menu.c $(SRC_DIR)/main.c $(SRC_DIR)/input.c $(SRC_DIR)/file.c $(SRC_DIR)/config.c $(SRC_DIR)/acl.c
+SRC_COMMON = $(SRC_DIR)/utils.c $(SRC_DIR)/menu.c $(SRC_DIR)/main.c $(SRC_DIR)/input.c $(SRC_DIR)/file.c $(SRC_DIR)/config.c $(SRC_DIR)/perms.c
 
 # Detect the operating system
 UNAME_S := $(shell uname -s)

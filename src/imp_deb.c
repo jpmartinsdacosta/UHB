@@ -4,11 +4,11 @@
 
 #include "menu.h"
 #include "file.h"
-#include "acl.h"
 #include "config.h"
 #include "utils.h"
 #include "input.h"
 #include "os_interface.h"
+#include "global_var.h"
 
 #ifdef _WIN32
 #include <io.h>
@@ -16,9 +16,6 @@
 #elif defined (__linux__)
 // Debian headers.
 #endif
-
-#define MAX_FILE_PATH 200           // Maximum length of a file path.
-#define MAX_CMD 300                 // Maximum length of a command.
 
 char os[] = "##uhb_os = DEB";
 
@@ -28,7 +25,7 @@ char* get_os(){
 
 void exec_exists (bool exec[4]){
     const char *programs[4] = {"getfacl", "ufw", "rsyslogd","auditd"};
-    char command[MAX_CMD];
+    char command[MAX_LINE_LENGTH];
     for(int i = 0; i < 4; i++){
         snprintf(command, sizeof(command), "command -v \"%s\" >/dev/null 2>&1", programs[i]);
         if(system(command) == 0){
@@ -42,12 +39,12 @@ void exec_exists (bool exec[4]){
 }
 
 bool set_acl(){
-    char path[MAX_FILE_PATH];
-    char options[MAX_CMD];
-    char command[MAX_CMD];
+    char path[MAX_FILEPATH_SIZE];
+    char options[MAX_LINE_LENGTH];
+    char command[MAX_LINE_LENGTH];
     get_filepath(path);
     if(path_exists(path) && !acl_incompatible_fs(path)){
-        get_user_input("MSG: Please enter setfacl options;",options,MAX_CMD);
+        get_user_input("MSG: Please enter setfacl options;",options,MAX_LINE_LENGTH);
         printf("MSG: Setting ACL...\n");
         snprintf(command, sizeof(command), "setfacl %s %s", options, path);
         add_config_command(command);

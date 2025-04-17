@@ -20,7 +20,7 @@
  * @param options The const char menu options declared at the start of menu.c
  * @returns the size of the menu.
  */
-int get_menu_size(const char **options);
+int get_diccionary_size(const char **options);
 
 /**
  * @brief Prompts the user before clearing the configuration file.

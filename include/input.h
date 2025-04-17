@@ -1,10 +1,8 @@
 #include <stdbool.h>
+#include <stddef.h>
 
 #ifndef INPUT_H
 #define INPUT_H
-
-#include <stdbool.h>
-#include <stddef.h>
 
 /**
  * @file input.h
@@ -33,13 +31,13 @@ int get_user_input(const char *prompt, char *buffer, size_t bufferSize);
  * @param path The path to store the user's input.
  * @return true if the user's input is valid, false otherwise.
  */
-bool get_filepath(const char *path);
+bool get_filepath(char *path);
 
 /**
  * @brief Get the user's input for DAC options.
  * @param exec The options to store the user's input.
  * @return true if the user's input is valid, false otherwise.
  */
-bool get_option(const char *exec);
+bool get_option(char *exec);
 
 #endif // INPUT_H

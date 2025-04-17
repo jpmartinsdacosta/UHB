@@ -5,13 +5,12 @@
 
 #include "menu.h"
 #include "file.h"
-#include "acl.h"
 #include "config.h"
 #include "utils.h"
 #include "input.h"
 #include "os_interface.h"
+#include "global_var.h"
 
-#define LINE_MAX 256
 #define CONFIG_PATH "../config/uhb_config.sh"
 #define TEMPLATE_PATH "../config/uhb_config_template.txt"
 
@@ -66,9 +65,9 @@ void view_config(){
 }
 
 void user_find_first_config(){
-    char target[LINE_MAX];
+    char target[MAX_LINE_LENGTH];
     int answer = -1;
-    get_user_input("MSG: Test search config file:",target,LINE_MAX);
+    get_user_input("MSG: Test search config file:",target,MAX_LINE_LENGTH);
     answer = find_first_in_file(target,CONFIG_PATH);
     if(answer != -1){
         printf("MSG: Found %s at line %d in configuration file.\n",target, answer);

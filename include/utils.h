@@ -38,19 +38,6 @@ bool sanitize_name(const char *input);
 bool sanitize_options(const char *input);
 
 /**
- * @brief Check if the rc.local file exists.
- * If it exists, it updates the global rc_local variable in utils.c to true.
- */
-void rc_local_exists_common();
-
-/**
- * @brief Get the DAC of a file.
- * This function gets the DAC of a file by executing "ls -l --" on the file.
- * @return true if the file exists, false otherwise.
- */
-bool get_dac();
-
-/**
  * @brief Checks if the given permission is in a valid octal format.
  * @param permission The permission to check.
  * @return true if the permission is valid, false otherwise.
@@ -70,13 +57,5 @@ bool check_user(const char *user);
  * @return true if the group exists, false otherwise.
  */
 bool check_group(const char *group);
-
-/**
- * @brief Set the DAC of a file.
- * This function sets the DAC of a file by executing "chmod" and "chown" on the file.
- * It also adds the commands to the configuration file.
- * @return true if the DAC is set, false otherwise.
- */
-bool set_dac();
 
 #endif // UTILS_H
