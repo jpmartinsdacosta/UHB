@@ -1,5 +1,5 @@
-#ifndef OS_INTERFACE_H
-#define OS_INTERFACE_H
+#ifndef INTERFACE_H
+#define INTERFACE_H
 
 /**
  * @file os_interface.h

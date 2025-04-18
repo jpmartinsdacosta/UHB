@@ -1,36 +1,60 @@
-# Compilador y banderas
+# Compiler and flags
 CC = gcc
 CFLAGS = -Wall -Wextra -std=c11 -I../include
 
-# Directorios
-SRC_DIR = ../src
-INCLUDE_DIR = ../include
+# Directories
+UHB_SRC_DIR = ../src						# Directory where UHB base source files are stored.
+UHB_HEA_DIR = ../include					# Directory where UHB base header files are stored.
 
-# Archivos fuente comunes
-SRC_COMMON = $(SRC_DIR)/utils.c $(SRC_DIR)/menu.c $(SRC_DIR)/main.c $(SRC_DIR)/input.c $(SRC_DIR)/file.c $(SRC_DIR)/config.c $(SRC_DIR)/perms.c
+COM_SRC_DIR = ../services/common/src		# Directory where UHB source files common to all OS are stored.
+COM_HEA_DIR = ../services/common/include 	# Directory where UHB header files common to all OS are stored.
+
+SPE_DIR	= ../services/specific				# Directory where OS-specific implementations are stored.
+
+# Common source files
+SRC_COMMON = $(shell find $(UHB_SRC_DIR) -name '*.c') $(shell find $(COM_SRC_DIR) -name '*.c')
 
 # Detect the operating system
 UNAME_S := $(shell uname -s)
 
-# Archivos fuente específicos para cada sistema operativo
+# OS-specific files
 ifeq ($(UNAME_S),FreeBSD)
-	SRC_OS = $(SRC_DIR)/imp_bsd.c
+	SRC_OS = ../services/specific/bsd/src/imp_bsd.c
 	CFLAGS += -D__FreeBSD__
 else ifeq ($(UNAME_S),Linux)
-	SRC_OS = $(SRC_DIR)/imp_deb.c
+	SRC_OS = ../services/specific/linux/src/imp_deb.c
 	CFLAGS += -D__linux__
 endif
 
-# Todos los archivos fuente
+# All source files
 SRC = $(SRC_COMMON) $(SRC_OS)
 
-# Archivo ejecutable
+# Object files
+OBJ = $(SRC:.c=.o)
+
+# Dependency files
+DEP = $(OBJ:.o=.d)
+
+# Executable filename
 TARGET = uhb
 
-# Regla para compilar el programa
-$(TARGET): $(SRC)
-	$(CC) $(CFLAGS) -o $(TARGET) $(SRC)
+# Default target
+all: $(TARGET)
 
-# Regla para limpiar archivos compilados
+# Linking
+$(TARGET): $(OBJ)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJ)
+
+# Compiling object files
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) -M $(CFLAGS) $< > $*.d
+
+# Include dependency files
+-include $(DEP)
+
+# Cleanup rule
 clean:
-	rm -f $(TARGET)
+	rm -f $(TARGET) $(OBJ) $(DEP)
+
+.PHONY: all clean

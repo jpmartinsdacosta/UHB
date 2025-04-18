@@ -12,7 +12,7 @@
 #include "global_var.h"
 
 #define CONFIG_PATH "../config/uhb_config.sh"
-#define TEMPLATE_PATH "../config/uhb_config_template.txt"
+#define TEMPLATE_PATH "../config/template/uhb_config_template.txt"
 
 bool config_modified = false;
 

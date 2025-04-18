@@ -1,5 +1,5 @@
-#ifndef SO_MENU_H
-#define SO_MENU_H
+#ifndef MENU_H
+#define MENU_H
 
 /**
  * @file menu.h

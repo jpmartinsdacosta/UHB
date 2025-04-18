@@ -26,7 +26,6 @@ typedef struct {
 
 typedef struct {
     UhbStruct parent;
-
 } ACLStruct;
 
 UhbStruct *perms_list = NULL;
@@ -109,101 +108,3 @@ bool get_time(UhbStruct *perm) {
     printf("Readable Timestamp: %s\n", timeStr);
     return true;
 }
-
-/**
- * Functions specific for Discretionary Access Control (DAC):
- */
-
-bool get_dac(){ 
-    char path[MAX_FILEPATH_SIZE];
-    char options[MAX_LINE_LENGTH];
-    char command[MAX_LINE_LENGTH];
-    if(get_filepath(path) && get_option(options)){
-        printf("MSG: Press q to exit current view.\n");
-        snprintf(command, sizeof(command), "ls \"%s\" -- \"%s\" | less", options, path);
-        system(command);
-        return true;
-    }else{
-        printf("ERR: DAC could not be retrieved.\n");
-        return false;
-    }
-}
-
-bool set_dac(){
-    char path[MAX_FILEPATH_SIZE];
-    char permission[6];                 // Needed for /n and /0?
-    char command[MAX_LINE_LENGTH];
-    char user[MAX_NAME_LENGTH];
-    char group[MAX_NAME_LENGTH];
-    char options[MAX_LINE_LENGTH];
-
-    if(get_filepath(path) && path_exists(path) && get_option(options)){
-        get_user_input("MSG: Please enter the permission (e.g. 0777):", permission, 6);
-        get_user_input("MSG: Please enter the target user:", user, MAX_NAME_LENGTH);
-        get_user_input("MSG: Please enter the target group:", group, MAX_NAME_LENGTH);
-        if(check_permission(permission) && check_user(user) && check_group(group)){
-            printf("MSG: Setting DAC...\n");
-            snprintf(command, sizeof(command), "chmod %s %s %s", options, permission, path);
-            add_config_command(command);
-            snprintf(command, sizeof(command), "chown %s %s:%s %s\n", options, user, group, path);
-            add_config_command(command);
-            return true;
-        }else{
-            printf("ERR: DAC could not be set.\n");
-            return false;
-        }
-    }else{
-        printf("ERR: Invalid/non-existent path.\n");
-        return false;
-    }
-}
-
-/**
- * Functions specific to Access Control Lists:
- */
-
- const char *dicc_no_acl_fs[] = {         // Filesystems that do not support ACLs.
-    "tmpfs",
-    "vfat",
-    "exfat",
-    "iso9660",
-    "squashfs",
-    "msdosfs",
-    "procfs",
-    "sysfs",
-    NULL
-};
-
-
-bool get_acl(){
-    char path[MAX_FILEPATH_SIZE];
-    char options[MAX_LINE_LENGTH];
-    char command[MAX_LINE_LENGTH];
-    if(get_filepath(path) && get_option(options)){
-        printf("MSG: Press q to exit current view.\n");
-        snprintf(command, sizeof(command), "getfacl \"%s\" \"%s\" | less", options, path);
-        system(command);
-        return true;
-    }else{
-        printf("ERR: ACL could not be retrieved.\n");
-        return false;
-    }
-}
-
-//bool set_acl() is OS-specific.
-
-bool acl_incompatible_fs(char *fp){
-    bool result = false;
-    for(int i=0; i < get_diccionary_size(dicc_no_acl_fs) && !result; i++){
-        result = find_strings_in_line(fp,dicc_no_acl_fs[i],"/etc/fstab");
-    }
-    return result;
-}
-
-/**
- * TODO: Implement function(s) that check if there are conflicts between ACL
- * and the current DAC policy. This is important because DAC can override the
- * current ACL policy, which can lead to security issues.
- * Linux does not warn about this, but it is a good practice to check for conflicts.
- * This is especially important for the root user, as it can override any ACL policy.
- */

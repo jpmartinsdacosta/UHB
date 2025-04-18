@@ -1,7 +1,7 @@
 #include <stdbool.h>
 
-#ifndef SO_UTILS_H
-#define SO_UTILS_H
+#ifndef UTILS_H
+#define UTILS_H
 
 /**
  * @file utils.h
