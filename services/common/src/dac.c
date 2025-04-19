@@ -6,6 +6,7 @@
 #include "utils.h"
 #include "input.h"
 #include "global_var.h"
+#include "perms.h"
 
  bool get_dac(){ 
     char path[MAX_FILEPATH_SIZE];
@@ -36,6 +37,7 @@ bool set_dac(){
         get_user_input("MSG: Please enter the target group:", group, MAX_NAME_LENGTH);
         if(check_permission(permission) && check_user(user) && check_group(group)){
             printf("MSG: Setting DAC...\n");
+            add_dac_data(path,user,group,permission);
             snprintf(command, sizeof(command), "chmod %s %s %s", options, permission, path);
             add_config_command(command);
             snprintf(command, sizeof(command), "chown %s %s:%s %s\n", options, user, group, path);

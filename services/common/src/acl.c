@@ -4,6 +4,7 @@
 #include "menu.h"
 #include "file.h"
 #include "input.h"
+#include "perms.h"
 #include "global_var.h"
 
 /**
