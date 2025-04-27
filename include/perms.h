@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include <time.h>
+#include "global_var.h"
 
 #ifndef PERMS_H
 #define PERMS_H
@@ -11,7 +12,7 @@
  */
 
 /**
- * Functions common to all
+ * Memory allocation functions
  */
 
 /**
@@ -34,118 +35,78 @@ void* realloc_struct(void *structure, size_t new_capacity, size_t size);
  */
 
 /**
- * @brief Initializes UHBStruct.
+ * @brief Initalizes memory for an INSTANCE of UHBStruct
+ * @param instance Instance to be initialized.
+ * @param filepath Filepath to be added
+ * @return True if successful, false otherwise.
+ */
+bool init_uhb(struct UHBStruct *instance, const char *filepath);
+
+/**
+ * @brief Clears memory for an INSTANCE of UHBStruct
+ * @param instance Instance to be initialized.
+ */
+void clear_uhb(struct UHBStruct *instance);
+
+/**
+ * @brief Initalizes an ARRAY of UHBStruct
  * @return True if successful, false otherwise.
  */
 bool init_uhb_array();
 
 /**
- * @brief Initializes all the sub-dynamic structures inside a specific UHBStruct
- * @param fp Filepath
- * @return True if successful, false otherwise.
- */
-bool init_uhb_element_array(const char *fp);
-
-/**
- * @brief Clears all the sub-dynamic structures inside a specifc UHBStruct.
- */
-void clear_uhb_element_array();
-
-/**
- * @brief Clears UHBStruct.
+ * @brief Clears an ARRAY of UHBStruct
  */
 void clear_uhb_array();
 
 /**
- * @brief Dynamically adds a UHBStruct structure to UHBStruct
- * @param fp Filepath
+ * @brief Adds an INSTANCE of UHBStruct to the array
+ * @param filepath Filepath to be added
  * @return True if successful, false otherwise.
  */
-bool add_uhb_element(const char *fp);
+bool add_uhb_element(const char *filepath);
 
 /**
- * @brief Shows the data of a given UHBStruct to the user.
- * @param index The index of the current UHBStruct to retrieve information.
- */
-void get_uhb_data(int index);
-
-/**
- * @brief Removes the topmost/latest UHBStruct structure from UHBStruct.
+ * @brief Removes an INSTANCE of UHBStruct to the array
  * @return True if successful, false otherwise.
  */
 bool rem_uhb_element();
+
+/**
+ * @brief Checks if a given filepath is already present in an instance of UHBStruct.
+ * @param filepath to be searched.
+ * @note This function is essential to check whether a new instance of UHBStruct must be created.
+ * @return True if found, false otherwise.
+ */
+bool uhb_filepath_exists(const char *filepath);
 
 /**
  * DACStruct functions
  */
 
 /**
- * @brief Adds an element to DACStruct
- * @param user User to be added
- * @param group Group to be added
- * @param dac DAC permissions to be added
+ * @brief Adds an instance of DACStruct for a given UHBStruct
+ * @param uhb_index Index of the given UHBStruct.
+ * @param user User to be added.
+ * @param group Group to be added.
+ * @param dac DAC permissions to be added.
  * @return True if successful, false otherwise.
  */
-bool add_dac_element(char *user, char *group, char *dac);
+bool add_dac_element(size_t uhb_index, char *user, char *group, char *dac);
 
 /**
- * @brief Shows the data of a given DACStruct to the user.
- * @param index The index of the current DACStruct to retrieve information.
+ * @brief Gets information of an instance of DACStruct for a given UHBStruct
+ * @param uhb_index Index of the given UHBStruct.
+ * @param dac_index Index of the DACStruct to be retrieved.
  */
-void get_dac_data(int index);
+void get_dac_data(size_t uhb_index, size_t dac_index);
 
 /**
- * @brief Removes the topmost/latest DACStruct structure from DACStruct.
+ * @brief Removes an instance of DACStruct for a given UHBStruct
+ * @param uhb_index Index of the given UHBStruct.
+ * @param dac_index Index of the DACStruct to be removed.
  * @return True if successful, false otherwise.
  */
-bool rem_dac_element();
-
-/**
- * ACLStruct functions
- */
-
-/**
- * @brief Adds an element to ACLStruct
- * @param fs Filesystem
- * @param acl ACL permissions to be added
- * @return True if successful, false otherwise.
- */
-bool add_acl_element(char *fs, char *acl);
-
-/**
- * @brief Shows the data of a given ACLStruct to the user.
- * @param index The index of the current ACLStruct to retrieve information.
- */
-void get_acl_data(int index);
-
-/**
- * @brief Removes the topmost/latest ACLStruct structure from ACLStruct.
- * @return True if successful, false otherwise.
- */
-bool rem_acl_element();
-
-/**
- * MACStruct functions
- */
-
-/**
- * @brief Adds an element to MACStruct
- * @param fs Filesystem
- * @param mac MAC permissions to be added
- * @return True if successful, false otherwise.
- */
-bool add_mac_element(char *mac);
-
-/**
- * @brief Shows the data of a given MACStruct to the user.
- * @param index The index of the current MACStruct to retrieve information.
- */
-void get_mac_data(int index);
-
-/**
- * @brief Removes the topmost/latest MACStruct structure from MACStruct.
- * @return True if successful, false otherwise.
- */
-bool rem_mac_element();
+bool rem_dac_element(size_t uhb_index);
 
 #endif // PERMS_H

@@ -39,6 +39,6 @@ struct UHBStruct {
     time_t timestamp;
 };
 
-extern struct UHBStruct *uhb;
+extern struct UHBStruct *uhb_array;
 
 #endif // GLOBAL_VARS_H

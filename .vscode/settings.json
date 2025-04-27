@@ -9,6 +9,8 @@
         "string.h": "c",
         "config.h": "c",
         "menu.h": "c",
-        "time.h": "c"
+        "time.h": "c",
+        "global_var.h": "c",
+        "perms.h": "c"
     }
 }

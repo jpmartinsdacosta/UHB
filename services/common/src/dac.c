@@ -36,6 +36,7 @@ bool set_dac(){
         get_user_input("MSG: Please enter the target user:", user, MAX_NAME_LENGTH);
         get_user_input("MSG: Please enter the target group:", group, MAX_NAME_LENGTH);
         if(check_permission(permission) && check_user(user) && check_group(group)){
+            
             printf("MSG: Setting DAC...\n");
             snprintf(command, sizeof(command), "chmod %s %s %s", options, permission, path);
             add_config_command(command);
