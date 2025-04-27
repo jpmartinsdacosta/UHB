@@ -8,6 +8,7 @@
 #include "config.h"
 #include "utils.h"
 #include "input.h"
+#include "perms.h"
 #include "os_interface.h"
 #include "global_var.h"
 
@@ -20,14 +21,14 @@ bool is_config_modified(){
     return config_modified;
 }
 
-bool set_initial_config(){
+bool reset_config(){
     if(!path_exists(TEMPLATE_PATH)){
-        printf("ERR: set_initial_config(): Template does not exist.\n");
+        printf("ERR: reset_config(): Template does not exist.\n");
         return false;
     }else{
         copy_file(TEMPLATE_PATH,CONFIG_PATH);
         find_first_and_replace(CONFIG_PATH,"##uhb_os = NAN",get_os());
-        clear_dac();    // Clear DACStruct caché
+        clear_cache();
         return true;
     }
 }
@@ -35,7 +36,7 @@ bool set_initial_config(){
 void config_exists(){
     if(!path_exists(CONFIG_PATH)){
         printf("MSG: Configuration file does not exist. Creating...\n");
-        if(set_initial_config()){
+        if(reset_config()){
             printf("MSG: Configuration file created successfully.\n");
         }else{
             printf("ERR: Error creating configuration file.\n");

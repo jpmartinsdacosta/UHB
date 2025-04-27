@@ -23,7 +23,7 @@ bool is_config_modified();
  * The function also writes the operating system detected by the program.
  * @return true if the configuration file was created successfully, false otherwise.
  */
-bool set_initial_config();
+bool reset_config();
 
 /**
  * @brief Check if the configuration file exists.

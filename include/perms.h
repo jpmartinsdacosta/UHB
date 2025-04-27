@@ -7,147 +7,145 @@
 /**
  * @file perms.h
  * @brief This file provides headers for functions regarding general UHB permissions.
- * @note Permissions are made of DAC, ACL and MAC policy. Specific implementations of ACL and MAC can be found in the services folder.
+ * @note Permissions are added dynamically via UHBStruct and its DAC, ACL and MAC sub-structures.
  */
 
 /**
- * Functions common to both DAC and ACL
+ * Functions common to all
  */
 
 /**
- * @brief Generic function that allocates memory for dynamic structures.
- * @param capacity Current capacity of the struct.
- * @param element_size Current size of one of the elements of the struct.
+ * @brief Allocates memory for a dynamic structure.
+ * @param capacity The current capacity of the dynamic structure.
+ * @param size The current size of the dyanmic structure.
  */
-void* alloc_struct(size_t capacity, size_t element_size);
+void* alloc_struct(size_t capacity, size_t size);
 
 /**
- * @brief Generic function that rellocates memory for dynamic structures.
- * @param struct_array Pointer to the struct whose memory is being reallocated.
- * @param capacity Current capacity of the struct.
- * @param element_size Current size of one of the elements of the struct.
+ * @brief Reallocates memory for a dynamic structure.
+ * @param structure Pointer to the dynamic structure whose memory is being reallocated.
+ * @param new_capacity The new capacity of the dynamic structure.
+ * @param size The current size of the dyanmic structure.
  */
-void* realloc_struct(void *struct_array, size_t capacity, size_t element_size);
+void* realloc_struct(void *structure, size_t new_capacity, size_t size);
 
 /**
- * @brief Prints the timestamp in a human readable format.
- * @param timestamp The current element's timestamp.
- */
-void print_timestamp(time_t timestamp);
-
-/**
- * Functions regarding DAC
+ * UHBStruct functions
  */
 
 /**
- * @brief Function that returns whether DACStruct is empty.
- * @returns True if empty, false otherwise.
+ * @brief Initializes UHBStruct.
+ * @return True if successful, false otherwise.
  */
-bool is_dac_empty();
+bool init_uhb_array();
 
 /**
- * @brief Function that initializes DACStruct.
- * @returns True if successful, false otherwise.
- * @note DACStruct is initialized by changing the value of dac_capacity to 1.
+ * @brief Initializes all the sub-dynamic structures inside a specific UHBStruct
+ * @param fp Filepath
+ * @return True if successful, false otherwise.
  */
-bool init_dac();
+bool init_uhb_element_array(const char *fp);
 
 /**
- * @brief Clears ALL data in DACStruct.
+ * @brief Clears all the sub-dynamic structures inside a specifc UHBStruct.
  */
-void clear_dac();
+void clear_uhb_element_array();
 
 /**
- * @brief Adds a timestamp to a DACStruct element.
- * @param index The index of the DACStruct element.
- * @returns True if successful, false otherwise.
+ * @brief Clears UHBStruct.
  */
-bool add_dac_time(int index);
+void clear_uhb_array();
 
 /**
- * @brief Adds/removes elements from DACStruct.
- * @param add If true, adds elements to the struct, if false, removes elements from the struct.
- * @returns True if successful, false otherwise.
+ * @brief Dynamically adds a UHBStruct structure to UHBStruct
+ * @param fp Filepath
+ * @return True if successful, false otherwise.
  */
-bool mod_dac_element(bool add);
+bool add_uhb_element(const char *fp);
 
 /**
- * @brief Adds data to a DACStruct element.
- * @param fp Filepath to be added.
- * @param user User to be added.
- * @param group Group to be added.
- * @param dac DAC permissions to be added.
- * @returns True if successful, false otherwise. 
+ * @brief Shows the data of a given UHBStruct to the user.
+ * @param index The index of the current UHBStruct to retrieve information.
  */
-bool add_dac_data(char *fp, char *user, char *group, char *dac);
+void get_uhb_data(int index);
 
 /**
- * @brief Removes the last element of DACStruct.
- * @returns True if successful, false otherwise.
+ * @brief Removes the topmost/latest UHBStruct structure from UHBStruct.
+ * @return True if successful, false otherwise.
  */
-bool rem_dac_data();
+bool rem_uhb_element();
 
 /**
- * @brief Prints the data of a DACStruct.
- * @param index The current index.
- * @note To be used in a for loop using array indexes.
+ * DACStruct functions
+ */
+
+/**
+ * @brief Adds an element to DACStruct
+ * @param user User to be added
+ * @param group Group to be added
+ * @param dac DAC permissions to be added
+ * @return True if successful, false otherwise.
+ */
+bool add_dac_element(char *user, char *group, char *dac);
+
+/**
+ * @brief Shows the data of a given DACStruct to the user.
+ * @param index The index of the current DACStruct to retrieve information.
  */
 void get_dac_data(int index);
 
 /**
- * Functions regarding ACLs
+ * @brief Removes the topmost/latest DACStruct structure from DACStruct.
+ * @return True if successful, false otherwise.
+ */
+bool rem_dac_element();
+
+/**
+ * ACLStruct functions
  */
 
 /**
- * @brief Function that returns whether ACLStruct is empty.
- * @returns True if empty, false otherwise.
+ * @brief Adds an element to ACLStruct
+ * @param fs Filesystem
+ * @param acl ACL permissions to be added
+ * @return True if successful, false otherwise.
  */
-bool is_acl_empty();
+bool add_acl_element(char *fs, char *acl);
 
 /**
- * @brief Function that initializes ACLStruct.
- * @returns True if successful, false otherwise.
- * @note ACLStruct is initialized by changing the value of acl_capacity to 1.
- */
-bool init_acl();
-
-/**
- * @brief Clears ALL data in ACLStruct.
- */
-void clear_acl();
-
-/**
- * @brief Adds a timestamp to a ACLStruct element.
- * @returns True if successful, false otherwise.
- */
-bool add_acl_time();
-
-/**
- * @brief Adds/removes elements from ACLStruct.
- * @param add If true, adds elements to the struct, if false, removes elements from the struct.
- * @returns True if successful, false otherwise.
- */
-bool mod_acl_element(bool add);
-
-/**
- * @brief Adds data to a ACLStruct element.
- * @param fp Filepath to be added.
- * @param fs Filesystem to be added.
- * @returns True if successful, false otherwise. 
- */
-bool add_acl_data(char *fp, char *fs);
-
-/**
- * @brief Removes the data of an ACLStruct element.
- * @returns True if successful, false otherwise. 
- */
-bool rem_acl_data();
-
-/**
- * @brief Prints the data of a ACLStruct element.
- * @param index The current index.
- * @note To be used in a for loop using array indexes.
+ * @brief Shows the data of a given ACLStruct to the user.
+ * @param index The index of the current ACLStruct to retrieve information.
  */
 void get_acl_data(int index);
+
+/**
+ * @brief Removes the topmost/latest ACLStruct structure from ACLStruct.
+ * @return True if successful, false otherwise.
+ */
+bool rem_acl_element();
+
+/**
+ * MACStruct functions
+ */
+
+/**
+ * @brief Adds an element to MACStruct
+ * @param fs Filesystem
+ * @param mac MAC permissions to be added
+ * @return True if successful, false otherwise.
+ */
+bool add_mac_element(char *mac);
+
+/**
+ * @brief Shows the data of a given MACStruct to the user.
+ * @param index The index of the current MACStruct to retrieve information.
+ */
+void get_mac_data(int index);
+
+/**
+ * @brief Removes the topmost/latest MACStruct structure from MACStruct.
+ * @return True if successful, false otherwise.
+ */
+bool rem_mac_element();
 
 #endif // PERMS_H

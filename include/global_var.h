@@ -14,18 +14,31 @@
 #define MAX_NAME_LENGTH 32      // 32, standard.
 
 struct DACStruct {
-    char fp[MAX_FILEPATH_SIZE];
     char user[MAX_NAME_LENGTH];
     char group[MAX_NAME_LENGTH];
     char dac[6];
-    time_t timestamp;
 };
 
 struct ACLStruct {
-    char fp[MAX_FILEPATH_SIZE];
     char fs[30];
     char acl[MAX_LINE_LENGTH];
+};
+
+struct MACStruct {
+    char mac[MAX_LINE_LENGTH];
+};
+
+struct UHBStruct {
+    char fp[MAX_FILEPATH_SIZE];
+    struct DACStruct *dac_array;
+    size_t dac_size, dac_capacity;
+    struct ACLStruct *acl_array;
+    size_t acl_size, acl_capacity;
+    struct MACStruct *mac_array;
+    size_t mac_size, mac_capacity;
     time_t timestamp;
 };
+
+extern struct UHBStruct *uhb;
 
 #endif // GLOBAL_VARS_H

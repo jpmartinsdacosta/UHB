@@ -7,7 +7,6 @@
 #include "config.h"
 #include "utils.h"
 #include "input.h"
-#include "perms.h"
 #include "os_interface.h"
 
 bool exec[4] = {false, false, false, false};    // Array of detected executables.
@@ -65,7 +64,7 @@ void clear_conf_prompt(){
     while(choice == -1){
         choice = get_yes_no_input("MSG: Are you sure that you want to clear the config file? (y/n):\n");
         if(choice == 0){
-            set_initial_config();
+            reset_config();
             printf("MSG: Config file cleared...\n");
         }else{
             printf("MSG: Exiting UHB...\n");
@@ -78,7 +77,7 @@ void final_prompt(){
     while(choice == -1 && is_config_modified()){
         choice = get_yes_no_input("MSG: Clear the config file before leaving? (y/n):\n");
         if(choice == 0){
-            set_initial_config();
+            reset_config();
             printf("MSG: Config file cleared, exiting UHB...\n");
         }else{
             printf("MSG: Exiting UHB...\n");
@@ -196,7 +195,7 @@ void main_menu(){
                 printf("MSG: Option not implemented yet.\n");
                 break;
             case 0:
-                final_prompt();
+                reset_config();
                 printf("\nFIN: Goodbye!\n");
                 break;
             default:
