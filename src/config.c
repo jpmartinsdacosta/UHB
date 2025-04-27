@@ -28,6 +28,7 @@ bool reset_config(){
     }else{
         copy_file(TEMPLATE_PATH,CONFIG_PATH);
         find_first_and_replace(CONFIG_PATH,"##uhb_os = NAN",get_os());
+        clear_dac_array();
         return true;
     }
 }

@@ -31,17 +31,24 @@ const char *dac_menu_options[] = {
     NULL
 };
 
-const char *conf_menu_options[] = {
-    "1. View configuration file",
-    "2. Clear configuration file",
-    "3. Apply changes from configuration file",
+const char *acl_menu_options[] = {
+    "1. Get ACL of a file/directory",
+    "2. Set ACL of a file/directory",
     "0. Return to Main Menu",
     NULL
 };
 
-const char *acl_menu_options[] = {
-    "1. Get ACL of a file/directory",
-    "2. Set ACL of a file/directory",
+const char *mac_menu_options[] = {
+    "1. Get MAC of a file/directory",
+    "2. Set MAC of a file/directory",
+    "0. Return to Main Menu",
+    NULL
+};
+
+const char *conf_menu_options[] = {
+    "1. View configuration file",
+    "2. Clear configuration file",
+    "3. Apply changes from configuration file",
     "0. Return to Main Menu",
     NULL
 };
@@ -142,6 +149,26 @@ void acl_menu(){
     }
 }
 
+void mac_menu(){
+    int choice = -1;
+    while(choice != 0){
+        choice = display_menu("MAC Menu", mac_menu_options);
+        switch(choice){
+            case 1:
+                printf("MSG: Option not implemented yet.\n");
+                break;
+            case 2:
+                printf("MSG: Option not implemented yet.\n");
+                break;
+            case 0:
+                break;
+            default:
+                printf("ERR: Invalid input.\n");
+                break;
+        }
+    }
+}
+
 void conf_menu(){
     int choice = -1;
     while(choice != 0){
@@ -186,7 +213,7 @@ void main_menu(){
                 exec[3] ? printf("MSG: Option not implemented yet.\n") : printf("MSG: Option not implemented yet.\n");
                 break;
             case 6:
-                printf("MSG: Option not implemented yet.\n");
+                mac_menu();
                 break;
             case 7:
                 conf_menu();

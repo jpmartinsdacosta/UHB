@@ -13,25 +13,23 @@
 #define MAX_LINE_LENGTH 2048    // 2048, to be used for commands too.
 #define MAX_NAME_LENGTH 32      // 32, standard.
 
-struct DACStruct {
-    char user[MAX_NAME_LENGTH];
-    char group[MAX_NAME_LENGTH];
-    char dac[6];
-};
-
 struct ACLStruct {
     char fs[30];
     char acl[MAX_LINE_LENGTH];
+    bool recursive;
 };
 
 struct MACStruct {
     char mac[MAX_LINE_LENGTH];
+    bool recursive;
 };
 
-struct UHBStruct {
+struct DACStruct {
     char fp[MAX_FILEPATH_SIZE];
-    struct DACStruct *dac_array;
-    size_t dac_size, dac_capacity;
+    char user[MAX_NAME_LENGTH];
+    char group[MAX_NAME_LENGTH];
+    char dac[6];
+    bool recursive;
     struct ACLStruct *acl_array;
     size_t acl_size, acl_capacity;
     struct MACStruct *mac_array;
@@ -39,6 +37,6 @@ struct UHBStruct {
     time_t timestamp;
 };
 
-extern struct UHBStruct *uhb_array;
+extern struct DACStruct *dac_array;
 
 #endif // GLOBAL_VARS_H

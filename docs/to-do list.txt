@@ -6,17 +6,10 @@ TO-DO LIST:
 Make sure to add a blank line after writing just in case. This is needed for writing policy in the correct part of
 the config file.
 
-2. Create a function in perms.c that assigns an identifer to each added filepath. The idea is:
-    a) Create an additional folder in the config directory called "filelink" or something.
-    b) Create a file with the same name in such directory.
-    c) For each new filepath that is added in DAC, ACL or MAC, copy to "filelink" and assign an id.
-    d) When checking for conflicts between DAC, ACL and MAC, filelink provides a common foreign key to all services.
-    e) When clearing cache, clear filelink too, duh.
-
-3. Add an additional flag to filelink if an DAC, ACL or MAC command is recursive and affects already added policy.
+2. Add an additional flag to filelink if an DAC, ACL or MAC command is recursive and affects already added policy.
 Also warn the user when validating the configuration file.
 
-4. Create all necessary functions to check conflicts between DAC and ACL first, then MAC last.
+3. Create all necessary functions to check conflicts between DAC and ACL first, then MAC last.
 FROM WHAT I UNDERSTAND:
     a) If MAC is not being used, DAC sets permissions and ACL makes it more granular.
     ACL is basically a more complicated DAC...

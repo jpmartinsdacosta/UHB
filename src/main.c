@@ -9,11 +9,11 @@ int main() {
         return -1;
     }
     if(os != -1){
-        init_uhb_array();       // Initialize array of permission structures.
+        init_dac_array();       // Initialize DACStruct 
         exec_exists_common();
         config_exists();        // Check if the configuration file exists.
         main_menu();            // Show the menu to the user.
-        clear_uhb_array();      // Always clear array of permission structures when done.
+        clear_dac_array();      // Clear DACStruct
     }else{
         return -1;
     }
