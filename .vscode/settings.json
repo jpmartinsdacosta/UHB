@@ -11,6 +11,7 @@
         "menu.h": "c",
         "time.h": "c",
         "global_var.h": "c",
-        "perms.h": "c"
+        "perms.h": "c",
+        "os_interface.h": "c"
     }
 }

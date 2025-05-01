@@ -71,7 +71,7 @@ void clear_conf_prompt(){
     while(choice == -1){
         choice = get_yes_no_input("MSG: Are you sure that you want to clear the config file? (y/n):\n");
         if(choice == 0){
-            reset_config();
+            reset_conf_file();
             printf("MSG: Config file cleared...\n");
         }else{
             printf("MSG: Exiting UHB...\n");
@@ -81,10 +81,10 @@ void clear_conf_prompt(){
 
 void final_prompt(){
     int choice = -1;
-    while(choice == -1 && is_config_modified()){
+    while(choice == -1 && is_conf_file_mod()){
         choice = get_yes_no_input("MSG: Clear the config file before leaving? (y/n):\n");
         if(choice == 0){
-            reset_config();
+            reset_conf_file();
             printf("MSG: Config file cleared, exiting UHB...\n");
         }else{
             printf("MSG: Exiting UHB...\n");
@@ -175,13 +175,13 @@ void conf_menu(){
         choice = display_menu("Configuration File Menu", conf_menu_options);
         switch(choice){
             case 1:
-                view_config();
+                view_conf_file();
                 break;
             case 2:
                 clear_conf_prompt();
                 break;
             case 3:
-                apply_config();
+                apply_conf_file();
                 break;
             case 0:
                 break;
@@ -222,7 +222,7 @@ void main_menu(){
                 printf("MSG: Option not implemented yet.\n");
                 break;
             case 0:
-                reset_config();
+                reset_conf_file();
                 printf("\nFIN: Goodbye!\n");
                 break;
             default:

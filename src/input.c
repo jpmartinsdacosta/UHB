@@ -61,9 +61,10 @@ bool get_filepath(char *path) {
     }
 }
 
-bool get_option(char *exec) {
+bool get_option(char *exec, FlagList *list) {
     if (get_user_input("MSG: Please insert options prefixed by a SINGLE '-', leave blank for none:", exec, MAX_OPTIONS_LENGTH) != -1) {
-        return sanitize_options(exec);
+        list_avail_flags(list);
+        return validate_options(exec,list);
     } else {
         printf("ERR: Invalid options.\n");
         return false;

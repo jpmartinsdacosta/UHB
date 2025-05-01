@@ -14,6 +14,16 @@
 bool path_exists(const char *path);
 
 /**
+ * @brief Checks if path1 is a prefix of path2.
+ * @param path1 Path that may or may not contain path2.
+ * @param path2 Path that is to be checked if is inside path1.
+ * @note 1. This function needs both paths to be absolute, as it compares one path with another until the length of path1.
+ * @note 2. Path1 should be shorter than path2.
+ * @return True if path1 is a prefix of path2, false otherwise.
+ */
+bool is_contained(const char* path1, const char* path2);
+
+/**
  * @brief Finds the first instance of a string inside a file.
  * @param target the string to be found inside the file.
  * @param fp the fp of the file where to search.

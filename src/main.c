@@ -11,7 +11,7 @@ int main() {
     if(os != -1){
         init_dac_array();       // Initialize DACStruct 
         exec_exists_common();
-        config_exists();        // Check if the configuration file exists.
+        conf_file_exists();        // Check if the configuration file exists.
         main_menu();            // Show the menu to the user.
         clear_dac_array();      // Clear DACStruct
     }else{

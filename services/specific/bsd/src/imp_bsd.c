@@ -38,36 +38,4 @@ void exec_exists (bool exec[4]){
     }
 }
 
-bool is_acl_enabled_bsd(const char* fp){
-    char *filesystem = find_fs_from_path(fp);
-    if (filesystem == NULL) {
-        printf("ERR: Unable to find the filesystem for the given file path.\n");
-        return false;
-    }
-    bool result = find_strings_in_line(filesystem, "acls", "/etc/fstab");
-    free(filesystem); // Free the allocated memory if find_fs_from_path dynamically allocates it.
-    return result;
-}
 
-bool set_acl(){
-    char path[MAX_FILEPATH_SIZE];
-    char options[MAX_LINE_LENGTH];
-    char command[MAX_LINE_LENGTH];
-    get_filepath(path);
-    if(!is_acl_enabled_bsd(path)){
-        printf("ERR: ACLs are not enabled in the filesystem of the given file.\n");
-        printf("ERR: Make sure the enable them in your BSD system visa fstab.\n");
-        return false;
-    }else{
-        if(path_exists(path) && !acl_incompatible_fs(path)){
-            get_user_input("MSG: Please enter setfacl options;",options,MAX_LINE_LENGTH);
-            printf("MSG: Setting ACL...\n");
-            snprintf(command, sizeof(command), "setfacl %s %s", options, path);
-            add_config_command(command);
-            return true;
-        }else{
-            printf("ERR: ACLs could not be set.\n");
-            return false;
-        }
-    }
-}

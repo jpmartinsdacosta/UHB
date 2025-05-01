@@ -12,18 +12,19 @@
 #include "os_interface.h"
 #include "global_var.h"
 
-#define CONFIG_PATH "../config/uhb_config.sh"
-#define TEMPLATE_PATH "../config/template/uhb_config_template.txt"
-
 bool config_modified = false;
 
-bool is_config_modified(){
+/**
+ * Configuration file functions
+ */
+
+bool is_conf_file_mod(){
     return config_modified;
 }
 
-bool reset_config(){
+bool reset_conf_file(){
     if(!path_exists(TEMPLATE_PATH)){
-        printf("ERR: reset_config(): Template does not exist.\n");
+        printf("ERR: reset_conf_file(): Template does not exist.\n");
         return false;
     }else{
         copy_file(TEMPLATE_PATH,CONFIG_PATH);
@@ -33,10 +34,10 @@ bool reset_config(){
     }
 }
 
-void config_exists(){
+void conf_file_exists(){
     if(!path_exists(CONFIG_PATH)){
         printf("MSG: Configuration file does not exist. Creating...\n");
-        if(reset_config()){
+        if(reset_conf_file()){
             printf("MSG: Configuration file created successfully.\n");
         }else{
             printf("ERR: Error creating configuration file.\n");
@@ -44,7 +45,7 @@ void config_exists(){
     }
 }
 
-bool add_config_command(const char *command){
+bool add_conf_file(const char *command){
     FILE *file = fopen(CONFIG_PATH, "a");
     if (file) {
         fprintf(file, "%s\n", command);
@@ -57,7 +58,7 @@ bool add_config_command(const char *command){
     }
 }
 
-void view_config(){
+void view_conf_file(){
     if(!path_exists(CONFIG_PATH)){
         printf("ERR: Configuration file does not exist.\n");
     }else{
@@ -66,17 +67,7 @@ void view_config(){
     }
 }
 
-void user_find_first_config(){
-    char target[MAX_LINE_LENGTH];
-    int answer = -1;
-    get_user_input("MSG: Test search config file:",target,MAX_LINE_LENGTH);
-    answer = find_first_in_file(target,CONFIG_PATH);
-    if(answer != -1){
-        printf("MSG: Found %s at line %d in configuration file.\n",target, answer);
-    }
-}
-
-bool apply_config(){
+bool apply_conf_file(){
     FILE *file = fopen(CONFIG_PATH, "r");
     if(file != NULL){
         if(find_first_in_file(get_os(),CONFIG_PATH) != 4){

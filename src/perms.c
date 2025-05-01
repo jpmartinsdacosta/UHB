@@ -4,6 +4,8 @@
 #include <time.h>
 #include "perms.h"
 #include "global_var.h"
+#include "menu.h"
+#include "file.h"
 
 size_t dac_size = 0;
 size_t dac_capacity = 0;
@@ -64,7 +66,31 @@ void get_dac_data(size_t dac_index) {
     printf("Timestamp: %s\n", ctime(&dac->timestamp));
 }
 
-// Change the recursive flag later
+bool is_dac_contained(const char *filepath){
+    bool result = false;
+    for(size_t i = 0; i < dac_size && !result ; i++){
+        if(is_contained(filepath, dac_array[i].fp) || is_contained(filepath, dac_array[i].fp)){
+            result = true;
+        }
+    }
+    return result;
+}
+
+bool dac_filepath_exists(const char *filepath) {
+    if (filepath == NULL) {
+        fprintf(stderr, "ERR: Null pointer passed to dac_filepath_exists().\n");
+        return false;
+    }
+
+    for (size_t i = 0; i < dac_size; i++) {
+        if (strcmp(filepath, dac_array[i].fp) == 0) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 bool add_dac_element(const char *filepath, const char *user, const char *group, const char *dac) {
     if (filepath == NULL || user == NULL || group == NULL || dac == NULL) {
         fprintf(stderr, "ERR: Null pointer passed to add_dac_element().\n");
@@ -97,6 +123,11 @@ bool add_dac_element(const char *filepath, const char *user, const char *group, 
     element->mac_size = 0;
     element->mac_capacity = 0;
     element->timestamp = time(NULL);
+    if(is_dac_contained(filepath) || IF INPUT IS RECURSIVE THEN RECURSIVE TOO){
+        element->recursive = true;
+    }else{
+        element->recursive = false;
+    }
     dac_size++;
     get_dac_data(dac_size-1);
     return true;
@@ -116,21 +147,6 @@ bool rem_dac_element() {
         return false;
     }
     return true;
-}
-
-bool dac_filepath_exists(const char *filepath) {
-    if (filepath == NULL) {
-        fprintf(stderr, "ERR: Null pointer passed to dac_filepath_exists().\n");
-        return false;
-    }
-
-    for (size_t i = 0; i < dac_size; i++) {
-        if (strcmp(filepath, dac_array[i].fp) == 0) {
-            return true;
-        }
-    }
-
-    return false;
 }
 
 /**
@@ -263,3 +279,4 @@ bool rem_mac_element(size_t dac_index, size_t mac_index) {
 /**
  * Policy-checking functions
  */
+

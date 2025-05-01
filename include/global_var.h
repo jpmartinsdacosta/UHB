@@ -13,6 +13,28 @@
 #define MAX_LINE_LENGTH 2048    // 2048, to be used for commands too.
 #define MAX_NAME_LENGTH 32      // 32, standard.
 
+#define CONFIG_PATH "../config/files/uhb_config.sh"
+#define TEMPLATE_PATH "../config/template/uhb_config_template.txt"
+
+/**
+ * Structures for the validation of DAC, ACL and MAC flags
+ */
+
+typedef struct Flag{
+    char flag;
+    bool used;
+    bool recursive;
+} Flag;
+
+typedef struct FlagList{
+    Flag *flags;
+    int size;
+}FlagList;
+
+/**
+ * Structures for the validation of DAC, ACL and MAC policy
+ */
+
 struct ACLStruct {
     char fs[30];
     char acl[MAX_LINE_LENGTH];

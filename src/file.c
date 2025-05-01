@@ -22,6 +22,10 @@ bool path_exists(const char *path) {
     }
 }
 
+bool is_contained(const char* path1, const char* path2) {
+    return strncmp(path1, path2, strlen(path1)) == 0;
+}
+
 int find_first_in_file(const char *target, const char *fp){
     char line[MAX_LINE_LENGTH];
     int position = 0;

@@ -5,7 +5,11 @@
 
 /**
  * @file config.h
- * @brief This file provides headers for functions regarding the configuration file.
+ * @brief This file provides headers for functions regarding the configuration of UHB.
+ */
+
+/**
+ * Configuration file functions
  */
 
 /**
@@ -13,7 +17,7 @@
  * @return true if modified, false otherwise.
  * @note Needed for the final_prompt() function.
  */
-bool is_config_modified();
+bool is_conf_file_mod();
 
 /**
  * @brief Sets the configuration file to an initial state.
@@ -23,33 +27,27 @@ bool is_config_modified();
  * The function also writes the operating system detected by the program.
  * @return true if the configuration file was created successfully, false otherwise.
  */
-bool reset_config();
+bool reset_conf_file();
 
 /**
  * @brief Check if the configuration file exists.
  * If the file does not exist, create it, otherwise print an error message.
  */
-void config_exists();
+void conf_file_exists();
 
 /**
  * @brief Add a command to the configuration file.
  * @param command The command to be added to the configuration file.
  * @return true if the command was added successfully, false otherwise.
  */
-bool add_config_command(const char *command);
+bool add_conf_file(const char *command);
 
 /**
  * @brief View the configuration file.
  * This function will print the content of the configuration file.
  * If the file does not exist, it will print an error message.
  */
-void view_config();
-
-/**
- * @brief Function to be used by the user to find the first instance of a target in the configuration file. 
- * @note This is a test function that will be deprecated in the future.
- */
-void user_find_first_config();
+void view_conf_file();
 
 /**
  * @brief This function will apply the configuration file to the system.
@@ -58,6 +56,6 @@ void user_find_first_config();
  * @note This function checks if uhb_os = XXX is in line 3 to ensure that the configuration file is being applied correctly.
  * Otherwise, it could execute the configuration file in the wrong operating system if a file has the same name as "uhb_os = XXX".
  */
-bool apply_config();
+bool apply_conf_file();
 
 #endif // CONFIG_H
