@@ -1,5 +1,8 @@
 #include <stdio.h>
-#include "perms.h"
+#include "utils.h"
+#include "policy.h"
+#include "menu.h"
+#include "config.h"
 
 int main() {
     int os = os_detect();

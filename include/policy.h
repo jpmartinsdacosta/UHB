@@ -1,5 +1,5 @@
-#ifndef PERMS_H
-#define PERMS_H
+#ifndef POLICY_H
+#define POLICY_H
 
 #include <stdbool.h>
 #include <time.h>
@@ -121,4 +121,4 @@ bool rem_mac_element(size_t dac_index, size_t mac_index);
  * Policy-checking functions
  */
 
-#endif // PERMS_H
+#endif // POLICY_H

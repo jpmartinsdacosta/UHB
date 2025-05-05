@@ -3,11 +3,6 @@
 #include <string.h>
 #include <stdbool.h>
 
-#include "menu.h"
-#include "file.h"
-#include "config.h"
-#include "utils.h"
-#include "input.h"
 #include "os_interface.h"
 #include "global_var.h"
 

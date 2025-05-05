@@ -1,10 +1,10 @@
 #include <stdio.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include "perms.h"
+
 #include "global_var.h"
-#include "menu.h"
 #include "file.h"
 
 size_t dac_size = 0;

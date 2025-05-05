@@ -7,8 +7,8 @@
 #include "file.h"
 #include "config.h"
 #include "utils.h"
-#include "input.h"
-#include "perms.h"
+#include "io.h"
+#include "policy.h"
 #include "os_interface.h"
 #include "global_var.h"
 

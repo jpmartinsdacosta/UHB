@@ -2,11 +2,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "menu.h"
 #include "file.h"
 #include "config.h"
 #include "utils.h"
-#include "input.h"
+#include "io.h"
 #include "os_interface.h"
 
 bool exec[4] = {false, false, false, false};    // Array of detected executables.

@@ -6,7 +6,7 @@
 #include "utils.h"
 #include "input.h"
 #include "global_var.h"
-#include "perms.h"
+#include "policy.h"
 
 Flag get_dac_opt[] = {
     {'a',false,false},    // Include entries with .
