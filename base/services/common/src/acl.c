@@ -3,7 +3,7 @@
 
 #include "menu.h"
 #include "file.h"
-#include "input.h"
+#include "io.h"
 #include "policy.h"
 #include "global_var.h"
 

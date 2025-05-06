@@ -2,11 +2,11 @@
 #include <stddef.h>
 #include "global_var.h"
 
-#ifndef INPUT_H
-#define INPUT_H
+#ifndef IO_H
+#define IO_H
 
 /**
- * @file input.h
+ * @file io.h
  * @brief This file provides headers for functions regarding user input.
  */
 
@@ -42,4 +42,4 @@ bool get_filepath(char *path);
  */
 bool get_option(char *exec, FlagList *list);
 
-#endif // INPUT_H
+#endif // IO_H

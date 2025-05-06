@@ -2,9 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "file.h"
 #include "config.h"
-#include "utils.h"
 #include "io.h"
 #include "os_interface.h"
 
@@ -48,6 +46,7 @@ const char *conf_menu_options[] = {
     "1. View configuration file",
     "2. Clear configuration file",
     "3. Apply changes from configuration file",
+    "4. Export current configuration file"
     "0. Return to Main Menu",
     NULL
 };
@@ -181,6 +180,9 @@ void conf_menu(){
                 break;
             case 3:
                 apply_conf_file();
+                break;
+            case 4:
+                printf("MSG: Option not implemented yet.\n");
                 break;
             case 0:
                 break;

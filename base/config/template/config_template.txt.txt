@@ -1,0 +1,23 @@
+#!/bin/sh
+## This is the configuration file for UHB.
+##0. CONFIGURATION FILE PARAMETERS:
+## SERVICES COMMON TO ALL:
+## uhb_os = NAN
+## OS-SPECIFIC SERVICES:
+## uhb_acl = false
+## uhb_mac = false
+## uhb_fwl = false
+## uhb_aud = false
+##1. DAC POLICY:
+
+##2. LOG POLICY:
+
+##3. ACL POLICY:
+
+##4. MAC POLICY:
+
+##5. FWL POLICY:
+
+##6. AUD POLICY:
+
+##Z. EOF
