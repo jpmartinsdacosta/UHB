@@ -16,7 +16,8 @@ const char *main_menu_options[] = {
     "5. Auditing configuration",
     "6. MAC configuration",
     "7. Configuration file options",
-    "8. Test specific function",
+    "8. UHB settings",
+    "9. Test specific function",
     "0. Exit UHB",
     NULL
 };
@@ -220,6 +221,9 @@ void main_menu(){
                 conf_menu();
                 break;
             case 8:
+                printf("MSG: Option not implemented yet.\n");
+                break;
+            case 9:
                 printf("MSG: Option not implemented yet.\n");
                 break;
             case 0:

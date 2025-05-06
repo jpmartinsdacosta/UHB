@@ -123,7 +123,7 @@ bool add_dac_element(const char *filepath, const char *user, const char *group, 
     element->mac_size = 0;
     element->mac_capacity = 0;
     element->timestamp = time(NULL);
-    if(is_dac_contained(filepath) || IF INPUT IS RECURSIVE THEN RECURSIVE TOO){
+    if(is_dac_contained(filepath)){
         element->recursive = true;
     }else{
         element->recursive = false;
@@ -135,7 +135,7 @@ bool add_dac_element(const char *filepath, const char *user, const char *group, 
 
 bool rem_dac_element() {
     if (dac_size == 0) {
-        return true; // Nothing to remove
+        return true;
     }
 
     dac_size--;

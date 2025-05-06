@@ -23,12 +23,12 @@ bool is_conf_file_mod(){
 }
 
 bool reset_conf_file(){
-    if(!path_exists(TEMPLATE_PATH)){
+    if(!path_exists(CONFIG_TEMPLATE_PATH)){
         printf("ERR: reset_conf_file(): Template does not exist.\n");
         return false;
     }else{
-        copy_file(TEMPLATE_PATH,CONFIG_PATH);
-        find_first_and_replace(CONFIG_PATH,"##uhb_os = NAN",get_os());
+        copy_file(CONFIG_TEMPLATE_PATH,CONFIG_PATH);
+        find_first_and_replace(CONFIG_PATH,"## uhb_os = NAN",get_os());
         clear_dac_array();
         return true;
     }

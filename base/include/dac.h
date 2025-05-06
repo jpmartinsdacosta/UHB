@@ -1,3 +1,5 @@
+#include <stdbool.h>
+
 #ifndef DAC_H
 #define DAC_H
 

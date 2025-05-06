@@ -1,4 +1,5 @@
 #include <time.h>
+#include <stdbool.h>
 
 #ifndef GLOBAL_VAR_H
 #define GLOBAL_VAR_H
@@ -13,8 +14,10 @@
 #define MAX_LINE_LENGTH 2048    // 2048, to be used for commands too.
 #define MAX_NAME_LENGTH 32      // 32, standard.
 
-#define CONFIG_PATH "../config/files/uhb_config.sh"
-#define TEMPLATE_PATH "../config/template/uhb_config_template.txt"
+#define CONFIG_PATH "../config/files/config.sh"
+#define CONFIG_TEMPLATE_PATH "../config/template/config_template.txt"
+#define SERVICE_TEMPLATE_PATH "../config/template/service_template.txt"
+#define MODULE_TEMPLATE_PATH "../config/template/module_template.txt"
 
 /**
  * Structures for the validation of DAC, ACL and MAC flags

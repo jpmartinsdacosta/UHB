@@ -12,7 +12,7 @@ Flag get_dac_opt[] = {
     {'a',false,false},    // Include entries with .
     {'l',false,false},    // Long listing format
     {'h',false,false},    // With -l print human-readable sizes
-    {'R',false,true},    // Recursive
+    {'R',false,true},     // Recursive
     {'r',false,false},    // Reverse
     {'t',false,false},    // Sort by time
     {'S',false,false},    // Sort by size

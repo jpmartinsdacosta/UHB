@@ -1,3 +1,5 @@
+#include <stdbool.h>
+
 #ifndef ACL_H
 #define ACL_H
 

@@ -172,7 +172,7 @@ bool find_first_and_replace(const char *fp, const char *target, const char *repl
     fclose(temp);
     fclose(file);
     if(!found){
-        printf("String not found\n");
+        printf("ERR: find_first_and_replace(): String not found\n");
         return false;
     }else{
         return true;

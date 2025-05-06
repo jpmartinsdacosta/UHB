@@ -3,13 +3,11 @@ CC = gcc
 CFLAGS = -Wall -Wextra -std=c11 -I../include
 
 # Directories
-UHB_SRC_DIR = ../src						# Directory where UHB base source files are stored.
-UHB_HEA_DIR = ../include					# Directory where UHB base header files are stored.
+UHB_SRC_DIR = ../src						# Directory where UHB Base source files are stored.
+UHB_HEA_DIR = ../include					# Directory where UHB Base header files are stored.
 
-COM_SRC_DIR = ../services/common/src		# Directory where UHB source files common to all OS are stored.
-COM_HEA_DIR = ../services/common/include 	# Directory where UHB header files common to all OS are stored.
-
-SPE_DIR	= ../services/specific				# Directory where OS-specific implementations are stored.
+UHB_BSE_DIR = ../../base					# Path to the UHB Base directory.
+UHB_ADD_DIR = ../../additions				# Path to the UHB Additions directory.
 
 # Common source files
 SRC_COMMON = $(shell find $(UHB_SRC_DIR) -name '*.c') $(shell find $(COM_SRC_DIR) -name '*.c')
@@ -19,10 +17,10 @@ UNAME_S := $(shell uname -s)
 
 # OS-specific files
 ifeq ($(UNAME_S),FreeBSD)
-	SRC_OS = ../services/specific/bsd/src/imp_bsd.c
+	SRC_OS = ../../additions/bsd/src/imp_bsd.c
 	CFLAGS += -D__FreeBSD__
 else ifeq ($(UNAME_S),Linux)
-	SRC_OS = ../services/specific/linux/src/imp_deb.c
+	SRC_OS = ../../additions/linux/src/imp_deb.c
 	CFLAGS += -D__linux__
 endif
 
