@@ -20,7 +20,7 @@ ifeq ($(UNAME_S),FreeBSD)
 	SRC_OS = ../../additions/bsd/src/imp_bsd.c
 	CFLAGS += -D__FreeBSD__
 else ifeq ($(UNAME_S),Linux)
-	SRC_OS = ../../additions/linux/src/imp_deb.c
+	SRC_OS = ../../additions/debian/src/imp_deb.c
 	CFLAGS += -D__linux__
 endif
 
