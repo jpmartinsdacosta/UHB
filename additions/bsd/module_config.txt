@@ -1,0 +1,7 @@
+## This is the UHB module configuration file for the FreeBSD operating system.
+## MODULE CONFIGURATION PARAMETERS:
+uhb_os = BSD
+uhb_acl = false
+uhb_mac = false
+uhb_fwl = false
+uhb_aud = false
