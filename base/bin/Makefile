@@ -1,16 +1,17 @@
 # Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c11 -I../include
+CFLAGS = -Wall -Wextra -std=c11 -I../include/headers -I../include/interfaces
 
 # Directories
 UHB_SRC_DIR = ../src						# Directory where UHB Base source files are stored.
-UHB_HEA_DIR = ../include					# Directory where UHB Base header files are stored.
+UHB_HEA_DIR = ../include/headers			# Directory where UHB Base header files are stored.
+UHB_INT_DIR = ../include/interfaces			# Directory where UHB Base interface header files are stored.
 
 UHB_BSE_DIR = ../../base					# Path to the UHB Base directory.
 UHB_ADD_DIR = ../../additions				# Path to the UHB Additions directory.
 
 # Common source files
-SRC_COMMON = $(shell find $(UHB_SRC_DIR) -name '*.c') $(shell find $(COM_SRC_DIR) -name '*.c')
+SRC_COMMON = $(shell find $(UHB_SRC_DIR) -name '*.c')
 
 # Detect the operating system
 UNAME_S := $(shell uname -s)
@@ -19,9 +20,11 @@ UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),FreeBSD)
 	SRC_OS = ../../additions/bsd/src/imp_bsd.c
 	CFLAGS += -D__FreeBSD__
+	CFLAGS += ../../additions/bsd/include
 else ifeq ($(UNAME_S),Linux)
 	SRC_OS = ../../additions/debian/src/imp_deb.c
 	CFLAGS += -D__linux__
+	CFLAGS += ../../additions/debian/include
 endif
 
 # All source files
