@@ -9,12 +9,27 @@
  * @brief Header file responsible for declaring extern global constants used throughout UHB.
  */
 
+// Global constants
 #define MAX_FILEPATH_SIZE 4096  // 4096 characters max. in Linux
 #define MAX_OPTIONS_LENGTH 100  // 100, for the large ACL options list.
 #define MAX_LINE_LENGTH 2048    // 2048, to be used for commands too.
 #define MAX_NAME_LENGTH 32      // 32, standard.
 
-#define CONFIG_PATH "../config/files/config.sh"
+// Configuration filepaths
+#define CONFIG_FILE_DIR "../config/files"
+
+// Program-wide configuration filepath
+#define CONFIG_UHB "../config/files/config.sh"
+
+// Service configuration filepaths
+#define CONFIG_DAC "/config/files/dac.sh"
+#define CONFIG_ACL "/config/files/acl.sh"
+#define CONFIG_MAC "/config/files/mac.sh"
+#define CONFIG_LOG "/config/files/dac.sh"
+#define CONFIG_AUD "/config/files/aud.sh"
+#define CONFIG_FWL "/config/files/fwl.sh"
+
+// Configuration template filepaths
 #define CONFIG_TEMPLATE_PATH "../config/template/config_template.txt"
 #define SERVICE_TEMPLATE_PATH "../config/template/service_template.txt"
 #define MODULE_TEMPLATE_PATH "../config/template/module_template.txt"

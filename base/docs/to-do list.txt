@@ -2,13 +2,7 @@ TO-DO LIST:
 
 # Singular TO-DO LIST so that I don't forget to do stuff.
 
-1. Create a function in config.c that searches a specific string's position, and starts writing BELOW that string.
-Make sure to add a blank line after writing just in case. This is needed for writing policy in the correct part of
-the config file.
-
-OR
-
-Separate everything into their respective files and combine them one by one in order. THIS
+1. Change configuration file functions in order to work with separate service-oriented config files.
 
 2. Add an additional flag to filelink if an DAC, ACL or MAC command is recursive and affects already added policy.
 Also warn the user when validating the configuration file.

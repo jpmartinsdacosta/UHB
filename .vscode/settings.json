@@ -12,6 +12,8 @@
         "time.h": "c",
         "global_var.h": "c",
         "perms.h": "c",
-        "os_interface.h": "c"
+        "os_interface.h": "c",
+        "file.h": "c",
+        "io.h": "c"
     }
 }

@@ -9,7 +9,7 @@
  */
 
 /**
- * Configuration file functions
+ * Functions regarding the UHB Base Configuration file at uhb/base/config/files/config.sh
  */
 
 /**
@@ -20,42 +20,61 @@
 bool is_conf_file_mod();
 
 /**
- * @brief Sets the configuration file to an initial state.
- * This function is useful to overrite the content from the configuration file
- * to a default state.
- * 
+ * @brief Resets the UHB Base configuration file.
  * The function also writes the operating system detected by the program.
- * @return true if the configuration file was created successfully, false otherwise.
+ * @return True if the configuration file was created successfully, false otherwise.
  */
-bool reset_conf_file();
+bool reset_uhb_conf();
 
 /**
- * @brief Check if the configuration file exists.
+ * @brief Check if a configuration file exists.
  * If the file does not exist, create it, otherwise print an error message.
  */
-void conf_file_exists();
+void uhb_conf_exists(const char *filepath);
 
 /**
- * @brief Add a command to the configuration file.
- * @param command The command to be added to the configuration file.
- * @return true if the command was added successfully, false otherwise.
+ * @brief Add a command to the UHB Base configuration file.
+ * @param command The command to be added.
+ * @return True if the command was added successfully, false otherwise.
  */
-bool add_conf_file(const char *command);
+bool add_uhb_command(const char *command);
 
 /**
- * @brief View the configuration file.
- * This function will print the content of the configuration file.
- * If the file does not exist, it will print an error message.
- */
-void view_conf_file();
-
-/**
- * @brief This function will apply the configuration file to the system.
- * @return true if the configuration file was applied successfully, false otherwise.
+ * @brief This function will apply the UHB configuration file to the system.
+ * @return True if successful, false otherwise.
  * 
  * @note This function checks if uhb_os = XXX is in line 3 to ensure that the configuration file is being applied correctly.
  * Otherwise, it could execute the configuration file in the wrong operating system if a file has the same name as "uhb_os = XXX".
  */
-bool apply_conf_file();
+bool apply_uhb_conf();
+
+/**
+ * Functions regarding the service configuration files at uhb/base/config/services/
+ */
+
+/**
+ * @brief Resets ALL service configuration files.
+ * @return True if successful, false otherwise.
+ */
+bool reset_service_conf();
+
+/**
+ * @brief Add a command to the a given service configuration file.
+ * @param command The command to be added.
+ * @param filepath The filepath of the given service configuration file.
+ * @return True if the command was added successfully, false otherwise.
+ */
+bool add_service_command(const char *command, const char *filepath);
+
+/**
+ * Functions common to all
+ */
+
+/**
+ * @brief Resets both the UHB Base configuration and all the service configuration files.
+ * @return True if successful, false otherwise.
+ * 
+ */
+bool reset_conf();
 
 #endif // CONFIG_H

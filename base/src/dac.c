@@ -8,6 +8,10 @@
 #include "global_var.h"
 #include "policy.h"
 
+/**
+ * Array of valid flags for DAC policy.
+ */
+
 Flag get_dac_opt[] = {
     {'a',false,false},    // Include entries with .
     {'l',false,false},    // Long listing format
@@ -62,9 +66,9 @@ bool set_dac(){
             if(add_dac_element(path,user,group,permission)){
                 printf("MSG: Setting DAC...\n");
                 snprintf(command, sizeof(command), "chmod %s %s %s", options, permission, path);
-                add_conf_file(command);
+                add_service_command(command, CONFIG_DAC);
                 snprintf(command, sizeof(command), "chown %s %s:%s %s\n", options, user, group, path);
-                add_conf_file(command);
+                add_service_command(command, CONFIG_DAC);
                 return true;
             }else{
                 return false;

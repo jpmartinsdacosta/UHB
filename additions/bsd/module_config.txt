@@ -2,6 +2,6 @@
 ## MODULE CONFIGURATION PARAMETERS:
 uhb_os = BSD
 uhb_acl = false
-uhb_mac = false
-uhb_fwl = false
-uhb_aud = false
+uhb_mac = mac_bsdextended
+uhb_fwl = pf, ipfw, ipfilter
+uhb_aud = auditd

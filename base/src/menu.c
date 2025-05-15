@@ -2,8 +2,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include "file.h"
 #include "config.h"
 #include "io.h"
+#include "global_var.h"
 #include "os_interface.h"
 
 bool exec[4] = {false, false, false, false};    // Array of detected executables.
@@ -16,7 +18,7 @@ const char *main_menu_options[] = {
     "5. Auditing configuration",
     "6. MAC configuration",
     "7. Configuration file options",
-    "8. UHB settings",
+    "8. UHB Settings",
     "9. Test specific function",
     "0. Exit UHB",
     NULL
@@ -25,6 +27,7 @@ const char *main_menu_options[] = {
 const char *dac_menu_options[] = {
     "1. Get DAC of a file/directory",
     "2. Set DAC of a file/directory",
+    "3. View current DAC configuration",
     "0. Return to Main Menu",
     NULL
 };
@@ -32,6 +35,7 @@ const char *dac_menu_options[] = {
 const char *acl_menu_options[] = {
     "1. Get ACL of a file/directory",
     "2. Set ACL of a file/directory",
+    "3. View current ACL configuration",
     "0. Return to Main Menu",
     NULL
 };
@@ -39,6 +43,7 @@ const char *acl_menu_options[] = {
 const char *mac_menu_options[] = {
     "1. Get MAC of a file/directory",
     "2. Set MAC of a file/directory",
+    "3. View current MAC configuration",
     "0. Return to Main Menu",
     NULL
 };
@@ -70,7 +75,7 @@ void clear_conf_prompt(){
     while(choice == -1){
         choice = get_yes_no_input("MSG: Are you sure that you want to clear the config file? (y/n):\n");
         if(choice == 0){
-            reset_conf_file();
+            reset_uhb_conf();
             printf("MSG: Config file cleared...\n");
         }else{
             printf("MSG: Exiting UHB...\n");
@@ -83,7 +88,7 @@ void final_prompt(){
     while(choice == -1 && is_conf_file_mod()){
         choice = get_yes_no_input("MSG: Clear the config file before leaving? (y/n):\n");
         if(choice == 0){
-            reset_conf_file();
+            reset_uhb_conf();
             printf("MSG: Config file cleared, exiting UHB...\n");
         }else{
             printf("MSG: Exiting UHB...\n");
@@ -119,6 +124,9 @@ void dac_menu(){
             case 2:
                 set_dac();
                 break;
+            case 3:
+                view_file(CONFIG_DAC);
+                break;
             case 0:
                 break;
             default:
@@ -138,6 +146,9 @@ void acl_menu(){
                 break;
             case 2:
                 set_acl();
+                break;
+            case 3:
+                view_file(CONFIG_ACL);
                 break;
             case 0:
                 break;
@@ -174,13 +185,13 @@ void conf_menu(){
         choice = display_menu("Configuration File Menu", conf_menu_options);
         switch(choice){
             case 1:
-                view_conf_file();
+                view_file(CONFIG_UHB);
                 break;
             case 2:
                 clear_conf_prompt();
                 break;
             case 3:
-                apply_conf_file();
+                apply_uhb_conf();
                 break;
             case 4:
                 printf("MSG: Option not implemented yet.\n");
@@ -227,7 +238,7 @@ void main_menu(){
                 printf("MSG: Option not implemented yet.\n");
                 break;
             case 0:
-                reset_conf_file();
+                reset_uhb_conf();
                 printf("\nFIN: Goodbye!\n");
                 break;
             default:

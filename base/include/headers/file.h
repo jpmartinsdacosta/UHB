@@ -16,6 +16,14 @@
 bool path_exists(const char *path);
 
 /**
+ * @brief View the contents of a file.
+ * @param filepath The filepath of the given file.
+ * This function will print the contents of the given file.
+ * If the file does not exist, it will print an error message.
+ */
+void view_file(const char *filepath);
+
+/**
  * @brief Checks if path1 is a prefix of path2.
  * @param path1 Path that may or may not contain path2.
  * @param path2 Path that is to be checked if is inside path1.

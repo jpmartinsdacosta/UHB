@@ -22,6 +22,17 @@ bool path_exists(const char *path) {
     }
 }
 
+void view_file(const char *filepath) {
+    char command[MAX_LINE_LENGTH];
+    if (!path_exists(filepath)) {
+        fprintf(stderr, "ERR: view_file(): Configuration file does not exist.\n");
+    } else {
+        printf("MSG: Press q to exit current view.\n");
+        snprintf(command, sizeof(command), "cat %s | less", filepath);
+        system(command);
+    }
+}
+
 bool is_contained(const char* path1, const char* path2) {
     return strncmp(path1, path2, strlen(path1)) == 0;
 }

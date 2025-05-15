@@ -4,7 +4,8 @@
 #define ACL_H
 
 /**
- * Functions specific to Access Control Lists:
+ * @file acl.h
+ * @brief File responsible for declaring headers of ACL functions common to all UHB Additions Modules.
  */
 
 /**
@@ -12,13 +13,6 @@
  * @return true if successful, false otherwise.
  */
 bool get_acl();
-
-/**
- * @brief Check if Access Control Lists are enabled in a given filesystem in FreeBSD.
- * @param filesystem Filesystem provided by the user.
- * @note This function is necessary in BSD due to the need for a fstab entry.
- */
-bool is_acl_enabled_bsd(const char* fp);
 
 /**
  * @brief Checks if the filesystem of a given file is compatible with ACLs.

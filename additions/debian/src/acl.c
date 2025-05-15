@@ -6,12 +6,9 @@
 #include "io.h"
 #include "policy.h"
 #include "global_var.h"
+#include "config.h"
 
-/**
- * Functions specific to Access Control Lists:
- */
-
- const char *dicc_no_acl_fs[] = {         // Filesystems that do not support ACLs.
+const char *no_acl_fs[] = {
     "tmpfs",
     "vfat",
     "exfat",
@@ -22,6 +19,10 @@
     "sysfs",
     NULL
 };
+
+/**
+ * Functions specific to Access Control Lists:
+ */
 
 Flag get_acl_opt[] = {
     {'d',false,false},    // Operation applies to the default ACL instead of the access ACL
@@ -45,21 +46,10 @@ bool get_acl(){
     }
 }
 
-bool is_acl_enabled_bsd(const char* fp){
-    char *filesystem = find_fs_from_path(fp);
-    if (filesystem == NULL) {
-        printf("ERR: Unable to find the filesystem for the given file path.\n");
-        return false;
-    }
-    bool result = find_strings_in_line(filesystem, "acls", "/etc/fstab");
-    free(filesystem);
-    return result;
-}
-
 bool acl_incompatible_fs(char *fp){
     bool result = false;
-    for(int i=0; i < get_diccionary_size(dicc_no_acl_fs) && !result; i++){
-        result = find_strings_in_line(fp,dicc_no_acl_fs[i],"/etc/fstab");
+    for(int i=0; i < get_diccionary_size(no_acl_fs) && !result; i++){
+        result = find_strings_in_line(fp,no_acl_fs[i],"/etc/fstab");
     }
     return result;
 }
@@ -69,21 +59,15 @@ bool set_acl(){
     char options[MAX_LINE_LENGTH];
     char command[MAX_LINE_LENGTH];
     get_filepath(path);
-    if(!is_acl_enabled_bsd(path)){
-        printf("ERR: ACLs are not enabled in the filesystem of the given file.\n");
-        printf("ERR: Make sure the enable them in your BSD system visa fstab.\n");
-        return false;
+    if(path_exists(path) && !acl_incompatible_fs(path)){
+        get_user_input("MSG: Please enter setfacl options;",options,MAX_LINE_LENGTH);
+        printf("MSG: Setting ACL...\n");
+        snprintf(command, sizeof(command), "setfacl %s %s", options, path);
+        add_service_command(command,CONFIG_ACL);
+        return true;
     }else{
-        if(path_exists(path) && !acl_incompatible_fs(path)){
-            get_user_input("MSG: Please enter setfacl options;",options,MAX_LINE_LENGTH);
-            printf("MSG: Setting ACL...\n");
-            snprintf(command, sizeof(command), "setfacl %s %s", options, path);
-            add_conf_file(command);
-            return true;
-        }else{
-            printf("ERR: ACLs could not be set.\n");
-            return false;
-        }
+        printf("ERR: ACLs could not be set.\n");
+        return false;
     }
 }
 

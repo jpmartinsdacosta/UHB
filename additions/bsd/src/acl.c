@@ -6,12 +6,9 @@
 #include "io.h"
 #include "policy.h"
 #include "global_var.h"
+#include "imp_bsd.h"
 
-/**
- * Functions specific to Access Control Lists:
- */
-
- const char *dicc_no_acl_fs[] = {         // Filesystems that do not support ACLs.
+const char *no_acl_fs[] = {
     "tmpfs",
     "vfat",
     "exfat",
@@ -22,6 +19,11 @@
     "sysfs",
     NULL
 };
+
+
+/**
+ * Functions specific to Access Control Lists:
+ */
 
 Flag get_acl_opt[] = {
     {'d',false,false},    // Operation applies to the default ACL instead of the access ACL
@@ -58,8 +60,8 @@ bool is_acl_enabled_bsd(const char* fp){
 
 bool acl_incompatible_fs(char *fp){
     bool result = false;
-    for(int i=0; i < get_diccionary_size(dicc_no_acl_fs) && !result; i++){
-        result = find_strings_in_line(fp,dicc_no_acl_fs[i],"/etc/fstab");
+    for(int i=0; i < get_diccionary_size(no_acl_fs) && !result; i++){
+        result = find_strings_in_line(fp,no_acl_fs[i],"/etc/fstab");
     }
     return result;
 }
@@ -78,7 +80,7 @@ bool set_acl(){
             get_user_input("MSG: Please enter setfacl options;",options,MAX_LINE_LENGTH);
             printf("MSG: Setting ACL...\n");
             snprintf(command, sizeof(command), "setfacl %s %s", options, path);
-            add_conf_file(command);
+            add_uhb_command(command);
             return true;
         }else{
             printf("ERR: ACLs could not be set.\n");
