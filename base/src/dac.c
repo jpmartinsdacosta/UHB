@@ -36,16 +36,12 @@ bool set_dac(){
         get_user_input("MSG: Please enter the target user:", user, MAX_NAME_LENGTH);
         get_user_input("MSG: Please enter the target group:", group, MAX_NAME_LENGTH);
         if(check_permission(permission) && check_user(user) && check_group(group)){
-            if(add_dac_element(path,user,group,permission)){
                 printf("MSG: Setting DAC...\n");
                 snprintf(command, sizeof(command), "chmod %s %s %s", options, permission, path);
                 add_service_command(command, CONFIG_DAC);
                 snprintf(command, sizeof(command), "chown %s %s:%s %s\n", options, user, group, path);
                 add_service_command(command, CONFIG_DAC);
                 return true;
-            }else{
-                return false;
-            }
         }else{
             fprintf(stderr, "ERR: set_dac(): DAC could not be set.\n");
             return false;

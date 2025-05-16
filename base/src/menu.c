@@ -237,10 +237,10 @@ void main_menu(){
                 printf("MSG: Option not implemented yet.\n");
                 break;
             case 9:
-                find_first_and_replace(CONFIG_UHB,"## uhb_os = NAN",get_os());
+                reset_service_conf();
                 break;
             case 0:
-                reset_uhb_conf();
+                reset_conf();
                 printf("\nFIN: Goodbye!\n");
                 break;
             default:

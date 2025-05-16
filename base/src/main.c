@@ -12,11 +12,9 @@ int main() {
         return -1;
     }
     if(os != -1){
-        init_dac_array();                   // Initialize DACStruct
         exec_exists_common();
         uhb_conf_exists(CONFIG_UHB);        // Check if the configuration file exists.
         main_menu();                        // Show the menu to the user.
-        clear_dac_array();                  // Clear DACStruct
     }else{
         return -1;
     }

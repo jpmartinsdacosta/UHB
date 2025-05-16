@@ -24,8 +24,8 @@ bool reset_uhb_conf(){
         return false;
     }else{
         copy_file(CONFIG_TEMPLATE_PATH,CONFIG_UHB);
-        //find_first_and_replace(CONFIG_UHB,"## uhb_os = NAN", get_os()); This function breaks and I don't know why.
-        clear_dac_array();
+        //find_first_and_replace(CONFIG_UHB,"## uhb_os = NAN", get_os()); // This function breaks and I don't know why.
+        //clear_dac_array();
         return true;
     }
 }
@@ -86,26 +86,44 @@ bool reset_service_conf(){
         if(!copy_file(SERVICE_TEMPLATE_PATH,CONFIG_DAC)){
             fprintf(stderr, "ERR: reset_uhb_conf(): Failed to reset DAC.\n");
             return false;
+        }else{
+            find_first_and_replace(CONFIG_DAC,"[service]", "DAC");
+            return true;
         }
         if(!copy_file(SERVICE_TEMPLATE_PATH,CONFIG_ACL)){
             fprintf(stderr, "ERR: reset_uhb_conf(): Failed to reset ACL.\n");
             return false;
+        }else{
+            find_first_and_replace(CONFIG_ACL,"[service]", "ACL");
+            return true;
         }
         if(!copy_file(SERVICE_TEMPLATE_PATH,CONFIG_MAC)){
             fprintf(stderr, "ERR: reset_uhb_conf(): Failed to reset MAC.\n");
             return false;
+        }else{
+            find_first_and_replace(CONFIG_MAC,"[service]", "MAC");
+            return true;
         }
         if(!copy_file(SERVICE_TEMPLATE_PATH,CONFIG_LOG)){
             fprintf(stderr, "ERR: reset_uhb_conf(): Failed to reset LOG.\n");
             return false;
+        }else{
+            find_first_and_replace(CONFIG_LOG,"[service]", "LOG");
+            return true;
         }
         if(!copy_file(SERVICE_TEMPLATE_PATH,CONFIG_AUD)){
             fprintf(stderr, "ERR: reset_uhb_conf(): Failed to reset AUD.\n");
             return false;
+        }else{
+            find_first_and_replace(CONFIG_AUD,"[service]", "AUD");
+            return true;
         }
         if(!copy_file(SERVICE_TEMPLATE_PATH,CONFIG_FWL)){
             fprintf(stderr, "ERR: reset_uhb_conf(): Failed to reset FWL.\n");
             return false;
+        }else{
+            find_first_and_replace(CONFIG_FWL,"[service]", "FWL");
+            return true;
         }
         return true;
     }
