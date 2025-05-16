@@ -8,7 +8,6 @@
 #include "file.h"
 #include "config.h"
 #include "utils.h"
-#include "io.h"
 #include "os_interface.h"
 #include "global_var.h"
 
@@ -46,7 +45,7 @@ int get_user_input(const char *prompt, char *buffer, size_t bufferSize) {
             result = 0;
         }
     } else {
-        printf("Error reading input.\n");
+        fprintf(stderr, "ERR: get_user_input(): Error reading input.\n");
         result = -1;
     }
     return result;
@@ -56,17 +55,7 @@ bool get_filepath(char *path) {
     if (get_user_input("Please enter the file path: ", path, MAX_FILEPATH_SIZE) == 1) {
         return path_exists(path);
     } else {
-        printf("ERR: Invalid/non-existent path.\n");
-        return false;
-    }
-}
-
-bool get_option(char *exec, FlagList *list) {
-    if (get_user_input("MSG: Please insert options prefixed by a SINGLE '-', leave blank for none:", exec, MAX_OPTIONS_LENGTH) != -1) {
-        list_avail_flags(list);
-        return validate_options(exec,list);
-    } else {
-        printf("ERR: Invalid options.\n");
+        fprintf(stderr, "ERR: get_filepath(): Invalid/non-existent path.\n");
         return false;
     }
 }

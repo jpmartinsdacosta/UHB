@@ -28,27 +28,6 @@ int os_detect();
 bool sanitize_name(const char *input);
 
 /**
- * @brief List all the flags of a list for the user.
- * @param list List of flags to be shown.
- */
-void list_avail_flags(FlagList *list);
-
-/**
- * @brief Reset the list of found/used flags to false.
- * @param list List of flags to reset.
- */
-void reset_flags_list(FlagList *list);
-
-/**
- * @brief Sanitizes flags given by a user when executing commands using a list of 
- * correct flags as a reference.
- * @param input User option input to sanitize.
- * @param list A list of flags to validate.
- * @return True if valid, false otherwise.
- */
-bool validate_options(const char *input, FlagList *list);
-
-/**
  * @brief Checks if the given permission is in a valid octal format.
  * @param permission The permission to check.
  * @return true if the permission is valid, false otherwise.

@@ -4,7 +4,7 @@
 
 #include "file.h"
 #include "config.h"
-#include "io.h"
+#include "input_output.h"
 #include "global_var.h"
 #include "os_interface.h"
 
@@ -52,7 +52,7 @@ const char *conf_menu_options[] = {
     "1. View configuration file",
     "2. Clear configuration file",
     "3. Apply changes from configuration file",
-    "4. Export current configuration file"
+    "4. Export current configuration file",
     "0. Return to Main Menu",
     NULL
 };
@@ -142,10 +142,12 @@ void acl_menu(){
         choice = display_menu("ACL Menu", acl_menu_options);
         switch(choice){
             case 1:
-                get_acl();
+                //get_acl();
+                printf("MSG: Option not implemented yet.\n");
                 break;
             case 2:
-                set_acl();
+                //set_acl();
+                printf("MSG: Option not implemented yet.\n");
                 break;
             case 3:
                 view_file(CONFIG_ACL);
@@ -235,7 +237,7 @@ void main_menu(){
                 printf("MSG: Option not implemented yet.\n");
                 break;
             case 9:
-                printf("MSG: Option not implemented yet.\n");
+                find_first_and_replace(CONFIG_UHB,"## uhb_os = NAN",get_os());
                 break;
             case 0:
                 reset_uhb_conf();

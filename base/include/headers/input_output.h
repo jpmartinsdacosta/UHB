@@ -2,11 +2,11 @@
 #include <stddef.h>
 #include "global_var.h"
 
-#ifndef IO_H
-#define IO_H
+#ifndef INPUT_OUTPUT_H
+#define INPUT_OUTPUT_H
 
 /**
- * @file io.h
+ * @file input_output.h
  * @brief This file provides headers for functions regarding user input.
  */
 
@@ -34,12 +34,4 @@ int get_user_input(const char *prompt, char *buffer, size_t bufferSize);
  */
 bool get_filepath(char *path);
 
-/**
- * @brief Get the user's input for DAC options.
- * @param exec The options to store the user's input.
- * @param list List of valid flags to check when executing the command.
- * @return true if the user's input is valid, false otherwise.
- */
-bool get_option(char *exec, FlagList *list);
-
-#endif // IO_H
+#endif // INPUT_OUTPUT_H

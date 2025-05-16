@@ -7,7 +7,7 @@
 #include "file.h"
 #include "config.h"
 #include "utils.h"
-#include "io.h"
+#include "input_output.h"
 #include "os_interface.h"
 #include "global_var.h"
 
@@ -17,7 +17,7 @@ bool path_exists(const char *path) {
         fclose(file);
         return true;
     } else {
-        printf("MSG: File path %s does not exist.\n", path);
+        fprintf(stderr, "ERR: path_exists(): File path %s does not exist.\n", path);
         return false;
     }
 }
@@ -42,7 +42,7 @@ int find_first_in_file(const char *target, const char *fp){
     int position = 0;
     bool found = false;
     if(!path_exists(fp)){
-        printf("ERR: find_first_in_file(): The selected file does not exist.\n");
+        fprintf(stderr, "ERR: find_first_in_file(): The selected file does not exist.\n");
         return -1;
     }else{
         FILE *file = fopen(fp, "r");
@@ -57,7 +57,7 @@ int find_first_in_file(const char *target, const char *fp){
             fclose(file);
             return found ? position : -1;
         }else{
-            printf("ERR: find_first_in_file(): Error reading %s file.\n",fp);
+            fprintf(stderr, "ERR: find_first_in_file(): Error reading %s file.\n",fp);
             return -1;
         }
     }
@@ -68,7 +68,6 @@ bool find_strings_in_line(const char *a, const char *b, const char *fp) {
     int position = 0;
 
     if (!path_exists(fp)) {
-        printf("ERR: The selected file does not exist.\n");
         return false;
     } else {
         FILE *file = fopen(fp, "r");
@@ -84,7 +83,7 @@ bool find_strings_in_line(const char *a, const char *b, const char *fp) {
             fclose(file);
             return false;
         } else {
-            printf("ERR: Error reading %s file.\n",fp);
+            fprintf(stderr, "ERR: find_strings_in_line(): Error reading %s file.\n",fp);
             return false;
         }
     }
@@ -94,7 +93,7 @@ char* find_fs_from_path(const char *fp){
     char command[MAX_LINE_LENGTH];
     char *result = malloc(MAX_LINE_LENGTH * sizeof(char));
     if (result == NULL) {
-        printf("ERR: Memory allocation failed.\n");
+        fprintf(stderr, "ERR: find_fs_from_path(): Memory allocation failed.\n");
         return NULL;
     }
     snprintf(command, sizeof(command), "df %s | tail -n 1 | awk '{print $1}'", fp);
@@ -145,54 +144,73 @@ bool copy_file(const char *source, const char *destination) {
 }
 
 bool find_first_and_replace(const char *fp, const char *target, const char *replacement) {
-    FILE *file = fopen(fp,"r");
+    FILE *file = fopen(fp, "r");
     FILE *temp = tmpfile();
     char buffer[MAX_LINE_LENGTH];
     bool found = false;
-    if(file == NULL){
-        perror("perror");
+
+    if (file == NULL) {
+        perror("Error opening file");
         return false;
     }
-    if(temp == NULL){
-        perror("perror");
+
+    if (temp == NULL) {
+        perror("Error creating temp file");
         fclose(file);
         return false;
     }
-    while(fgets(buffer,sizeof(buffer),file)){
-        if(!found){
+
+    while (fgets(buffer, sizeof(buffer), file)) {
+        if (!found) {
             char *pos = strstr(buffer, target);
-            if(pos != NULL){
-                memmove(pos + strlen(replacement), pos + strlen(target), strlen(pos + strlen(target)) + 1);
-                memcpy(pos, replacement, strlen(replacement));
-                found = true;
+            if (pos != NULL) {
+                size_t target_len = strlen(target);
+                size_t replacement_len = strlen(replacement);
+                size_t remaining_len = strlen(pos + target_len);
+
+                // Ensure buffer has enough space for replacement
+                if (replacement_len + remaining_len < MAX_LINE_LENGTH - (pos - buffer)) {
+                    memmove(pos + replacement_len, pos + target_len, remaining_len + 1);
+                    memcpy(pos, replacement, replacement_len);
+                    found = true;
+                } else {
+                    fprintf(stderr, "ERR: find_first_and_replace(): Buffer too small for replacement.\n");
+                    fclose(file);
+                    fclose(temp);
+                    return false;
+                }
             }
         }
         fputs(buffer, temp);
     }
+
     fclose(file);
-    file = fopen(fp,"w");
-    if(file == NULL){
-        perror("perror");
+    file = fopen(fp, "w");
+    if (file == NULL) {
+        perror("Error reopening file");
         fclose(temp);
         return false;
     }
+
     rewind(temp);
-    while(fgets(buffer,sizeof(buffer),temp)){
-        fputs(buffer,file);
+    while (fgets(buffer, sizeof(buffer), temp)) {
+        fputs(buffer, file);
     }
+
     fclose(temp);
     fclose(file);
-    if(!found){
-        printf("ERR: find_first_and_replace(): String not found\n");
+
+    if (!found) {
+        fprintf(stderr, "ERR: find_first_and_replace(): String not found.\n");
         return false;
-    }else{
+    } else {
         return true;
     }
 }
 
 bool find_n_and_replace(const char *fp, const char *target, const char *replacement, int num){
     if(num <= 0){
-        printf("ERR: Cannot find 0 or less instances of \"%s\" in a file.\n",target);
+        fprintf(stderr, "ERR: find_n_and_replace(): Cannot find 0 or less instances of \"%s\" in a file.\n",target);
         return false;
     }else{
         int aux = 0;

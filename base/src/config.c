@@ -24,7 +24,7 @@ bool reset_uhb_conf(){
         return false;
     }else{
         copy_file(CONFIG_TEMPLATE_PATH,CONFIG_UHB);
-        find_first_and_replace(CONFIG_UHB,"## uhb_os = NAN",get_os());
+        //find_first_and_replace(CONFIG_UHB,"## uhb_os = NAN", get_os()); This function breaks and I don't know why.
         clear_dac_array();
         return true;
     }
@@ -33,7 +33,7 @@ bool reset_uhb_conf(){
 void uhb_conf_exists(const char *filepath){
     if(!path_exists(filepath)){
         printf("MSG: Configuration file does not exist. Creating...\n");
-        if(reset_uhb_conf()){
+        if(reset_conf()){
             printf("MSG: Configuration file created successfully.\n");
         }else{
             fprintf(stderr, "ERR: uhb_conf_exists(): Error creating configuration file.\n");

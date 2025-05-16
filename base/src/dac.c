@@ -4,51 +4,24 @@
 #include "file.h"
 #include "config.h"
 #include "utils.h"
-#include "io.h"
+#include "input_output.h"
 #include "global_var.h"
 #include "policy.h"
-
-/**
- * Array of valid flags for DAC policy.
- */
-
-Flag get_dac_opt[] = {
-    {'a',false,false},    // Include entries with .
-    {'l',false,false},    // Long listing format
-    {'h',false,false},    // With -l print human-readable sizes
-    {'R',false,true},     // Recursive
-    {'r',false,false},    // Reverse
-    {'t',false,false},    // Sort by time
-    {'S',false,false},    // Sort by size
-    {'1',false,false},    // List 1 file per line
-    {'d',false,false}     // List directories
-};
-
-FlagList get_dac_lst = {get_dac_opt,sizeof(get_dac_opt)/sizeof(get_dac_opt[0])};
 
 bool get_dac(){ 
     char path[MAX_FILEPATH_SIZE];
     char options[MAX_LINE_LENGTH];
     char command[MAX_LINE_LENGTH];
-    if(get_filepath(path) && get_option(options,&get_dac_lst)){
+    if(get_filepath(path)){
         printf("MSG: Press q to exit current view.\n");
         snprintf(command, sizeof(command), "ls \"%s\" -- \"%s\" | less", options, path);
         system(command);
         return true;
     }else{
-        printf("ERR: DAC could not be retrieved.\n");
+        fprintf(stderr, "ERR: get_dac(): DAC could not be retrieved.\n");
         return false;
     }
 }
-
-Flag set_dac_opt[] = {
-    {'c',false,false},    // like verbose but report only when a change is made
-    {'f',false,false},    // supress most error messages
-    {'v',false,false},    // verbose
-    {'R',false,true}     // default recursive
-};
-
-FlagList set_dac_lst = {set_dac_opt,sizeof(set_dac_opt)/sizeof(set_dac_opt[0])};
 
 bool set_dac(){
     char path[MAX_FILEPATH_SIZE];
@@ -58,7 +31,7 @@ bool set_dac(){
     char group[MAX_NAME_LENGTH];
     char options[MAX_LINE_LENGTH];
 
-    if(get_filepath(path) && path_exists(path) && get_option(options,&set_dac_lst)){
+    if(get_filepath(path) && path_exists(path)){
         get_user_input("MSG: Please enter the permission (e.g. 0777):", permission, 6);
         get_user_input("MSG: Please enter the target user:", user, MAX_NAME_LENGTH);
         get_user_input("MSG: Please enter the target group:", group, MAX_NAME_LENGTH);
@@ -74,7 +47,7 @@ bool set_dac(){
                 return false;
             }
         }else{
-            printf("ERR: DAC could not be set.\n");
+            fprintf(stderr, "ERR: set_dac(): DAC could not be set.\n");
             return false;
         }
     }else{

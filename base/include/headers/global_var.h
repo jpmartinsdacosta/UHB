@@ -22,32 +22,17 @@
 #define CONFIG_UHB "../config/files/config.sh"
 
 // Service configuration filepaths
-#define CONFIG_DAC "/config/files/dac.sh"
-#define CONFIG_ACL "/config/files/acl.sh"
-#define CONFIG_MAC "/config/files/mac.sh"
-#define CONFIG_LOG "/config/files/dac.sh"
-#define CONFIG_AUD "/config/files/aud.sh"
-#define CONFIG_FWL "/config/files/fwl.sh"
+#define CONFIG_DAC "../config/files/dac.sh"
+#define CONFIG_ACL "../config/files/acl.sh"
+#define CONFIG_MAC "../config/files/mac.sh"
+#define CONFIG_LOG "../config/files/dac.sh"
+#define CONFIG_AUD "../config/files/aud.sh"
+#define CONFIG_FWL "../config/files/fwl.sh"
 
 // Configuration template filepaths
 #define CONFIG_TEMPLATE_PATH "../config/template/config_template.txt"
 #define SERVICE_TEMPLATE_PATH "../config/template/service_template.txt"
 #define MODULE_TEMPLATE_PATH "../config/template/module_template.txt"
-
-/**
- * Structures for the validation of DAC, ACL and MAC flags
- */
-
-typedef struct Flag{
-    char flag;
-    bool used;
-    bool recursive;
-} Flag;
-
-typedef struct FlagList{
-    Flag *flags;
-    int size;
-}FlagList;
 
 /**
  * Structures for the validation of DAC, ACL and MAC policy

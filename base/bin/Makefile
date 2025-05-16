@@ -1,6 +1,6 @@
 # Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c11 -I../include/headers -I../include/interfaces
+CFLAGS = -Wall -g -Wextra -std=c11 -I../include/headers -I../include/interfaces
 
 # Detect the operating system
 UNAME_S := $(shell uname -s)
