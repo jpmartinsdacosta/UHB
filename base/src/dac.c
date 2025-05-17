@@ -10,7 +10,6 @@
 
 FlagCollection get_dac_fc, set_dac_fc;
 
-
 const char get_dac_flags[] = {
     'a',    // Include entries with .
     'l',    // Long listing format
@@ -58,7 +57,7 @@ bool set_dac(){
     char group[MAX_NAME_LENGTH];
     char flags[MAX_LINE_LENGTH];
     init_flag(&set_dac_fc,4,set_dac_flags);
-    if(get_filepath(path) && path_exists(path)){
+    if(get_filepath(path)){
         get_user_input("MSG: Please enter the permission (e.g. 0777):", permission, 6);
         get_user_input("MSG: Please enter the target user:", user, MAX_NAME_LENGTH);
         get_user_input("MSG: Please enter the target group:", group, MAX_NAME_LENGTH);

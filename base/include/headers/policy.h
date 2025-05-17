@@ -40,6 +40,13 @@ void set_flags(FlagCollection *fc, const char *flagArray);
 void reset_flag_used(FlagCollection *fc);
 
 /**
+ * @brief Prints the available flags of a FlagCollection to the user.
+ * @param fc The FlagCollection structure.
+ * @note THIS FUNCTION IS ALREADY USED IN check_flags()!
+ */
+void print_flags(FlagCollection *fc);
+
+/**
  * @brief Initializes and sets the flags to a FlagCollection to be used for an executable.
  * @param fc The FlagCollection structure.
  * @param numFlags The number of available flags in the flagArray

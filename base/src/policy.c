@@ -38,9 +38,18 @@ void reset_flag_used(FlagCollection *fc) {
     }
 }
 
+void print_flags(FlagCollection *fc){
+    printf("MSG: Available flag options: ");
+    for(int i = 0; i < fc->count; i++){
+        printf("%c ",fc->flags[i].flag);
+    }
+    printf("\n");
+}
+
 void init_flag(FlagCollection *fc, int numFlags, const char *flagArray){
     init_fc(fc,numFlags);
     set_flags(fc,flagArray);
+    print_flags(fc);
 }
 
 bool find_flag(char flag, FlagCollection *fc) {

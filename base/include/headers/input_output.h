@@ -28,7 +28,7 @@ int get_yes_no_input(const char *prompt);
 int get_user_input(const char *prompt, char *buffer, size_t bufferSize);
 
 /**
- * @brief Get the user's input for a path.
+ * @brief Get the user's input for a path and checks if it exists.
  * @param path The path to store the user's input.
  * @return true if the user's input is valid, false otherwise.
  */
