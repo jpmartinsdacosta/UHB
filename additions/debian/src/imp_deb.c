@@ -17,7 +17,7 @@
 // Debian headers.
 #endif
 
-char os[] = "##uhb_os = DEB";
+char os[] = "## uhb_os = DEB";
 
 char* get_os(){
     return os;

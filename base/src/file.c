@@ -115,95 +115,74 @@ char* find_fs_from_path(const char *fp){
 }
 
 bool copy_file(const char *source, const char *destination) {
-    FILE *src = fopen(source, "r");
-    if (src == NULL) {
+    FILE *source_file = fopen(source, "rb");
+    if (source_file == NULL) {
+        perror("Error opening source file");
         return false;
     }
 
-    FILE *dst = fopen(destination, "w");
-    if (dst == NULL) {
-        fclose(src);
+    FILE *destination_file = fopen(destination, "wb");
+    if (destination_file == NULL) {
+        perror("Error opening destination file");
+        fclose(source_file);
         return false;
     }
 
-    int ch;
-    while ((ch = fgetc(src)) != EOF) {
-        if (fputc(ch, dst) == EOF) {
-            fclose(src);
-            fclose(dst);
-            return false;
-        }
+    char buffer[1024];
+    size_t bytes_read;
+
+    while ((bytes_read = fread(buffer, 1, sizeof(buffer), source_file)) > 0) {
+        fwrite(buffer, 1, bytes_read, destination_file);
     }
 
-    fclose(src);
-    if (fclose(dst) == EOF) {
-        return false;
-    }
+    fclose(source_file);
+    fclose(destination_file);
 
     return true;
 }
 
 bool find_first_and_replace(const char *fp, const char *target, const char *replacement) {
-    FILE *file = fopen(fp, "r");
+    FILE *file = fopen(fp,"r");
     FILE *temp = tmpfile();
     char buffer[MAX_LINE_LENGTH];
     bool found = false;
-
-    if (file == NULL) {
-        perror("Error opening file");
+    if(file == NULL){
+        perror("perror");
         return false;
     }
-
-    if (temp == NULL) {
-        perror("Error creating temp file");
+    if(temp == NULL){
+        perror("perror");
         fclose(file);
         return false;
     }
-
-    while (fgets(buffer, sizeof(buffer), file)) {
-        if (!found) {
+    while(fgets(buffer,sizeof(buffer),file)){
+        if(!found){
             char *pos = strstr(buffer, target);
-            if (pos != NULL) {
-                size_t target_len = strlen(target);
-                size_t replacement_len = strlen(replacement);
-                size_t remaining_len = strlen(pos + target_len);
-
-                // Ensure buffer has enough space for replacement
-                if (replacement_len + remaining_len < MAX_LINE_LENGTH - (pos - buffer)) {
-                    memmove(pos + replacement_len, pos + target_len, remaining_len + 1);
-                    memcpy(pos, replacement, replacement_len);
-                    found = true;
-                } else {
-                    fprintf(stderr, "ERR: find_first_and_replace(): Buffer too small for replacement.\n");
-                    fclose(file);
-                    fclose(temp);
-                    return false;
-                }
+            if(pos != NULL){
+                memmove(pos + strlen(replacement), pos + strlen(target), strlen(pos + strlen(target)) + 1);
+                memcpy(pos, replacement, strlen(replacement));
+                found = true;
             }
         }
         fputs(buffer, temp);
     }
-
     fclose(file);
-    file = fopen(fp, "w");
-    if (file == NULL) {
-        perror("Error reopening file");
+    file = fopen(fp,"w");
+    if(file == NULL){
+        perror("perror");
         fclose(temp);
         return false;
     }
-
     rewind(temp);
-    while (fgets(buffer, sizeof(buffer), temp)) {
-        fputs(buffer, file);
+    while(fgets(buffer,sizeof(buffer),temp)){
+        fputs(buffer,file);
     }
-
     fclose(temp);
     fclose(file);
-
-    if (!found) {
-        fprintf(stderr, "ERR: find_first_and_replace(): String not found.\n");
+    if(!found){
+        printf("ERR: find_first_and_replace(): String not found\n");
         return false;
-    } else {
+    }else{
         return true;
     }
 }

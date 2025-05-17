@@ -237,7 +237,7 @@ void main_menu(){
                 printf("MSG: Option not implemented yet.\n");
                 break;
             case 9:
-                reset_service_conf();
+                reset_uhb_conf();
                 break;
             case 0:
                 reset_conf();

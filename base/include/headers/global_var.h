@@ -35,6 +35,20 @@
 #define MODULE_TEMPLATE_PATH "../config/template/module_template.txt"
 
 /**
+ * Structures to manage flags/options when executing each service
+ */
+
+typedef struct{
+    char flag;
+    bool used;
+} Flag;
+
+typedef struct{
+    Flag *flags;
+    int count;
+} FlagCollection;
+
+/**
  * Structures for the validation of DAC, ACL and MAC policy
  */
 

@@ -17,7 +17,7 @@
 // FreeBSD headers.
 #endif
 
-char os[] = "##uhb_os = BSD";
+char os[] = "## uhb_os = BSD";
 
 char* get_os(){
     return os;

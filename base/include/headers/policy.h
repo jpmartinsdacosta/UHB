@@ -6,6 +6,65 @@
 #include "global_var.h"
 
 /**
+ * Flag management functions
+ */
+
+/**
+ * @brief Initializes a FlagCollection.
+ * @param fc The FlagCollection to initialize.
+ * @param numFlags The number of flags to support.
+ * @note DO NOT USE THIS FUNCTION, USE init_flag() INSTEAD!
+ */
+void init_fc(FlagCollection *fc, int numFlags);
+
+/**
+ * @brief Frees the memory allocated in a FlagCollection.
+ * @param fc The FlagCollection structure.
+ * @note THIS FUNCTION IS ALREADY USED IN check_flags()!
+ */
+void free_fc(FlagCollection *fc);
+
+/**
+ * @brief Set the flags of a FlagCollection from a predefined array.
+ * @param fc The FlagCollection structure.
+ * @param flagArray The predefined array.
+ * @note DO NOT USE THIS FUNCTION, USE init_flag() INSTEAD!
+ */
+void set_flags(FlagCollection *fc, const char *flagArray);
+
+/**
+ * @brief Resets all the marked flags to false.
+ * @param fc The FlagCollection structure.
+ * @note THIS FUNCTION IS ALREADY USED IN check_flags()!
+ */
+void reset_flag_used(FlagCollection *fc);
+
+/**
+ * @brief Initializes and sets the flags to a FlagCollection to be used for an executable.
+ * @param fc The FlagCollection structure.
+ * @param numFlags The number of available flags in the flagArray
+ * @param flagArray The list of valid flags for an executable.
+ */
+void init_flag(FlagCollection *fc, int numFlags, const char *flagArray);
+
+/**
+ * @brief Find a given flag inside a FlagCollection and mark it.
+ * @param flag Flag to be found.
+ * @param fc The FlagCollection structure.
+ * @returns True if found and marked, false otherwise.
+ * @note THIS FUNCTION IS ALREADY USED IN check_flags()!
+ */
+bool find_flag(char flag, FlagCollection *fc);
+
+/**
+ * @brief Checks if the flags given by the user for a specific executable are correct.
+ * @param command The 'flags' part of the user input to be checked
+ * @param fc The FlagCollection which contains the valid available flags for the executable.
+ * @returns True if correct, false if the input is invalid.
+ */
+bool check_flags(char *command, FlagCollection *fc);
+
+/**
  * Generic struct memory allocation functions
  */
 

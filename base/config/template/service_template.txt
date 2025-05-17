@@ -1,2 +1,1 @@
 #!/bin/sh
-## This is the [service] service configruation file for UHB.

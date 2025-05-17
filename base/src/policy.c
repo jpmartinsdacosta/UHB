@@ -7,13 +7,83 @@
 #include "global_var.h"
 #include "file.h"
 
-size_t dac_size = 0;
-size_t dac_capacity = 0;
-struct DACStruct *dac_array = NULL;
+/**
+ * Flag management functions
+ */
+
+void init_fc(FlagCollection *fc, int numFlags) {
+    fc->flags = (Flag *)malloc(numFlags * sizeof(Flag));
+    fc->count = numFlags;
+    for (int i = 0; i < numFlags; i++) {
+        fc->flags[i].used = false;
+    }
+    printf("DBG: Flag collection initialized.\n");
+}
+
+void free_fc(FlagCollection *fc) {
+    free(fc->flags);
+    fc->count = 0;
+    printf("DBG: Flag collection freed.\n");
+}
+
+void set_flags(FlagCollection *fc, const char *flagArray) {
+    for (int i = 0; i < fc->count; i++) {
+        fc->flags[i].flag = flagArray[i];
+    }
+}
+
+void reset_flag_used(FlagCollection *fc) {
+    for (int i = 0; i < fc->count; i++) {
+        fc->flags[i].used = false;
+    }
+}
+
+void init_flag(FlagCollection *fc, int numFlags, const char *flagArray){
+    init_fc(fc,numFlags);
+    set_flags(fc,flagArray);
+}
+
+bool find_flag(char flag, FlagCollection *fc) {
+    for (int i = 0; i < fc->count; i++) {
+        if (flag == fc->flags[i].flag && !fc->flags[i].used) {
+            fc->flags[i].used = true;
+            return true;
+        }
+        if (flag == fc->flags[i].flag && fc->flags[i].used) {
+            fprintf(stderr,"ERR: find_flag(): Duplicate flag found.\n");
+            return false;
+        }
+    }
+    fprintf(stderr,"ERR: find_flag(): Incompatible flag found.\n");
+    return false;
+}
+
+bool check_flags(char *command, FlagCollection *fc) {
+    bool correct = true;
+    size_t i = 0;
+
+    if (command[i] != '-') {
+        correct = false;
+    } else {
+        i++;
+    }
+
+    while (command[i] != '\0' && correct) {
+        correct = find_flag(command[i], fc);
+        i++;
+    }
+    reset_flag_used(fc);    // Once checked, make sure to reset all flags ...
+    free_fc(fc);            // and free the FlagCollection
+    return correct;
+}
 
 /**
  * Generic struct memory allocation functions
  */
+
+size_t dac_size = 0;
+size_t dac_capacity = 0;
+struct DACStruct *dac_array = NULL;
 
 void* alloc_struct(size_t capacity, size_t element_size) {
     return malloc(capacity * element_size);
