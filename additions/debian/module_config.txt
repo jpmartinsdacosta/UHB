@@ -3,6 +3,5 @@
 uhb_os = DEB
 uhb_acl = getfacl
 uhb_mac = false
-uhb_log = rsyslog
 uhb_fwl = ufw
 uhb_aud = auditd

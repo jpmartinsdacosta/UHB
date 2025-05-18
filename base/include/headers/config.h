@@ -36,6 +36,8 @@ void uhb_conf_exists(const char *filepath);
  * Functions regarding the service configuration files at uhb/base/config/services/
  */
 
+void detect_execs();
+
 /**
  * @brief Resets ALL service configuration files.
  * @return True if successful, false otherwise.

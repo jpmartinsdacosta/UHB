@@ -49,4 +49,8 @@ bool find_string_in_file(const char *target, const char *filepath);
  */
 bool copy_file(const char *source, const char *destination);
 
+char* find_suffix(const char* filepath, const char* prefix);
+
+bool find_exec_in_file(const char* prefix, const char* filepath);
+
 #endif // FILE_H

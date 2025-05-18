@@ -3,6 +3,5 @@
 uhb_os = BSD
 uhb_acl = getfacl
 uhb_mac = false
-uhb_log = rsyslog
 uhb_fwl = ipfw
 uhb_aud = auditd

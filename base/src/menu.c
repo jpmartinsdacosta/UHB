@@ -332,7 +332,7 @@ void main_menu(){
                 printf("MSG: Option not implemented yet.\n");
                 break;
             case 9:
-                find_string_in_file("uhb_log = rsyslog",MODULE_PATH) ? printf("OK!\n") : printf("NOK!\n");
+                printf("MSG: Option not implemented yet.\n");
                 break;
             case 0:
                 reset_conf();
