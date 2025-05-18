@@ -4,10 +4,9 @@
 
 bool fwl_exists() {
     if(exec_exists("ipfw")){
-        printf("MSG: Firewall was detected.\n");
         return true;
     }else{
-        printf("MSG: Firewall was NOT detected. Configuration will NOT be applied.\n");
+        printf("INI: Firewall was NOT detected. Configuration will NOT be applied.\n");
         return false;
     }
 }

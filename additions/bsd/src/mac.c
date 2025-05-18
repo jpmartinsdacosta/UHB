@@ -5,14 +5,13 @@
 bool mac_exists() {
     /*
     Change the command to detect in FreeBSD
-    if(system("command -v auditd > /dev/null 2>&1") == 0){
-        printf("INI: Audit daemon was detected.\n");
+    if(exec_exists("mac_bsdextended")){
         return true;
     }else{
         printf("INI: Audit daemon was NOT detected.\n");
         return false;
     }
     */
-    printf("MSG: MAC was NOT detected. Configuration will NOT be applied.\n");
+    printf("INI: MAC was NOT detected. Configuration will NOT be applied.\n");
     return false;
 }

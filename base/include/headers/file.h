@@ -49,8 +49,21 @@ bool find_string_in_file(const char *target, const char *filepath);
  */
 bool copy_file(const char *source, const char *destination);
 
+/**
+ * @brief Finds the suffix of a given prefix in a file.
+ * @param filepath Path to the given file.
+ * @param prefix Prefix to search.
+ * @returns A pointer to the array of characters of the suffix.
+ * @note Used to retrieve the executable that is being searched for a service in a UHB Additions Module.
+ */
 char* find_suffix(const char* filepath, const char* prefix);
 
+/**
+ * @brief Checks if an executable exists in a given file.
+ * @param prefix The uhb_xxx prefix located in the UHB Additions Module configuration file.
+ * @param filepath The path to the UHB Additions Module configuration file.
+ * @return True if found, false otherwise.
+ */
 bool find_exec_in_file(const char* prefix, const char* filepath);
 
 #endif // FILE_H
