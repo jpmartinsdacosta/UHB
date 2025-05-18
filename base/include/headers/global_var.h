@@ -19,7 +19,7 @@
 #define CONFIG_FILE_DIR "../config/files"
 
 // Program-wide configuration filepath
-#define CONFIG_UHB "../config/files/config.sh"
+#define CONFIG_UHB "../config/config.sh"
 
 // Service configuration filepaths
 #define CONFIG_DAC "../config/files/dac.sh"

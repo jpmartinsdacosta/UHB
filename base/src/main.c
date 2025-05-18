@@ -12,7 +12,6 @@ int main() {
         return -1;
     }
     if(os != -1){
-        exec_exists_common();
         uhb_conf_exists(CONFIG_UHB);        // Check if the configuration file exists.
         main_menu();                        // Show the menu to the user.
     }else{

@@ -7,15 +7,6 @@
  */
 
 /**
- * @brief Check if an executable exists.
- * 
- * This function checks from an array of executables if they exist in the system,
- * using "which -s" to check if the executable exists. It modifies exec array
- * accordingly in menu.c to 0 or 1 if the executable exists.
- */
- void exec_exists_common();
-
-/**
  * @brief Function that returns the size of a menu.
  * @param options The const char menu options declared at the start of menu.c
  * @returns the size of the menu.
@@ -47,6 +38,26 @@ void dac_menu();
 
 /**
  * @brief Sub-menu for Access Control List(s) options.
+ */
+void acl_menu();
+
+/**
+ * @brief Sub-menu for Mandatory Access Control options.
+ */
+void mac_menu();
+
+/**
+ * @brief Sub-menu for logging options.
+ */
+void log_menu();
+
+/**
+ * @brief Sub-menu for auditing options.
+ */
+void acl_menu();
+
+/**
+ * @brief Sub-menu for firewall options.
  */
 void acl_menu();
 

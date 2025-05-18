@@ -9,6 +9,12 @@
  */
 
 /**
+ * @brief Checks if an ACL service is present in the system.
+ * @return True if detected, false otherwise.
+ */
+bool acl_exists();
+
+/**
  * @brief Gets the current ACL settings of a file.
  * @return true if successful, false otherwise.
  */

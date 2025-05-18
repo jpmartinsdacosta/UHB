@@ -6,7 +6,11 @@
  * @brief File responsible for declaring headers of auditing functions common to all UHB Additions Modules.
  */
 
-// Check for auditing daemon presence separately in aud.c and aud.h?
+/**
+ * @brief Checks if an auditing daemon is present in the system.
+ * @return True if detected, false otherwise.
+ */
+bool aud_exists();
 
 /**
  * @brief Checks whether the auditing daemon is running.

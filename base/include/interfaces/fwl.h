@@ -7,6 +7,12 @@
  */
 
 /**
+ * @brief Checks if a firewall is present in the system.
+ * @return True if detected, false otherwise.
+ */
+bool fwl_exists();
+
+/**
  * 
  */
 void check_ports();

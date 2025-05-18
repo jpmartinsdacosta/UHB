@@ -3,6 +3,11 @@
 #include <string.h>
 #include <stdbool.h>
 
+#include "acl.h"
+#include "mac.h"
+#include "log.h"
+#include "aud.h"
+#include "fwl.h"
 #include "file.h"
 #include "config.h"
 #include "policy.h"
@@ -24,7 +29,7 @@ bool reset_uhb_conf(){
         return false;
     }else{
         copy_file(CONFIG_TEMPLATE_PATH,CONFIG_UHB);
-        //find_first_and_replace(CONFIG_UHB,"## uhb_os = NAN", get_os());
+        //find_first_and_replace(CONFIG_UHB,"## uhb_os = NAN", get_os()); DOES NOT WORK...
         return true;
     }
 }
@@ -56,6 +61,7 @@ bool add_uhb_command(const char *command){
 
 bool apply_uhb_conf(){
     FILE *file = fopen(CONFIG_UHB, "r");
+    char command[MAX_LINE_LENGTH];
     if(file != NULL){
         if(find_first_in_file(get_os(),CONFIG_UHB) != 4){
             fprintf(stderr, "ERR: apply_uhb_conf(): OS not found or not supported.\n");
@@ -63,7 +69,8 @@ bool apply_uhb_conf(){
             return false;
         }else{
             printf("MSG: Applying configuration file...\n");
-            system("sh ../config/config.sh");
+            snprintf(command, sizeof(command), "sh \"%s\"", CONFIG_UHB);
+            system(command);
             fclose(file);
             return true;
         }
@@ -122,11 +129,48 @@ bool add_service_command(const char *command, const char *filepath){
     }
 }
 
+void apply_service_conf() {
+    char command[MAX_LINE_LENGTH];
+    snprintf(command, sizeof(command), "sh \"%s\"", CONFIG_DAC);
+    system(command);
+    printf("MSG: DAC policy applied.\n");
+    if(acl_exists()){
+        snprintf(command, sizeof(command), "sh \"%s\"", CONFIG_ACL);
+        system(command);
+        printf("MSG: ACL policy applied.\n");
+    }
+    if(mac_exists()){
+        snprintf(command, sizeof(command), "sh \"%s\"", CONFIG_MAC);
+        system(command);
+        printf("MSG: MAC policy applied.\n");
+    }
+    if(log_exists()){
+        snprintf(command, sizeof(command), "sh \"%s\"", CONFIG_LOG);
+        system(command);
+        printf("MSG: Logging policy applied.\n");
+    }
+    if(aud_exists()){
+        snprintf(command, sizeof(command), "sh \"%s\"", CONFIG_AUD);
+        system(command);
+        printf("MSG: Auditing policy applied.\n");
+    }
+    if(fwl_exists()){
+        snprintf(command, sizeof(command), "sh \"%s\"", CONFIG_FWL);
+        system(command);
+        printf("MSG: Firewall policy applied.\n");
+    }
+}
+
 /**
  * Functions common to all
  */
 
 bool reset_conf(){
     return (reset_uhb_conf() && reset_service_conf());
+}
+
+void apply_conf(){
+    apply_service_conf();
+    apply_uhb_conf();
 }
 

@@ -7,6 +7,12 @@
  */
 
 /**
+ * @brief Checks if a logging daemon is present in the system.
+ * @return True if detected, false otherwise.
+ */
+bool log_exists();
+ 
+/**
  * @brief Checks if the logging daemon is running.
  * @returns True if the daemon is running, false otherwise.
  */

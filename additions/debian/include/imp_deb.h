@@ -12,11 +12,4 @@
  *  All functions that are only used inside this file MUST end with "_deb".
  */
 
-/**
- * @brief Check if supported executables exist on the Debian OS.
- * @param exec The array to store the results of the check.
- * 
- */
-void exec_exists(bool exec[4]);
-
 #endif // IMP_DEB_H

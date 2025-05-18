@@ -37,31 +37,46 @@ bool is_contained(const char* path1, const char* path2) {
     return strncmp(path1, path2, strlen(path1)) == 0;
 }
 
-int find_first_in_file(const char *target, const char *fp){
+int find_first_in_file(const char *target, const char *fp) {
+    if (target == NULL || fp == NULL) {
+        fprintf(stderr, "ERR: find_first_in_file(): Invalid arguments.\n");
+        return -1;
+    }
+
     char line[MAX_LINE_LENGTH];
     int position = 0;
     bool found = false;
-    if(!path_exists(fp)){
+
+    if (!path_exists(fp)) {
         fprintf(stderr, "ERR: find_first_in_file(): The selected file does not exist.\n");
         return -1;
-    }else{
+    } else {
         FILE *file = fopen(fp, "r");
         if (file) {
             while (fgets(line, MAX_LINE_LENGTH, file) && !found) {
+                // Check if target is a valid string
+                if (target[0] == '\0') {
+                    fprintf(stderr, "ERR: find_first_in_file(): Empty target string.\n");
+                    fclose(file);
+                    return -1;
+                }
+
                 if (strstr(line, target)) {
                     found = true;
-                }else{
+                } else {
                     position++;
-                }                    
+                }
             }
             fclose(file);
             return found ? position : -1;
-        }else{
-            fprintf(stderr, "ERR: find_first_in_file(): Error reading %s file.\n",fp);
+        } else {
+            fprintf(stderr, "ERR: find_first_in_file(): Error reading %s file.\n", fp);
             return -1;
         }
     }
 }
+
+
 
 bool find_strings_in_line(const char *a, const char *b, const char *fp) {
     char line[MAX_LINE_LENGTH];
