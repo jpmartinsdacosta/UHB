@@ -2,11 +2,13 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include "module_var.h"
 #include "acl.h"
 #include "mac.h"
 #include "log.h"
 #include "aud.h"
 #include "fwl.h"
+#include "utils.h"
 #include "file.h"
 #include "config.h"
 #include "input_output.h"
@@ -286,7 +288,7 @@ void conf_menu(){
                 clear_conf_prompt();
                 break;
             case 3:
-                apply_conf();
+                apply_service_conf();
                 break;
             case 4:
                 printf("MSG: Option not implemented yet.\n");
@@ -330,7 +332,7 @@ void main_menu(){
                 printf("MSG: Option not implemented yet.\n");
                 break;
             case 9:
-                reset_uhb_conf();
+                find_string_in_file("uhb_log = rsyslog",MODULE_PATH) ? printf("OK!\n") : printf("NOK!\n");
                 break;
             case 0:
                 reset_conf();

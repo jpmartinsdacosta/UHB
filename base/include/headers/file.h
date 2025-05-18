@@ -34,27 +34,12 @@ void view_file(const char *filepath);
 bool is_contained(const char* path1, const char* path2);
 
 /**
- * @brief Finds the first instance of a string inside a file.
- * @param target the string to be found inside the file.
- * @param fp the fp of the file where to search.
- * @returns -1 if no instances were found or as an error result, returns the line position otherwise.
+ * @brief Finds a given string in a file.
+ * @param target String to be found.
+ * @param filepath Given file.
+ * @returns True if found, false otherwise.
  */
-int find_first_in_file(const char *target, const char *fp);
-
-/**
- * @brief Finds two strings inside a line of a file.
- * @param a the first string to be found inside the file.
- * @param b the second string to be found inside the file.
- * @param fp the fp of the file where to search.
- */
-bool find_strings_in_line(const char *a, const char *b, const char *fp);
-
-/**
- * @brief Finds the filesystem of a given path.
- * @param fp the path to be checked.
- * @returns the filesystem of the given path if it exists, NULL otherwise.
- */
-char* find_fs_from_path(const char *fp);
+bool find_string_in_file(const char *target, const char *filepath);
 
 /**
  * @brief Copies a file, character by character to another.
@@ -63,23 +48,5 @@ char* find_fs_from_path(const char *fp);
  * @returns True if successful, false otherwise.
  */
 bool copy_file(const char *source, const char *destination);
-
-/**
- * @brief Finds and replaces the first occurence of a given string in a file.
- * @param fp File in which to make replacements.
- * @param target String to be replaced.
- * @param replacement Replacment.
- * @return True if successful, false otherwise.
- */
-bool find_first_and_replace(const char *fp, const char *target, const char *replacement);
-
-/**
- * @brief Finds and replaces the first occurence of a given string in a file.
- * @param fp File in which to make replacements.
- * @param target String to be replaced.
- * @param replacement Replacment.
- * @return True if successful, false otherwise.
- */
-bool find_n_and_replace(const char *fp, const char *target, const char *replacement, int num);
 
 #endif // FILE_H

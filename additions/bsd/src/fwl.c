@@ -3,11 +3,11 @@
 #include "global_var.h"
 
 bool fwl_exists() {
-    if(system("command -v ipfw > /dev/null 2>&1") == 0){
-        printf("MSG: Firewall was detected. Configuration will be applied.\n");
+    if(exec_exists("ipfw")){
+        printf("MSG: Firewall was detected.\n");
         return true;
     }else{
-        printf("MSG: Firewall was NOT detected. Configuration will not be applied.\n");
+        printf("MSG: Firewall was NOT detected. Configuration will NOT be applied.\n");
         return false;
     }
 }

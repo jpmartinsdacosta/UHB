@@ -29,7 +29,6 @@ bool reset_uhb_conf(){
         return false;
     }else{
         copy_file(CONFIG_TEMPLATE_PATH,CONFIG_UHB);
-        //find_first_and_replace(CONFIG_UHB,"## uhb_os = NAN", get_os()); DOES NOT WORK...
         return true;
     }
 }
@@ -42,41 +41,6 @@ void uhb_conf_exists(const char *filepath){
         }else{
             fprintf(stderr, "ERR: uhb_conf_exists(): Error creating configuration file.\n");
         }
-    }
-}
-
-
-bool add_uhb_command(const char *command){
-    FILE *file = fopen(CONFIG_UHB, "a");
-    if (file) {
-        fprintf(file, "%s\n", command);
-        fclose(file);
-        config_modified = true;
-        return true;
-    } else {
-        fprintf(stderr, "ERR: add_uhb_command(): Error adding command to configuration file.\n");
-        return false;
-    }
-}
-
-bool apply_uhb_conf(){
-    FILE *file = fopen(CONFIG_UHB, "r");
-    char command[MAX_LINE_LENGTH];
-    if(file != NULL){
-        if(find_first_in_file(get_os(),CONFIG_UHB) != 4){
-            fprintf(stderr, "ERR: apply_uhb_conf(): OS not found or not supported.\n");
-            fclose(file);
-            return false;
-        }else{
-            printf("MSG: Applying configuration file...\n");
-            snprintf(command, sizeof(command), "sh \"%s\"", CONFIG_UHB);
-            system(command);
-            fclose(file);
-            return true;
-        }
-    }else{
-        fprintf(stderr, "ERR: apply_uhb_conf(): Error applying configuration file.\n");
-        return false;
     }
 }
 
@@ -168,9 +132,3 @@ void apply_service_conf() {
 bool reset_conf(){
     return (reset_uhb_conf() && reset_service_conf());
 }
-
-void apply_conf(){
-    apply_service_conf();
-    apply_uhb_conf();
-}
-

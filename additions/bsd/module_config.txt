@@ -1,7 +1,8 @@
 ## This is the UHB module configuration file for the FreeBSD operating system.
 ## MODULE CONFIGURATION PARAMETERS:
 uhb_os = BSD
-uhb_acl = false
-uhb_mac = mac_bsdextended
-uhb_fwl = pf, ipfw, ipfilter
+uhb_acl = getfacl
+uhb_mac = false
+uhb_log = rsyslog
+uhb_fwl = ipfw
 uhb_aud = auditd

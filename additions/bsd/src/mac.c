@@ -13,5 +13,6 @@ bool mac_exists() {
         return false;
     }
     */
-   return false;
+    printf("MSG: MAC was NOT detected. Configuration will NOT be applied.\n");
+    return false;
 }

@@ -1,8 +1,5 @@
-## This is the configuration file for UHB.
-##0. CONFIGURATION FILE PARAMETERS:
-## SERVICES COMMON TO ALL:
-## uhb_os = NAN
-## OS-SPECIFIC SERVICES:
+## This is the configuration file for UHB Base.
+uhb_os = NAN
 uhb_acl = false
 uhb_mac = false
 uhb_fwl = false

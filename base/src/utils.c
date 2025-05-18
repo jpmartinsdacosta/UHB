@@ -5,6 +5,7 @@
 
 #include "os_interface.h"
 #include "global_var.h"
+#include "file.h"
 
 #ifdef _WIN32
 extern const int OS = -1;
@@ -96,5 +97,15 @@ bool check_permission(const char *permission){
         }
     }
     return true;
+}
+
+bool exec_exists(const char *exec){
+    char command[MAX_LINE_LENGTH];
+    snprintf(command, sizeof(command), "command -v \"%s\" > /dev/null 2>&1", exec);
+    if(system(command) == 0){
+        return true;
+    }else{
+        return false;
+    }
 }
 

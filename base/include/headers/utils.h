@@ -48,4 +48,12 @@ bool check_user(const char *user);
  */
 bool check_group(const char *group);
 
+/**
+ * @brief Checks if a given executable exists in the system.
+ * @param exec The name of the executable to check.
+ * @returns True if found, false otherwise.
+ */
+bool exec_exists(char *exec);
+
+
 #endif // UTILS_H

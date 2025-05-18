@@ -33,22 +33,6 @@ bool reset_uhb_conf();
 void uhb_conf_exists(const char *filepath);
 
 /**
- * @brief Add a command to the UHB Base configuration file.
- * @param command The command to be added.
- * @return True if the command was added successfully, false otherwise.
- */
-bool add_uhb_command(const char *command);
-
-/**
- * @brief This function will apply the UHB configuration file to the system.
- * @return True if successful, false otherwise.
- * 
- * @note This function checks if uhb_os = XXX is in line 3 to ensure that the configuration file is being applied correctly.
- * Otherwise, it could execute the configuration file in the wrong operating system if a file has the same name as "uhb_os = XXX".
- */
-bool apply_uhb_conf();
-
-/**
  * Functions regarding the service configuration files at uhb/base/config/services/
  */
 
