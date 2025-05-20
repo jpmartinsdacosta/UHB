@@ -76,7 +76,7 @@ bool check_flags(char *command, FlagCollection *fc) {
     } else {
         i++;
     }
-
+    
     while (command[i] != '\0' && correct) {
         correct = find_flag(command[i], fc);
         i++;

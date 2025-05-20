@@ -6,7 +6,7 @@ bool aud_exists() {
     if(exec_exists("auditd")){
         return true;
     }else{
-        printf("INI: Audit daemon was NOT detected. Configuration will NOT be applied.\n");
+        printf("MSG: Audit daemon was NOT detected. Configuration will NOT be applied.\n");
         return false;
     }
 }

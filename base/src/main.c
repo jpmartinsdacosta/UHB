@@ -12,9 +12,11 @@ int main() {
         return -1;
     }
     if(os != -1){
+        init_dac_array();
         detect_execs();
         uhb_conf_exists(CONFIG_UHB);        // Check if the configuration file exists.
         main_menu();                        // Show the menu to the user.
+        clear_dac_array();
     }else{
         return -1;
     }

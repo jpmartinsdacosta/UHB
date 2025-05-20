@@ -6,7 +6,7 @@ bool acl_exists() {
     if(exec_exists("getfacl")){
         return true;
     }else{
-        printf("INI: ACL was NOT detected. Configuration will NOT be applied.\n");
+        printf("MSG: ACL was NOT detected. Configuration will NOT be applied.\n");
         return false;
     }
 }

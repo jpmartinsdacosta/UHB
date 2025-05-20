@@ -12,6 +12,6 @@ bool mac_exists() {
         return false;
     }
     */
-    printf("INI: MAC was NOT detected. Configuration will NOT be applied.\n");
+    printf("MSG: MAC was NOT detected. Configuration will NOT be applied.\n");
     return false;
 }
