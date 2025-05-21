@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <ctype.h>
 
 #include "os_interface.h"
 #include "global_var.h"
@@ -109,4 +110,12 @@ bool exec_exists(const char *exec){
     }
 }
 
+bool is_recursive(const char *flags){
+    for(int i = 0; i < strlen(flags); i++){
+        if(tolower(flags[i]) == 'r'){
+            return true;
+        }
+    }
+    return false;
+}
 

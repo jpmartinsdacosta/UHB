@@ -106,10 +106,10 @@ void get_dac_data(size_t dac_index);
  * @param user User to be added.
  * @param group Group to be added.
  * @param dac DAC permissions to be added.
- * @note THE RECURSIVE OPTION HAS NOT BEEN IMPLEMENTED YET.
+ * @param recursive If a recursive flag is present.
  * @return True if successful, false otherwise.
  */
-bool add_dac_element(const char *filepath, const char *user, const char *group, const char *dac);
+bool add_dac_element(const char *filepath, const char *user, const char *group, const char *dac, bool recursive);
 
 /**
  * @brief Removes the last element from the DACStruct array.

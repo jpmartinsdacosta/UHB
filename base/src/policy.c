@@ -170,7 +170,7 @@ bool dac_filepath_exists(const char *filepath) {
     return false;
 }
 
-bool add_dac_element(const char *filepath, const char *user, const char *group, const char *dac) {
+bool add_dac_element(const char *filepath, const char *user, const char *group, const char *dac, bool recursive) {
     if (filepath == NULL || user == NULL || group == NULL || dac == NULL) {
         fprintf(stderr, "ERR: Null pointer passed to add_dac_element().\n");
         return false;
@@ -202,7 +202,7 @@ bool add_dac_element(const char *filepath, const char *user, const char *group, 
     element->mac_size = 0;
     element->mac_capacity = 0;
     element->timestamp = time(NULL);
-    if(is_dac_contained(filepath)){
+    if(is_dac_contained(filepath) || recursive){
         element->recursive = true;
     }else{
         element->recursive = false;

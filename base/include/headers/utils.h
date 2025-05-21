@@ -55,5 +55,11 @@ bool check_group(const char *group);
  */
 bool exec_exists(char *exec);
 
+/**
+ * @brief Checks if one of the flags given by the user is recursive.
+ * @param flags The flags added by the user.
+ * @return True if recursive, false otherwise.
+ */
+bool is_recursive(const char *flags);
 
 #endif // UTILS_H

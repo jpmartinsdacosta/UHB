@@ -11,6 +11,7 @@
 #include "utils.h"
 #include "file.h"
 #include "config.h"
+#include "policy.h"
 #include "input_output.h"
 #include "global_var.h"
 #include "os_interface.h"
@@ -99,6 +100,7 @@ void clear_conf_prompt(){
         choice = get_yes_no_input("MSG: Are you sure that you want to clear the config file? (y/n):\n");
         if(choice == 0){
             reset_conf();
+            clear_dac_array();
             printf("MSG: Config file cleared...\n");
         }else{
             printf("MSG: Exiting UHB...\n");
@@ -112,6 +114,7 @@ void final_prompt(){
         choice = get_yes_no_input("MSG: Clear the config file before leaving? (y/n):\n");
         if(choice == 0){
             reset_conf();
+            clear_dac_array();
             printf("MSG: Config file cleared, exiting UHB...\n");
         }else{
             printf("MSG: Exiting UHB...\n");

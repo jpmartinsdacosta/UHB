@@ -63,12 +63,13 @@ bool set_dac(){
         get_user_input("MSG: Please enter the target group:", group, MAX_NAME_LENGTH);
         get_user_input("MSG: Please enter additional flags followed by a single '-':", flags, MAX_LINE_LENGTH);
         if(check_permission(permission) && check_user(user) && check_group(group) && check_flags(flags,&set_dac_fc)){
-                printf("MSG: Setting DAC...\n");
-                snprintf(command, sizeof(command), "chmod %s %s %s", flags, permission, path);
-                add_service_command(command, CONFIG_DAC);
-                snprintf(command, sizeof(command), "chown %s %s:%s %s\n", flags, user, group, path);
-                add_service_command(command, CONFIG_DAC);
-                return true;
+            printf("MSG: Setting DAC...\n");
+            add_dac_element(path,user,group,permission,is_recursive(flags));
+            snprintf(command, sizeof(command), "chmod %s %s %s", flags, permission, path);
+            add_service_command(command, CONFIG_DAC);
+            snprintf(command, sizeof(command), "chown %s %s:%s %s\n", flags, user, group, path);
+            add_service_command(command, CONFIG_DAC);
+            return true;
         }else{
             fprintf(stderr, "ERR: set_dac(): DAC could not be set.\n");
             return false;
