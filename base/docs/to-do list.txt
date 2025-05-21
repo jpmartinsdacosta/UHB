@@ -2,8 +2,6 @@ TO-DO LIST:
 
 # Singular TO-DO LIST so that I don't forget to do stuff.
 
-1. Change configuration file functions in order to work with separate service-oriented config files.
-
 2. Add an additional flag to filelink if an DAC, ACL or MAC command is recursive and affects already added policy.
 Also warn the user when validating the configuration file.
 
@@ -15,7 +13,7 @@ FROM WHAT I UNDERSTAND:
     b) If MAC is being used, then MAC takes full precedence.
         MAC > ACL > DAC
 
-4 IMPORTANT: Create a function that gets the users options when creating DAC, ACL and MAC policy (separately) and transforms them into the 
+4 IMPORTANT: Create a function that gets the users options when creating ACL and MAC policy (separately) and transforms them into the 
 CORRECT flags when writing to the config file.
 
 Create an array of strings for each system executable that is used for DAC, ACL and MAC separately.

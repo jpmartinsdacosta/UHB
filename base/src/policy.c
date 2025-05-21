@@ -70,13 +70,14 @@ bool find_flag(char flag, FlagCollection *fc) {
 bool check_flags(char *command, FlagCollection *fc) {
     bool correct = true;
     size_t i = 0;
-
-    if (command[i] != '-') {
+    if(command[i] == '\n' || command[i] == '\0'){   // No flags were given
+        return correct;
+    }
+    if (command[i] != '-') {                        // Flags were given, must check validity
         correct = false;
     } else {
         i++;
     }
-    
     while (command[i] != '\0' && correct) {
         correct = find_flag(command[i], fc);
         i++;
@@ -148,7 +149,9 @@ void get_dac_data(size_t dac_index) {
 bool is_dac_contained(const char *filepath){
     bool result = false;
     for(size_t i = 0; i < dac_size && !result ; i++){
-        if(is_contained(filepath, dac_array[i].fp) || is_contained(filepath, dac_array[i].fp)){
+        printf("DBG: Is %s contained inside %s?\n",filepath,dac_array[i].fp);
+        if(is_contained(dac_array[i].fp,filepath) && dac_array[i].recursive){
+            printf("DBG: Yes, it is contained!\n");
             result = true;
         }
     }
@@ -203,6 +206,9 @@ bool add_dac_element(const char *filepath, const char *user, const char *group, 
     element->mac_capacity = 0;
     element->timestamp = time(NULL);
     if(is_dac_contained(filepath) || recursive){
+        if(is_dac_contained(filepath)){
+            printf("Contained, adding recursive option...\n");
+        }
         element->recursive = true;
     }else{
         element->recursive = false;
@@ -358,4 +364,3 @@ bool rem_mac_element(size_t dac_index, size_t mac_index) {
 /**
  * Policy-checking functions
  */
-

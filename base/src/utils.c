@@ -110,6 +110,21 @@ bool exec_exists(const char *exec){
     }
 }
 
+bool is_contained(const char* path1, const char* path2) {
+    size_t len1 = strlen(path1);
+    size_t len2 = strlen(path2);
+    if (len1 > len2) {
+        return false;
+    }
+    if (strncmp(path1, path2, len1) != 0) {
+        return false;
+    }
+    if (len1 == len2 || path2[len1] == '/') {
+        return true;
+    }
+    return false;
+}
+
 bool is_recursive(const char *flags){
     for(int i = 0; i < strlen(flags); i++){
         if(tolower(flags[i]) == 'r'){

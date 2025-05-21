@@ -33,11 +33,6 @@ void view_file(const char *filepath) {
     }
 }
 
-// UNTESTED
-bool is_contained(const char* path1, const char* path2) {
-    return strncmp(path1, path2, strlen(path1)) == 0;
-}
-
 bool find_string_in_file(const char *target, const char *filepath) {
     FILE *file = fopen(filepath, "r");
     if (file == NULL) {

@@ -101,6 +101,7 @@ void clear_conf_prompt(){
         if(choice == 0){
             reset_conf();
             clear_dac_array();
+            init_dac_array();
             printf("MSG: Config file cleared...\n");
         }else{
             printf("MSG: Exiting UHB...\n");
