@@ -55,9 +55,10 @@ const char *mac_menu_options[] = {
 };
 
 const char *log_menu_options[] = {
-    "1. Placeholder 1",
-    "2. Placeholder 2",
-    "3. View current logging configuration",
+    "1. Change RFC logging standard",
+    "2. Configure local logging",
+    "3. Configure remote logging",
+    "4. View current logging configuration",
     "0. Return to Main Menu",
     NULL
 };

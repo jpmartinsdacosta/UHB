@@ -18,6 +18,16 @@
 int get_yes_no_input(const char *prompt);
 
 /**
+ * @brief Function that prompts the user for 3 possible inputs.
+ * @param prompt Custom prompt to show the user.
+ * @param opt1 Custom valid character option 1;
+ * @param opt2 Custom valid character option 2;
+ * @param opt3 Custom valid character option 3;
+ * @returns -1 on error, or 0, 1 or 2 respectively.
+ */
+int three_option_input(const char *prompt, const char opt1, const char opt2, const char opt3);
+
+/**
  * @brief Get the user's input.
  * @param prompt The prompt to show to the user.
  * @param buffer The buffer to store the user's input.

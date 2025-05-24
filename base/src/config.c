@@ -52,8 +52,8 @@ void uhb_conf_exists(const char *filepath){
 void detect_execs(){
     find_exec_in_file("uhb_acl =",MODULE_PATH) ? printf("INI: ACL service detected.\n") : printf("INI: ACL service not found.\n");
     find_exec_in_file("uhb_mac =",MODULE_PATH) ? printf("INI: MAC service detected.\n") : printf("INI: MAC service not found.\n");
-    log_exists() ? printf("INI: LOG service detected.\n") : printf("INI: LOG service not found.\n");
-    find_exec_in_file("uhb_aud =",MODULE_PATH) ? printf("INI: AUD service detected.\n") : printf("INI: AUD service not found.\n");
+    //log_exists() ? printf("INI: LOG service detected.\n") : printf("INI: LOG service not found.\n");
+    //find_exec_in_file("uhb_aud =",MODULE_PATH) ? printf("INI: AUD service detected.\n") : printf("INI: AUD service not found.\n");
     find_exec_in_file("uhb_fwl =",MODULE_PATH) ? printf("INI: FWL service detected.\n") : printf("INI: FWL service not found.\n");
 }
 
@@ -74,6 +74,7 @@ bool reset_service_conf(){
             fprintf(stderr, "ERR: reset_uhb_conf(): Failed to reset MAC.\n");
             return false;
         }
+        /*
         if(!copy_file(SERVICE_TEMPLATE_PATH,CONFIG_LOG)){
             fprintf(stderr, "ERR: reset_uhb_conf(): Failed to reset LOG.\n");
             return false;
@@ -82,6 +83,7 @@ bool reset_service_conf(){
             fprintf(stderr, "ERR: reset_uhb_conf(): Failed to reset AUD.\n");
             return false;
         }
+        */
         if(!copy_file(SERVICE_TEMPLATE_PATH,CONFIG_FWL)){
             fprintf(stderr, "ERR: reset_uhb_conf(): Failed to reset FWL.\n");
             return false;
@@ -117,16 +119,19 @@ void apply_service_conf() {
         system(command);
         printf("MSG: MAC policy applied.\n");
     }
+    /*
     if(log_exists()){
         snprintf(command, sizeof(command), "sh \"%s\"", CONFIG_LOG);
         system(command);
         printf("MSG: Logging policy applied.\n");
     }
+    
     if(aud_exists()){
         snprintf(command, sizeof(command), "sh \"%s\"", CONFIG_AUD);
         system(command);
         printf("MSG: Auditing policy applied.\n");
     }
+    */
     if(fwl_exists()){
         snprintf(command, sizeof(command), "sh \"%s\"", CONFIG_FWL);
         system(command);

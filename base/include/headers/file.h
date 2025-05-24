@@ -32,6 +32,14 @@ void view_file(const char *filepath);
 bool find_string_in_file(const char *target, const char *filepath);
 
 /**
+ * @brief Appends text to a given file.
+ * @param text Text to be appended.
+ * @param filepath Target file.
+ * @returns True if successful, false otherwise.
+ */
+bool append_to_file(const char *text, const char *filepath);
+
+/**
  * @brief Copies a file, character by character to another.
  * @param source        Source fp to be copied.
  * @param destination   Destination fp to be copied to.

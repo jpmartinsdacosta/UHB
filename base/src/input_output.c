@@ -33,6 +33,33 @@ int get_yes_no_input(const char *prompt) {
     return answer;
 }
 
+int three_option_input(const char *prompt, const char opt1, const char opt2, const char opt3) {
+    char input[3];
+    int answer = -1;
+    printf("%s", prompt);
+    while (answer == -1) {
+        if (fgets(input, sizeof(input), stdin) != NULL) {
+            input[strcspn(input, "\n")] = 0; // Remove newline character
+            for (int i = 0; input[i]; i++) {
+                input[i] = tolower(input[i]);
+            }
+            if (input[0] == tolower(opt1) && input[1] == '\0') {
+                answer = 0;
+            } else if (input[0] == tolower(opt2) && input[1] == '\0') {
+                answer = 1;
+            } else if (input[0] == tolower(opt3) && input[1] == '\0') {
+                answer = 2;
+            } else {
+                printf("Invalid input. Please try again.\n");
+            }
+        } else {
+            fprintf(stderr, "Error reading input. Please try again.\n");
+        }
+    }
+
+    return answer;
+}
+
 int get_user_input(const char *prompt, char *buffer, size_t bufferSize) {
     int result = 0;
     printf("%s", prompt);

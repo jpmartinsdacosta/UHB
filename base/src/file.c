@@ -54,6 +54,17 @@ bool find_string_in_file(const char *target, const char *filepath) {
     return found;
 }
 
+bool append_to_file(const char *text, const char *filepath){
+    FILE *file = fopen(filepath, "a");
+    if (file == NULL) {
+        perror("Error opening file");
+        return false;
+    }
+    fprintf(file, "%s", text);
+    fclose(file);
+    return true;
+}
+
 bool copy_file(const char *source, const char *destination) {
     FILE *source_file = fopen(source, "rb");
     if (source_file == NULL) {
