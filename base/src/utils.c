@@ -134,3 +134,12 @@ bool is_recursive(const char *flags){
     return false;
 }
 
+bool is_port_open(int port) {
+    char command[256];
+    snprintf(command, sizeof(command), "ss -tuln | grep '%d ' | grep 'LISTEN' >/dev/null 2>&1", port);
+    if(system(command) == 0){
+        return true;
+    }else{
+        return false;
+    }
+}

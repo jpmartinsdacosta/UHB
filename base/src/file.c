@@ -40,7 +40,7 @@ bool find_string_in_file(const char *target, const char *filepath) {
         return false;
     }
 
-    char line[1024];
+    char line[MAX_LINE_LENGTH];
     bool found = false;
 
     while (fgets(line, sizeof(line), file)) {
@@ -52,6 +52,85 @@ bool find_string_in_file(const char *target, const char *filepath) {
 
     fclose(file);
     return found;
+}
+
+int find_string_in_file_number(const char *filepath, const char *search_string) {
+    FILE *file = fopen(filepath, "r");
+    if (file == NULL) {
+        perror("Error opening file");
+        return -1;
+    }
+    char line[MAX_LINE_LENGTH]; // Buffer to store each line
+    int line_number = 0;
+    while (fgets(line, sizeof(line), file) != NULL) {
+        line_number++;
+        // Check if the search string is present in the current line
+        if (strstr(line, search_string) != NULL) {
+            fclose(file);
+            return line_number;
+        }
+    }
+
+    fclose(file);
+    return -1; // String not found
+}
+
+bool replace_line_in_file(const char *filepath, const char *new_line, int line_number) {
+    FILE *file = fopen(filepath, "r");
+    if (file == NULL) {
+        perror("Error opening file");
+        return false;
+    }
+
+    // Create a temporary file
+    char temp_filepath[256];
+    snprintf(temp_filepath, sizeof(temp_filepath), "%s.temp", filepath);
+    FILE *temp_file = fopen(temp_filepath, "w");
+    if (temp_file == NULL) {
+        perror("Error creating temporary file");
+        fclose(file);
+        return false;
+    }
+
+    char line[MAX_LINE_LENGTH]; // Buffer to store each line
+    int current_line = 1;
+
+    while (fgets(line, sizeof(line), file) != NULL) {
+        if (current_line == line_number) {
+            // Replace the line with the new line
+            fputs(new_line, temp_file);
+            fputs("\n", temp_file); // Ensure the line ends with a newline
+        } else {
+            // Copy the original line to the temporary file
+            fputs(line, temp_file);
+        }
+        current_line++;
+    }
+
+    fclose(file);
+    fclose(temp_file);
+
+    // Replace the original file with the temporary file
+    if (remove(filepath) != 0) {
+        perror("Error deleting original file");
+        return false;
+    }
+
+    if (rename(temp_filepath, filepath) != 0) {
+        perror("Error renaming temporary file");
+        return false;
+    }
+
+    return true;
+}
+
+bool find_and_replace(const char *original, const char *replacement, const char *filepath){
+    int pos = find_string_in_file_number(filepath,original);
+    if(pos == -1){
+        return false;
+    }else{
+        return replace_line_in_file(filepath,replacement,pos);
+    }
 }
 
 bool append_to_file(const char *text, const char *filepath){

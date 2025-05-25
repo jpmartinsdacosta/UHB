@@ -337,7 +337,7 @@ void main_menu(){
                 printf("MSG: Option not implemented yet.\n");
                 break;
             case 9:
-                printf("MSG: Option not implemented yet.\n");
+                is_port_open(12345) ? printf("PORT OPEN\n") : printf("PORT CLOSED\n");
                 break;
             case 0:
                 reset_conf();

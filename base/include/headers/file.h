@@ -32,6 +32,32 @@ void view_file(const char *filepath);
 bool find_string_in_file(const char *target, const char *filepath);
 
 /**
+ * @brief Finds the line number in which the first instance of a given string is located.
+ * @param target Text to be searched.
+ * @param filepath The filepath of the given file.
+ * @returns -1 if not found or if an error has occured, otherwise returns the line number.
+ */
+int find_string_in_file_number(const char *filepath, const char *search_string);
+
+/**
+ * @brief Replaces a line of a file with the given string.
+ * @param filepath The filepath of the given file.
+ * @param replacement Replacement string.
+ * @param line The line number to be replaced.
+ * @returns True if successful, false otherwise.
+ */
+bool replace_line_in_file(const char *filepath, const char *replacement, int line);
+
+/**
+ * @brief Finds a string in a given text file and replaces it.
+ * @param original Original text to be found.
+ * @param replacement Replacement text to be used.
+ * @param filepath The filepath of the given file.
+ * @returns True if successful, false otherwise.
+ */
+bool find_and_replace(const char *original, const char *replacement, const char *filepath);
+
+/**
  * @brief Appends text to a given file.
  * @param text Text to be appended.
  * @param filepath Target file.

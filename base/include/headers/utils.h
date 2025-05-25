@@ -72,4 +72,11 @@ bool is_contained(const char* path1, const char* path2);
  */
 bool is_recursive(const char *flags);
 
+/**
+ * @brief Checks if a port is open or not in the system.
+ * @param port The port number to be checked.
+ * @returns True if open, false if closed.
+ */
+bool is_port_open(int port);
+
 #endif // UTILS_H

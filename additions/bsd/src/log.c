@@ -8,13 +8,15 @@
 #include "input_output.h"
 #include "log.h"
 
-#define RSYSLOG_CONF_PATH "/usr/local/etc/rsyslog.conf"
+#define RSYSLOG_ORIGINAL_CONF "/usr/local/etc/rsyslog.conf"
+#define RSYSLOG_BACKUP_CONF "/root/uhb/base/config/template/rsyslog.conf.template"
+
 #define SEND_RFC5424 "$ActionForwardDefaultTemplate RSYSLOG_SyslogProtocol23Format"
 #define WRITE_RFC5424 "$ActionFileDefaultTemplate RSYSLOG_SyslogProtocol23Format"
 
 static bool rfc_5424;
 
-bool rsyslog_exists() {
+bool log_exists() {
     if(exec_exists("rsyslog")){
         printf("MSG: Logging daemon was detected.\n");
         return true;
@@ -24,7 +26,7 @@ bool rsyslog_exists() {
     }
 }
     
-bool check_rsyslog_status(){
+bool check_logging_status(){
     char command[MAX_LINE_LENGTH];
     snprintf(command, sizeof(command), "service rsyslog status >/dev/null 2>&1");
     if(system(command) == 0){
