@@ -3,6 +3,7 @@
 #include "policy.h"
 #include "menu.h"
 #include "config.h"
+#include "log.h"
 
 int main() {
     int os = os_detect();
@@ -15,6 +16,7 @@ int main() {
         init_dac_array();
         detect_execs();
         uhb_conf_exists(CONFIG_UHB);        // Check if the configuration file exists.
+        initialize_logging();
         main_menu();                        // Show the menu to the user.
         clear_dac_array();
     }else{

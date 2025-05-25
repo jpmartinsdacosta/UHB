@@ -24,6 +24,13 @@ bool path_exists(const char *path);
 void view_file(const char *filepath);
 
 /**
+ * @brief Creates an empty file given a filepath.
+ * @param filepath The filepath of the file to create.
+ * @returns True if successful, false otherwise.
+ */
+bool create_file(const char *filepath);
+
+/**
  * @brief Finds a given string in a file.
  * @param target String to be found.
  * @param filepath Given file.

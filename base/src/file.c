@@ -33,6 +33,16 @@ void view_file(const char *filepath) {
     }
 }
 
+bool create_file(const char *filepath){
+    FILE *file = fopen(filepath, "w");
+    if (file == NULL) {
+        perror("Error creating file");
+        return -1;
+    }
+    fclose(file);
+    return 0;
+}
+
 bool find_string_in_file(const char *target, const char *filepath) {
     FILE *file = fopen(filepath, "r");
     if (file == NULL) {

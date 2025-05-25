@@ -56,9 +56,11 @@ const char *mac_menu_options[] = {
 
 const char *log_menu_options[] = {
     "1. Change RFC logging standard",
-    "2. Configure local logging",
-    "3. Configure remote logging",
-    "4. View current logging configuration",
+    "2. Add a local logging rule",
+    "3. Set up a logging server",
+    "4. Add a location where to store remote logs",
+    "5. Add logs to be forwarded to a remote server",
+    "6. View current logging configuration",
     "0. Return to Main Menu",
     NULL
 };
@@ -70,6 +72,7 @@ const char *aud_menu_options[] = {
     "0. Return to Main Menu",
     NULL
 };
+
 const char *fwl_menu_options[] = {
     "1. Placeholder 1",
     "2. Placeholder 2",
@@ -215,15 +218,24 @@ void mac_menu(){
 void log_menu(){
     int choice = -1;
     while(choice != 0){
-        choice = display_menu("Logging daemon Menu", mac_menu_options);
+        choice = display_menu("Logging daemon Menu", log_menu_options);
         switch(choice){
             case 1:
-                printf("MSG: Option not implemented yet.\n");
+                apply_rfc5424();
                 break;
             case 2:
-                printf("MSG: Option not implemented yet.\n");
+                add_local_logs();
                 break;
             case 3:
+                set_log_reception_service();
+                break;
+            case 4:
+                add_log_reception_rule();
+                break;
+            case 5:
+                add_log_forwarding_rule();
+                break;
+            case 6:
                 view_file(CONFIG_LOG);
                 break;
             case 0:
@@ -337,7 +349,7 @@ void main_menu(){
                 printf("MSG: Option not implemented yet.\n");
                 break;
             case 9:
-                is_port_open(12345) ? printf("PORT OPEN\n") : printf("PORT CLOSED\n");
+                printf("MSG: Option not implemented yet.\n");
                 break;
             case 0:
                 reset_conf();
