@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
 #include "global_var.h"
 #include "module_var.h"
@@ -14,14 +15,16 @@
 #define RSYSLOG_BACKUP_CONF "/root/uhb/base/config/template/rsyslog.conf.template"
 #define RSYSLOG_REMOTE_CONF "/root/uhb/base/config/template/50-default.conf"
 
-#define SEND_RFC5424 "$ActionForwardDefaultTemplate RSYSLOG_SyslogProtocol23Format\n"
-#define WRITE_RFC5424 "$ActionFileDefaultTemplate RSYSLOG_SyslogProtocol23Format\n"
+#define SEND_RFC5424 "$ActionForwardDefaultTemplate RSYSLOG_SyslogProtocol23Format"
+#define WRITE_RFC5424 "$ActionFileDefaultTemplate RSYSLOG_SyslogProtocol23Format"
+
+#define MAX_PORT_SIZE 6 // Buffer up to 6 characters 5 digits + '\0'
 
 static bool rfc_5424_send;
 static bool rfc_5424_write;
 
-static char udp_port[10] = "514";   // Port for the UDP listening module - port 514 as startup default
-static char tcp_port[10] = "514";   // Port for the TCP listening module - port 514 as startup default
+char udp_port[MAX_PORT_SIZE] = "514";   // Port for the UDP listening module - port 514 as startup default
+char tcp_port[MAX_PORT_SIZE] = "514";   // Port for the TCP listening module - port 514 as startup default
 
 /**
  * Functions to check the existence and status of rsyslog
@@ -80,32 +83,22 @@ void detect_rfc5424() {
 }
 
 void apply_rfc5424() {
-    int opt = get_yes_no_input("MSG: Use RFC5424 standard for remote logs? (Y/N)?\n");
-    if(opt == 0){
+    int opt = get_yes_no_input("MSG 1/2: Use RFC5424 standard for remote logs? (Y/N):");
+    if(opt == 0 && !find_string_in_file(SEND_RFC5424,CONFIG_LOG)){
         append_to_file(SEND_RFC5424,CONFIG_LOG);
         rfc_5424_send = true;
     }else if(opt == 1){
         find_and_replace(SEND_RFC5424,"",CONFIG_LOG);
         rfc_5424_send = false;
     }
-    opt = get_yes_no_input("MSG: Use RFC5424 standard when storing logs in the system? (Y/N)?\n");
-    if(opt == 0){
+    opt = get_yes_no_input("MSG 2/2: Use RFC5424 standard when storing logs in the system? (Y/N):");
+    if(opt == 0 && !find_string_in_file(WRITE_RFC5424,CONFIG_LOG)){
         append_to_file(WRITE_RFC5424,CONFIG_LOG);
         rfc_5424_write = true;
     }else if(opt == 1){
         find_and_replace(WRITE_RFC5424,"",CONFIG_LOG);
         rfc_5424_write = false;
     }
-}
-
-void enable_udp_module(){
-    find_and_replace("#module(load=\"imudp\")","module(load=\"imudp\")",CONFIG_LOG);
-    find_and_replace("#input(type=\"imudp\" port=\"514\")","input(type=\"imudp\" port=\"514\")",CONFIG_LOG);
-}
-
-void enable_tcp_module(){
-    find_and_replace("#module(load=\"imtcp\")","module(load=\"imtcp\")",CONFIG_LOG);
-    find_and_replace("#input(type=\"imtcp\" port=\"514\")","input(type=\"imtcp\" port=\"514\")",CONFIG_LOG);
 }
 
 void initialize_logging(){
@@ -140,21 +133,21 @@ bool apply_logging_config(){
  * Functions to manage logging inside the system
  */
 
- void add_local_logs() {
+void add_local_logs() {
     char msg[MAX_LINE_LENGTH];
     char fp[MAX_LINE_LENGTH];
     char command[MAX_LINE_LENGTH];
     int opt = 1;
     while(opt == 1){
-        get_user_input("MSG: Please enter the messages you want to log:\n",msg,sizeof(msg));
-        opt = get_yes_no_input("MSG: Is the information correct? (Y/N)\n");
+        get_user_input("MSG 1/2: Please enter the messages you want to log:",msg,sizeof(msg));
+        opt = get_yes_no_input("MSG: Is the information correct? (Y/N):");
     }
     opt = 1;
     while(opt == 1){
-        get_user_input("MSG: Please enter where these log messages will be stored:\n",msg,sizeof(msg));
-        opt = get_yes_no_input("MSG: Is the information correct? (Y/N)\n");
+        get_user_input("MSG 2/2: Please enter where these log messages will be stored:",fp,sizeof(fp));
+        opt = get_yes_no_input("MSG: Is the information correct? (Y/N):");
     }
-    snprintf(command,sizeof(command),"%s    %s\n");
+    snprintf(command,sizeof(command),"%s    %s\n",msg, fp);
     append_to_file(command,CONFIG_LOG);
     if(!path_exists(fp)){
         return create_file(fp);
@@ -167,6 +160,34 @@ bool apply_logging_config(){
  * Functions for remote logging/log forwarding
  */
 
+void enable_udp_module(){
+    char a[MAX_LINE_LENGTH];
+    snprintf(a,sizeof(a),"input(type=\"imudp\" port=\"%s\")",udp_port);
+    find_and_replace("#module(load=\"imudp\")","module(load=\"imudp\")",CONFIG_LOG);
+    find_and_replace("#input(type=\"imudp\" port=\"514\")",a,CONFIG_LOG);
+}
+
+void enable_tcp_module(){
+    char b[MAX_LINE_LENGTH];
+    snprintf(b,sizeof(b),"input(type=\"imtcp\" port=\"%s\")",tcp_port);
+    find_and_replace("#module(load=\"imtcp\")","module(load=\"imtcp\")",CONFIG_LOG);
+    find_and_replace("#input(type=\"imtcp\" port=\"514\")",b,CONFIG_LOG);
+}
+
+void disable_udp_module(){
+    char a[MAX_LINE_LENGTH];
+    snprintf(a,sizeof(a),"input(type=\"imudp\" port=\"%s\")",udp_port);
+    find_and_replace("module(load=\"imudp\")","#module(load=\"imudp\")",CONFIG_LOG);
+    find_and_replace(a,"#input(type=\"imudp\" port=\"514\")",CONFIG_LOG);
+}
+
+void disable_tcp_module(){
+    char b[MAX_LINE_LENGTH];
+    snprintf(b,sizeof(b),"input(type=\"imtcp\" port=\"%s\")",tcp_port);
+    find_and_replace("module(load=\"imtcp\")","#module(load=\"imtcp\")",CONFIG_LOG);
+    find_and_replace(b,"#input(type=\"imtcp\" port=\"514\")",CONFIG_LOG);
+}
+
 bool edit_udp_module(const char *port){
     char current[MAX_LINE_LENGTH];
     char replace[MAX_LINE_LENGTH];
@@ -178,6 +199,7 @@ bool edit_udp_module(const char *port){
         fprintf(stderr, "ERR: edit_udp_module(): Could not retrieve replacement UDP module info.\n");
         return false;
     }
+    find_and_replace("#module(load=\"imudp\")","module(load=\"imudp\")",CONFIG_LOG);
     return find_and_replace(current,replace,CONFIG_LOG);
 }
 
@@ -192,22 +214,29 @@ bool edit_tcp_module(const char *port){
         fprintf(stderr, "ERR: edit_tcp_module(): Could not retrieve replacement TCP module info.\n");
         return false;
     }
+    find_and_replace("#module(load=\"imtcp\")","module(load=\"imtcp\")",CONFIG_LOG);
     return find_and_replace(current,replace,CONFIG_LOG);
 }
 
 void set_log_reception_service(){
-    char port[10];
-    if(get_yes_no_input("MSG: Would you like to listen for receiving UDP log messages?\n") == 0){
-        while(!is_port_open(atoi(port))){
-            get_user_input("MSG: Which port would you like to use?:\n",port,sizeof(port));
-        }
+    char port[MAX_PORT_SIZE];
+    int opt = get_yes_no_input("MSG 1/2: Would you like to listen for receiving UDP log messages? (Y/N):");
+    if(opt == 0){
+        enable_udp_module();
+        get_user_input("MSG: Which port would you like to use?:",port,sizeof(port));
         edit_udp_module(port);
+        strcpy(udp_port,port);
+    }else if(opt == 1){
+        disable_udp_module();
     }
-    if(get_yes_no_input("MSG: Would you like to listen for receving TCP log messages?\n") == 0){
-        while(!is_port_open(atoi(port))){
-            get_user_input("MSG: Which port would you like to use?:\n",port,sizeof(port));
-        }
+    opt = get_yes_no_input("MSG 2/2: Would you like to listen for receving TCP log messages? (Y/N):");
+    if(opt == 0){
+        enable_tcp_module();
+        get_user_input("MSG: Which port would you like to use?:",port,sizeof(port));
         edit_tcp_module(port);
+        strcpy(tcp_port,port);
+    }else if(opt == 1){
+        disable_tcp_module();
     }
 }
 
@@ -215,7 +244,7 @@ void add_log_reception_rule(){
     char filename[MAX_LINE_LENGTH];
     char line[MAX_LINE_LENGTH];
     get_user_input("MSG: Where would you like to store receving log messages?\n",filename,sizeof(filename));
-    snprintf(line,sizeof(line),"$template RemoteLogs,\"%s\"",filename);
+    snprintf(line,sizeof(line),"\n$template RemoteLogs,\"%s\"",filename);
     append_to_file(line,CONFIG_LOG);
     append_to_file("*.* ?RemoteLogs",CONFIG_LOG);
     append_to_file("& ~",CONFIG_LOG);
@@ -224,16 +253,16 @@ void add_log_reception_rule(){
 void add_log_forwarding_rule(){
     char command[MAX_LINE_LENGTH];
     char ip[20];
-    char port[10];
+    char port[MAX_PORT_SIZE];
     char directive[MAX_LINE_LENGTH];
-    get_user_input("MSG: Please enter the remote server IP address:\n",ip,sizeof(ip));
-    get_user_input("MSG: Please enter the port number to be used:\n",port,sizeof(port));
+    get_user_input("MSG 1/4: Please enter the remote server IP address:",ip,sizeof(ip));
+    get_user_input("MSG 2/4: Please enter the port number to be used:",port,sizeof(port));
     int opt = 1;
     while(opt == 1){
-        get_user_input("MSG: Please add additional rsyslog file and filter directives:\n",directive,sizeof(directive));
-        opt = get_yes_no_input("MSG: Are the added directives correct? (Y/N):\n");
+        get_user_input("MSG 3/4: Please add additional rsyslog file and filter directives",directive,sizeof(directive));
+        opt = get_yes_no_input("MSG: Are the added directives correct? (Y/N):");
     }
-    opt = three_option_input("MSG: Is the remote server using (U)DP or (T)CP? X to E(x)it.\n",'U','T','X');
+    opt = three_option_input("MSG 4/4: Is the remote server using (U)DP or (T)CP? X to E(x)it:",'U','T','X');
     switch (opt) {
         case 0:
             snprintf(command,sizeof(command),"%s @%s:%s\n",directive,ip,port);

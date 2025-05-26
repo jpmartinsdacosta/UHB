@@ -13,6 +13,7 @@
         "perms.h": "c",
         "os_interface.h": "c",
         "file.h": "c",
-        "io.h": "c"
+        "io.h": "c",
+        "module_var.h": "c"
     }
 }

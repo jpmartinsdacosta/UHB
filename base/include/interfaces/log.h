@@ -46,17 +46,6 @@ void detect_rfc5424();
 void apply_rfc5424();
 
 /**
- * @brief Auxiliary function that uncomments the UDP listening module.
- */
-void enable_udp_module();
-
-/**
- * @brief Auxiliary function that uncomments the TCP listening module.
- */
-void enable_tcp_module();
-
-
-/**
  * @brief Initializes rsyslog for UHB. If rsyslog is detected and enabled, UHB does 2 things:
  * 1. It copies the original rsyslog.conf file to the log.conf file and to the templates folder.
  * 2. It detects and applies whether log.conf has RFC5424 enabled for writing or sending logs.
@@ -84,6 +73,14 @@ void add_local_logs();
 // Configure log rotation settings
 
 // Configure log levels
+
+void enable_udp_module();
+
+void enable_tcp_module();
+
+void disable_udp_module();
+
+void disable_tcp_module();
 
 /**
  * @brief Auxiliary function that finds, uncomments and changes the UDP module in rsyslog.

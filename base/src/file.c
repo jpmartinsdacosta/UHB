@@ -149,7 +149,7 @@ bool append_to_file(const char *text, const char *filepath){
         perror("Error opening file");
         return false;
     }
-    fprintf(file, "%s", text);
+    fprintf(file, "\n%s\n", text);
     fclose(file);
     return true;
 }
