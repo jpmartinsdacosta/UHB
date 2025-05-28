@@ -83,7 +83,7 @@ void detect_rfc5424() {
 }
 
 void apply_rfc5424() {
-    int opt = get_yes_no_input("MSG: Use RFC5424 standard for remote logs? (Y/N):");
+    int opt = get_yes_no_input("MSG 1/2: Use RFC5424 standard for remote logs? (Y/N):");
     if(opt == 0 && !find_string_in_file(SEND_RFC5424,CONFIG_LOG)){
         append_to_file(SEND_RFC5424,CONFIG_LOG);
         rfc_5424_send = true;
@@ -91,7 +91,7 @@ void apply_rfc5424() {
         find_and_replace(SEND_RFC5424,"",CONFIG_LOG);
         rfc_5424_send = false;
     }
-    opt = get_yes_no_input("MSG: Use RFC5424 standard when storing logs in the system? (Y/N):");
+    opt = get_yes_no_input("MSG 2/2: Use RFC5424 standard when storing logs in the system? (Y/N):");
     if(opt == 0 && !find_string_in_file(WRITE_RFC5424,CONFIG_LOG)){
         append_to_file(WRITE_RFC5424,CONFIG_LOG);
         rfc_5424_write = true;
@@ -133,18 +133,18 @@ bool apply_logging_config(){
  * Functions to manage logging inside the system
  */
 
- void add_local_logs() {
+void add_local_logs() {
     char msg[MAX_LINE_LENGTH];
     char fp[MAX_LINE_LENGTH];
     char command[MAX_LINE_LENGTH];
     int opt = 1;
     while(opt == 1){
-        get_user_input("MSG: Please enter the messages you want to log:",msg,sizeof(msg));
+        get_user_input("MSG 1/2: Please enter the messages you want to log:",msg,sizeof(msg));
         opt = get_yes_no_input("MSG: Is the information correct? (Y/N):");
     }
     opt = 1;
     while(opt == 1){
-        get_user_input("MSG: Please enter where these log messages will be stored:",fp,sizeof(fp));
+        get_user_input("MSG 2/2: Please enter where these log messages will be stored:",fp,sizeof(fp));
         opt = get_yes_no_input("MSG: Is the information correct? (Y/N):");
     }
     snprintf(command,sizeof(command),"%s    %s\n",msg, fp);
@@ -154,7 +154,9 @@ bool apply_logging_config(){
     }else{
         return true;
     }
- }
+}
+
+// Add logrotate functionality afterwards
 
 /**
  * Functions for remote logging/log forwarding
@@ -259,7 +261,7 @@ void add_log_forwarding_rule(){
     get_user_input("MSG 2/4: Please enter the port number to be used:",port,sizeof(port));
     int opt = 1;
     while(opt == 1){
-        get_user_input("MSG 3/4: Please add additional rsyslog file and filter directives",directive,sizeof(directive));
+        get_user_input("MSG 3/4: Please add additional rsyslog file and filter directives:",directive,sizeof(directive));
         opt = get_yes_no_input("MSG: Are the added directives correct? (Y/N):");
     }
     opt = three_option_input("MSG 4/4: Is the remote server using (U)DP or (T)CP? X to E(x)it:",'U','T','X');
@@ -275,4 +277,5 @@ void add_log_forwarding_rule(){
             break;
     }
     append_to_file(command,RSYSLOG_FORWARD_CONF);
+    printf("MSG: Added configuration to the %s file.\n",RSYSLOG_FORWARD_CONF);
 }

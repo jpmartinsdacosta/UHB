@@ -154,7 +154,9 @@ void add_local_logs() {
     }else{
         return true;
     }
- }
+}
+
+// Add logrotate functionality afterwards
 
 /**
  * Functions for remote logging/log forwarding
@@ -259,7 +261,7 @@ void add_log_forwarding_rule(){
     get_user_input("MSG 2/4: Please enter the port number to be used:",port,sizeof(port));
     int opt = 1;
     while(opt == 1){
-        get_user_input("MSG 3/4: Please add additional rsyslog file and filter directives",directive,sizeof(directive));
+        get_user_input("MSG 3/4: Please add additional rsyslog file and filter directives:",directive,sizeof(directive));
         opt = get_yes_no_input("MSG: Are the added directives correct? (Y/N):");
     }
     opt = three_option_input("MSG 4/4: Is the remote server using (U)DP or (T)CP? X to E(x)it:",'U','T','X');
@@ -275,4 +277,5 @@ void add_log_forwarding_rule(){
             break;
     }
     append_to_file(command,RSYSLOG_FORWARD_CONF);
+    printf("MSG: Added configuration to the %s file.\n",RSYSLOG_FORWARD_CONF);
 }

@@ -70,27 +70,41 @@ bool apply_logging_config();
   */
 void add_local_logs();
 
-// Configure log rotation settings
+// Configure log rotation settings using logrotate?
 
-// Configure log levels
-
+/**
+ * @brief Enables the UDP module for listening to rsyslog logs via UDP.
+ * This is done by uncommenting the imudp module lines.
+ */
 void enable_udp_module();
 
+/**
+ * @brief Enables the TCP module for listening to rsyslog logs via TCP.
+ * This is done by uncommenting the imtcp module lines.
+ */
 void enable_tcp_module();
 
+/**
+ * @brief Disables the UDP module for listening to rsyslog logs via UDP.
+ * This is done by commenting the imudp module lines.
+ */
 void disable_udp_module();
 
+/**
+ * @brief Disables the TCP module for listening to rsyslog logs via UDP.
+ * This is done by commenting the imtcp module lines.
+ */
 void disable_tcp_module();
 
 /**
- * @brief Auxiliary function that finds, uncomments and changes the UDP module in rsyslog.
+ * @brief Edits the port used in the UDP module.
  * @param port The port to be used, in string format.
  * @returns True if successful, false otherwise.
  */
 bool edit_udp_module(const char *port);
 
 /**
- * @brief Auxiliary function that finds, uncomments and changes the TCP module in rsyslog.
+ * @brief Edits the port used in the TCP module.
  * @param port The port to be used, in string format.
  * @returns True if successful, false otherwise.
  */
