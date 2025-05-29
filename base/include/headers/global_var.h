@@ -30,9 +30,9 @@
 #define CONFIG_FWL "../config/files/fwl.sh"
 
 // Configuration template filepaths
-#define CONFIG_TEMPLATE_PATH "../config/template/config_template.txt"
-#define SERVICE_TEMPLATE_PATH "../config/template/service_template.txt"
-#define MODULE_TEMPLATE_PATH "../config/template/module_template.txt"
+#define CONFIG_TEMPLATE_PATH "../config/templates/config_template.txt"
+#define SERVICE_TEMPLATE_PATH "../config/templates/service_template.txt"
+#define MODULE_TEMPLATE_PATH "../config/templates/module_template.txt"
 
 /**
  * Structures to manage flags/options when executing each service

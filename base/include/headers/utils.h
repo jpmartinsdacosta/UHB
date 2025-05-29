@@ -17,6 +17,30 @@
 int os_detect();
 
 /**
+ * @brief Function that returns the size of an array of strings.
+ * @param options The pointer to the array of strings.
+ * @returns the size of the menu.
+ */
+int get_string_array_size(const char **options);
+
+/**
+ * @brief Function the displays an array of strings.
+ * @param prompt Prompt to be displayed before the array of strings.
+ * @param options The pointer to the array of strings.
+ * @note DO NOT USE THIS FUNCTION FOR MORE THAN 10 OPTIONS IN TOTAL.
+ * @return -1 if error, selected option otherwise. 
+ */
+int select_string_array(const char *prompt, const char **options);
+
+/**
+ * @brief Function that checks if a given string is present in an array of strings.
+ * @param target The target string to be found.
+ * @param options Pointer to the array of strings to check.
+ * @returns True if found, false otherwise.
+ */
+bool in_string_array(const char *target, const char **options);
+
+/**
  * @brief Sanitizes user and group names, filtering out non-alphanumeric characters,
  * to avoid command injection during user/group searches.
  * @param input The user's input.

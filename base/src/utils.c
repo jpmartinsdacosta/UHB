@@ -46,6 +46,40 @@ int os_detect(){
     return ans;
 }
 
+int get_string_array_size(const char **options){
+    int size = 0;
+    while(options[size] != NULL){
+        size++;
+    }
+    return size;
+}
+
+int select_string_array(const char *prompt, const char **options){
+    int choice = -1;
+    char input[3];
+    printf("%s\n", prompt);
+    for(int i = 0; i < get_string_array_size(options); i++){
+        printf("%s\n", options[i]);
+    }
+    if(get_user_input("MSG: Please select an option:", input, sizeof(input)) != -1){
+        choice = atoi(input);
+        system("clear");
+        return choice;
+    }else{
+        system("clear");
+        return -1;
+    }  
+}
+
+bool in_string_array(const char *target, const char **options){
+    bool found = false;
+    for(int i = 0; i < get_string_array_size(options) && !found; i++){
+        if(strcmp(target,options[i]))
+            found = true;
+    }
+    return found;
+}
+
 bool sanitize_name(const char *input) {
     for (size_t i = 0; i < strlen(input); i++) {
         if (!isalnum(input[i])) {

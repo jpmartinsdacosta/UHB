@@ -13,5 +13,15 @@
  */
 
 #define MODULE_PATH "../../additions/bsd/module_config.txt"
+#define RC_CONF "/etc/rc.conf"
+
+/**
+ * @brief Checks if a given service is enabled in the rc.conf file.
+ * @param service Service to be checked.
+ * @returns True if enabled, false if disabled or not present.
+ */
+bool enabled_in_rc_conf(const char *service);
+
+void add_audit_control_option();
 
 #endif // MODULE_VAR_H

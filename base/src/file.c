@@ -238,3 +238,50 @@ bool find_exec_in_file(const char* prefix, const char* filepath){
         return false;
     }
 }
+
+void replace_option_value(const char *option_name, char separator, const char *param, const char *filepath) {
+    FILE *file = fopen(filepath, "r+");
+    if (file == NULL) {
+        perror("Error opening file");
+        return;
+    }
+
+    char buffer[MAX_LINE_LENGTH];
+    long int pos = 0;
+    int option_name_length = strlen(option_name);
+    int found = 0;
+
+    while (fgets(buffer, sizeof(buffer), file) != NULL) {
+        pos = ftell(file);
+
+        // Remove the newline character from buffer, if present
+        buffer[strcspn(buffer, "\n")] = '\0';
+
+        // Check if the line starts with option_name followed by the separator
+        if (strncmp(buffer, option_name, option_name_length) == 0 &&
+            buffer[option_name_length] == ' ' &&
+            buffer[option_name_length + 1] == separator) {
+
+            // Move the file pointer to the beginning of the line
+            fseek(file, pos - strlen(buffer) - 1, SEEK_SET);
+
+            // Calculate the length of the new line
+            int new_line_length = snprintf(NULL, 0, "%s %c %s", option_name, separator, param);
+
+            // Write the new line with the updated parameter, followed by spaces to overwrite any remaining characters
+            fprintf(file, "%s %c %s", option_name, separator, param);
+            for (int i = new_line_length; i < strlen(buffer); i++) {
+                fputc(' ', file);
+            }
+
+            found = 1;
+            break;
+        }
+    }
+
+    if (!found) {
+        printf("Option '%s' not found in the file.\n", option_name);
+    }
+
+    fclose(file);
+}

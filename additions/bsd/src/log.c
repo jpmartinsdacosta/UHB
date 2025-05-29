@@ -12,8 +12,8 @@
 
 #define RSYSLOG_ORIGINAL_CONF "/usr/local/etc/rsyslog.conf"
 #define RSYSLOG_FORWARD_CONF "/usr/local/etc/rsyslog.d/50-default.conf"
-#define RSYSLOG_BACKUP_CONF "/root/uhb/base/config/template/rsyslog.conf.template"
-#define RSYSLOG_REMOTE_CONF "/root/uhb/base/config/template/50-default.conf"
+#define RSYSLOG_BACKUP_CONF "/root/uhb/base/config/templates/rsyslog.conf.template"
+#define RSYSLOG_REMOTE_CONF "/root/uhb/base/config/templates/50-default.conf"
 
 #define SEND_RFC5424 "$ActionForwardDefaultTemplate RSYSLOG_SyslogProtocol23Format"
 #define WRITE_RFC5424 "$ActionFileDefaultTemplate RSYSLOG_SyslogProtocol23Format"

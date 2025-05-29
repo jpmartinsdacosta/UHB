@@ -97,4 +97,13 @@ char* find_suffix(const char* filepath, const char* prefix);
  */
 bool find_exec_in_file(const char* prefix, const char* filepath);
 
+/**
+ * @brief This function is used to replace the value of an option in a generic configuration file.
+ * @param option_name The name of the option that needs to be modified.
+ * @param separator The character used as a separator, generally '=' or ':'
+ * @param param The parameter to be used for the option.
+ * @param filepath Filepath to the configuration file.
+ */
+void replace_option_value(const char *option_name, char separator, const char *param, const char *filepath);
+
 #endif // FILE_H

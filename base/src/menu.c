@@ -61,6 +61,7 @@ const char *log_menu_options[] = {
     "4. Add a location where to store remote logs",
     "5. Add logs to be forwarded to a remote server",
     "6. View current logging configuration",
+    "7. Reset current logging configuration",
     "0. Return to Main Menu",
     NULL
 };
@@ -69,6 +70,7 @@ const char *aud_menu_options[] = {
     "1. Placeholder 1",
     "2. Placeholder 2",
     "3. View current auditing configuration",
+    "4. Reset current auditing configuration",
     "0. Return to Main Menu",
     NULL
 };
@@ -77,26 +79,20 @@ const char *fwl_menu_options[] = {
     "1. Placeholder 1",
     "2. Placeholder 2",
     "3. View current firewall configuration",
+    "4. Reset current firewall configuration",
     "0. Return to Main Menu",
     NULL
 };
 
 const char *conf_menu_options[] = {
-    "1. View configuration file",
-    "2. Clear configuration file",
-    "3. Apply changes from configuration file",
-    "4. Export current configuration file",
+    "1. Load configuration from backup",
+    "2. View configuration file",
+    "3. Clear configuration file",
+    "4. Apply changes from configuration file",
+    "5. Export current configuration file",
     "0. Return to Main Menu",
     NULL
 };
-
-int get_diccionary_size(const char **options){
-    int size = 0;
-    while(options[size] != NULL){
-        size++;
-    }
-    return size;
-}
 
 void clear_conf_prompt(){
     int choice = -1;
@@ -127,27 +123,10 @@ void final_prompt(){
     }
 }
 
-int display_menu(const char *prompt, const char **options){
-    int choice = -1;
-    char input[3];
-    printf("%s\n", prompt);
-    for(int i = 0; i < get_diccionary_size(options); i++){
-        printf("%s\n", options[i]);
-    }
-    if(get_user_input("MSG: Please select an option:", input, sizeof(input)) != -1){
-        choice = atoi(input);
-        system("clear");
-        return choice;
-    }else{
-        system("clear");
-        return -1;
-    }  
-}
-
 void dac_menu(){
     int choice = -1;
     while(choice != 0){
-        choice = display_menu("DAC Menu", dac_menu_options);
+        choice = select_string_array("DAC Menu", dac_menu_options);
         switch(choice){
             case 1:
                 get_dac();
@@ -170,7 +149,7 @@ void dac_menu(){
 void acl_menu(){
     int choice = -1;
     while(choice != 0){
-        choice = display_menu("ACL Menu", acl_menu_options);
+        choice = select_string_array("ACL Menu", acl_menu_options);
         switch(choice){
             case 1:
                 //get_acl();
@@ -195,7 +174,7 @@ void acl_menu(){
 void mac_menu(){
     int choice = -1;
     while(choice != 0){
-        choice = display_menu("MAC Menu", mac_menu_options);
+        choice = select_string_array("MAC Menu", mac_menu_options);
         switch(choice){
             case 1:
                 printf("MSG: Option not implemented yet.\n");
@@ -218,7 +197,7 @@ void mac_menu(){
 void log_menu(){
     int choice = -1;
     while(choice != 0){
-        choice = display_menu("Logging daemon Menu", log_menu_options);
+        choice = select_string_array("Logging daemon Menu", log_menu_options);
         switch(choice){
             case 1:
                 apply_rfc5424();
@@ -250,7 +229,7 @@ void log_menu(){
 void aud_menu(){
     int choice = -1;
     while(choice != 0){
-        choice = display_menu("Auditing daemon Menu", mac_menu_options);
+        choice = select_string_array("Auditing daemon Menu", aud_menu_options);
         switch(choice){
             case 1:
                 printf("MSG: Option not implemented yet.\n");
@@ -273,7 +252,7 @@ void aud_menu(){
 void fwl_menu(){
     int choice = -1;
     while(choice != 0){
-        choice = display_menu("Firewall Menu", mac_menu_options);
+        choice = select_string_array("Firewall Menu", fwl_menu_options);
         switch(choice){
             case 1:
                 printf("MSG: Option not implemented yet.\n");
@@ -296,18 +275,22 @@ void fwl_menu(){
 void conf_menu(){
     int choice = -1;
     while(choice != 0){
-        choice = display_menu("Configuration File Menu", conf_menu_options);
+        choice = select_string_array("Configuration File Menu", conf_menu_options);
         switch(choice){
             case 1:
-                view_file(CONFIG_UHB);
+                // Load configuration from backup 
+                printf("MSG: Option not implemented yet.\n");
                 break;
             case 2:
-                clear_conf_prompt();
+                view_file(CONFIG_UHB);
                 break;
             case 3:
-                apply_service_conf();
+                clear_conf_prompt();
                 break;
             case 4:
+                apply_service_conf();
+                break;
+            case 5:
                 printf("MSG: Option not implemented yet.\n");
                 break;
             case 0:
@@ -322,7 +305,7 @@ void conf_menu(){
 void main_menu(){
     int choice = -1;
     while(choice != 0){
-        choice = display_menu("UHB Main Menu", main_menu_options);
+        choice = select_string_array("UHB Main Menu", main_menu_options);
         switch(choice){
             case 1:
                 dac_menu();
@@ -349,7 +332,7 @@ void main_menu(){
                 printf("MSG: Option not implemented yet.\n");
                 break;
             case 9:
-                printf("MSG: Option not implemented yet.\n");
+                add_audit_control_option();
                 break;
             case 0:
                 reset_conf();
