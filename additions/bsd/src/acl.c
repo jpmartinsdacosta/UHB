@@ -31,3 +31,49 @@ bool acl_exists() {
         return false;
     }
 }
+
+bool get_acl() {
+    char flags[MAX_LINE_LENGTH];
+    char path[MAX_FILEPATH_SIZE];
+    char command[MAX_LINE_LENGTH];
+    init_flag(&get_acl_fc,13,get_acl_flags);
+    if(get_filepath(path)){
+        get_user_input("MSG: Please enter additional flags followed by a single '-':", flags, MAX_LINE_LENGTH);
+        if(check_flags(flags,&get_acl_fc)){
+            printf("MSG: Press q to exit current view.\n");
+            snprintf(command, sizeof(command), "getfacl \"%s\" \"%s\" | less", flags, path);
+            system(command);
+            return true;
+        }
+        return false;
+    }else{
+        fprintf(stderr, "ERR: get_acl(): ACL could not be retrieved.\n");
+        return false;
+    }
+}
+
+bool set_acl() {
+    char flags[MAX_LINE_LENGTH];
+    char path[MAX_FILEPATH_SIZE];
+    char acl_spec[MAX_FILEPATH_SIZE];
+    char command[MAX_LINE_LENGTH];
+
+    init_flag(&set_acl_fc,13,set_acl_flags);
+    if(get_filepath(path)){
+        get_user_input("MSG 1/2: Please enter ACL flags to be used, followed by a single '-':",flags,MAX_LINE_LENGTH);
+        get_user_input("MSG 2/2: Please enter the ACL specification:",acl_spec,MAX_LINE_LENGTH);
+        if(check_flags(flags,&set_acl_fc)){
+            printf("MSG: Setting ACL...\n");
+            //add_acl_element()
+            snprintf(command,sizeof(command), "setfacl %s %s %s",flags, acl_spec, path);
+            add_service_command(command,CONFIG_ACL);
+            return true;
+        }else{
+            fprintf(stderr, "ERR: set_acl(): ACL could not be set.\n");
+            return false;
+        }
+    }else{
+        printf("ERR: Invalid/non-existent path.\n");
+        return false;
+    }
+}

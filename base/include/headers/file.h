@@ -39,12 +39,12 @@ bool create_file(const char *filepath);
 bool find_string_in_file(const char *target, const char *filepath);
 
 /**
- * @brief Finds the line number in which the first instance of a given string is located.
+ * @brief Finds the line number in which the FIRST instance of a given string is located.
  * @param target Text to be searched.
  * @param filepath The filepath of the given file.
  * @returns -1 if not found or if an error has occured, otherwise returns the line number.
  */
-int find_string_in_file_number(const char *filepath, const char *search_string);
+int find_first_string_in_file_number(const char *filepath, const char *search_string);
 
 /**
  * @brief Replaces a line of a file with the given string.
@@ -105,5 +105,18 @@ bool find_exec_in_file(const char* prefix, const char* filepath);
  * @param filepath Filepath to the configuration file.
  */
 void replace_option_value(const char *option_name, char separator, const char *param, const char *filepath);
+
+int replace_string_in_line(const char *filepath, int line, const char *target, const char *replacement);
+
+/**
+ * @brief Auxiliary function that contains most parameters needed to replace a value in a configuration file.
+ * It will also ask the user if the information is correct or not, and if it wishes to leave without replacing.
+ * @param prompt        The prompt to show the user.
+ * @param filepath      The path to the file that needs to be modified.
+ * @param int           The line number where the value to be modified is located.
+ * @param target        The original string that contains the value that needs to be replaced.
+ * @returns 0 if the user has exited the program, 1 if successful, -1 in error.
+ */
+int smart_replacement(const char *prompt, const char *filepath, int line, const char *target);
 
 #endif // FILE_H

@@ -64,7 +64,7 @@ bool find_string_in_file(const char *target, const char *filepath) {
     return found;
 }
 
-int find_string_in_file_number(const char *filepath, const char *search_string) {
+int find_first_string_in_file_number(const char *filepath, const char *search_string) {
     FILE *file = fopen(filepath, "r");
     if (file == NULL) {
         perror("Error opening file");
@@ -83,6 +83,35 @@ int find_string_in_file_number(const char *filepath, const char *search_string) 
 
     fclose(file);
     return -1; // String not found
+}
+
+bool find_string_in_file_number(const char *filepath, const char *search_string, int line_number) {
+    FILE *file = fopen(filepath, "r");
+    if (file == NULL) {
+        perror("Error opening file");
+        return false;
+    }
+
+    char buffer[MAX_LINE_LENGTH];
+    int current_line = 0;
+
+    while (fgets(buffer, sizeof(buffer), file) != NULL) {
+        current_line++;
+
+        if (current_line == line_number) {
+            // Check if the search string is present in the current line
+            if (strstr(buffer, search_string) != NULL) {
+                fclose(file);
+                return true;
+            } else {
+                fclose(file);
+                return false;
+            }
+        }
+    }
+
+    fclose(file);
+    return false; // Line number not found in the file
 }
 
 bool replace_line_in_file(const char *filepath, const char *new_line, int line_number) {
@@ -135,7 +164,7 @@ bool replace_line_in_file(const char *filepath, const char *new_line, int line_n
 }
 
 bool find_and_replace(const char *original, const char *replacement, const char *filepath){
-    int pos = find_string_in_file_number(filepath,original);
+    int pos = find_first_string_in_file_number(filepath,original);
     if(pos == -1){
         return false;
     }else{
@@ -284,4 +313,77 @@ void replace_option_value(const char *option_name, char separator, const char *p
     }
 
     fclose(file);
+}
+
+int replace_string_in_line(const char *filepath, int line, const char *target, const char *replacement) {
+    FILE *file = fopen(filepath, "r");
+    if (!file) {
+        perror("Error opening file");
+        return -1;
+    }
+
+    // Temporary file to write modified content
+    char tempFilePath[256];
+    snprintf(tempFilePath, sizeof(tempFilePath), "%s.tmp", filepath);
+    FILE *tempFile = fopen(tempFilePath, "w");
+    if (!tempFile) {
+        perror("Error creating temporary file");
+        fclose(file);
+        return -1;
+    }
+
+    char buffer[1024];
+    int currentLine = 1;
+
+    while (fgets(buffer, sizeof(buffer), file)) {
+        if (currentLine == line) {
+            char *pos = strstr(buffer, target);
+            if (pos) {
+                char *rest = pos + strlen(target);
+                *pos = '\0';
+                fprintf(tempFile, "%s%s%s", buffer, replacement, rest);
+            } else {
+                fputs(buffer, tempFile);
+            }
+        } else {
+            fputs(buffer, tempFile);
+        }
+        currentLine++;
+    }
+
+    fclose(file);
+    fclose(tempFile);
+
+    // Replace the original file with the temporary file
+    if (remove(filepath) != 0) {
+        perror("Error deleting original file");
+        return -1;
+    }
+
+    if (rename(tempFilePath, filepath) != 0) {
+        perror("Error renaming temporary file");
+        return -1;
+    }
+
+    return 0;
+}
+
+// smart_replacement("Source IP address:",CONFIG_AUD,20,"\t\"<addr>\"",)
+int smart_replacement(const char *prompt, const char *filepath, int line, const char *target){
+    char replacement[MAX_LINE_LENGTH];
+    int opt = 1;
+    while(opt == 1){
+        get_user_input(prompt,replacement,sizeof(replacement));
+        opt = three_option_input("MSG: Is this information correct? (Y)es/(N)o/E(x)it:",'Y','N','X');
+    }
+    if(opt == 0){
+        if(find_string_in_file_number(filepath,target,line)){
+            replace_string_in_line(filepath,line,target,replacement);
+            return 0;
+        }else{
+            return -1;
+        }
+    }else if(opt == 2){
+        return 1;
+    }
 }

@@ -1,6 +1,11 @@
 #ifndef LOG_H
 #define LOG_H
 
+#define SEND_RFC5424 "$ActionForwardDefaultTemplate RSYSLOG_SyslogProtocol23Format"
+#define WRITE_RFC5424 "$ActionFileDefaultTemplate RSYSLOG_SyslogProtocol23Format"
+#define RSYSLOG_BACKUP_CONF "/root/uhb/base/config/backups/rsyslog.conf"
+#define RSYSLOG_REMOTE_CONF "/root/uhb/base/config/templates/50-default.conf"
+
 /**
  * @file log.h
  * @brief This file provides headers for functions regarding logging using rsyslog.
@@ -46,12 +51,16 @@ void detect_rfc5424();
 void apply_rfc5424();
 
 /**
- * @brief Initializes rsyslog for UHB. If rsyslog is detected and enabled, UHB does 2 things:
- * 1. It copies the original rsyslog.conf file to the log.conf file and to the templates folder.
- * 2. It detects and applies whether log.conf has RFC5424 enabled for writing or sending logs.
- * If rsyslog is detected, but not enabled, the user is warned.
+ * @brief Initializes the logging module. This is done by copying the original config file(s)
+ * to the uhb config folder to be modified by the user. Once modified, these are copied back
+ * to the services configuration folder and its respective daemon is reset.
+ * 
+ * This function also copies the original configuration to the backup folder. If needed, instead
+ * of copying from the original configuration file to UHB, it can be done from backup via the
+ * boolean parameter in this function.
+ * @param copy_from_backup Boolean to determine whether to copy from backup.
  */
-void initialize_logging();
+void initialize_logging(bool copy_from_backup);
 
 /**
  * @brief Applies the logging configuration. This is done by copying the modified log.conf file
@@ -68,7 +77,7 @@ bool apply_logging_config();
   * to be logged and where these should be stored. This information is then appended to the log.conf
   * file. If any filepath where logs are stored is missing, it is inmediately created.
   */
-void add_local_logs();
+void add_local_logging();
 
 // Configure log rotation settings using logrotate?
 

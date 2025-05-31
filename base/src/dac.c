@@ -58,10 +58,10 @@ bool set_dac(){
     char flags[MAX_LINE_LENGTH];
     init_flag(&set_dac_fc,4,set_dac_flags);
     if(get_filepath(path)){
-        get_user_input("MSG: Please enter the permission (e.g. 0777):", permission, 6);
-        get_user_input("MSG: Please enter the target user:", user, MAX_NAME_LENGTH);
-        get_user_input("MSG: Please enter the target group:", group, MAX_NAME_LENGTH);
-        get_user_input("MSG: Please enter additional flags followed by a single '-':", flags, MAX_LINE_LENGTH);
+        get_user_input("MSG 1/4: Please enter the permission (e.g. 0777):", permission, 6);
+        get_user_input("MSG 2/4: Please enter the target user:", user, MAX_NAME_LENGTH);
+        get_user_input("MSG 3/4: Please enter the target group:", group, MAX_NAME_LENGTH);
+        get_user_input("MSG 4/4: Please enter additional flags followed by a single '-':", flags, MAX_LINE_LENGTH);
         if(check_permission(permission) && check_user(user) && check_group(group) && check_flags(flags,&set_dac_fc)){
             printf("MSG: Setting DAC...\n");
             add_dac_element(path,user,group,permission,is_recursive(flags));

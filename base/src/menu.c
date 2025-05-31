@@ -34,6 +34,9 @@ const char *dac_menu_options[] = {
     "1. Get DAC of a file/directory",
     "2. Set DAC of a file/directory",
     "3. View current DAC configuration",
+    "4. View ls manual page",
+    "5. View chmod manual page",
+    "6. View chown manual page",
     "0. Return to Main Menu",
     NULL
 };
@@ -42,6 +45,8 @@ const char *acl_menu_options[] = {
     "1. Get ACL of a file/directory",
     "2. Set ACL of a file/directory",
     "3. View current ACL configuration",
+    "4. View getfacl manual page",
+    "5. View setfacl manual page",
     "0. Return to Main Menu",
     NULL
 };
@@ -67,17 +72,18 @@ const char *log_menu_options[] = {
 };
 
 const char *aud_menu_options[] = {
-    "1. Placeholder 1",
-    "2. Placeholder 2",
-    "3. View current auditing configuration",
-    "4. Reset current auditing configuration",
+    "1. Configure auditing in the system",
+    "2. Configure auditing reception service",
+    "3. Configure auditing forwarding service",
+    "4. View current auditing configuration",
+    "5. Reset current auditing configuration",
     "0. Return to Main Menu",
     NULL
 };
 
 const char *fwl_menu_options[] = {
-    "1. Placeholder 1",
-    "2. Placeholder 2",
+    "1. Check for open ports",
+    "2. Add a firewall rule",
     "3. View current firewall configuration",
     "4. Reset current firewall configuration",
     "0. Return to Main Menu",
@@ -137,6 +143,15 @@ void dac_menu(){
             case 3:
                 view_file(CONFIG_DAC);
                 break;
+            case 4:
+                system("man ls");
+                break;
+            case 5:
+                system("man chmod");
+                break;
+            case 6:
+                system("man chown");
+                break;
             case 0:
                 break;
             default:
@@ -153,14 +168,18 @@ void acl_menu(){
         switch(choice){
             case 1:
                 //get_acl();
-                printf("MSG: Option not implemented yet.\n");
                 break;
             case 2:
                 //set_acl();
-                printf("MSG: Option not implemented yet.\n");
                 break;
             case 3:
                 view_file(CONFIG_ACL);
+                break;
+            case 4:
+                system("man getfacl");
+                break;
+            case 5:
+                system("man setfacl");
                 break;
             case 0:
                 break;
@@ -203,7 +222,7 @@ void log_menu(){
                 apply_rfc5424();
                 break;
             case 2:
-                add_local_logs();
+                add_local_logging();
                 break;
             case 3:
                 set_log_reception_service();
@@ -216,6 +235,8 @@ void log_menu(){
                 break;
             case 6:
                 view_file(CONFIG_LOG);
+                break;
+            case 7:
                 break;
             case 0:
                 break;
@@ -232,13 +253,19 @@ void aud_menu(){
         choice = select_string_array("Auditing daemon Menu", aud_menu_options);
         switch(choice){
             case 1:
-                printf("MSG: Option not implemented yet.\n");
+                add_local_auditing();
                 break;
             case 2:
-                printf("MSG: Option not implemented yet.\n");
+                configure_auditing_reception_service();
                 break;
             case 3:
-                view_file(CONFIG_AUD);
+                configure_auditing_forwarding_service();
+                break;
+            case 4:
+                reset_auditing_configuration();
+                break;
+            case 5:
+                view_auditing_configuration();
                 break;
             case 0:
                 break;
@@ -332,7 +359,7 @@ void main_menu(){
                 printf("MSG: Option not implemented yet.\n");
                 break;
             case 9:
-                add_audit_control_option();
+                replace_string_in_line("/root/uhb/base/config/templates/auditdistd.conf",20,"\"<addr>\"","\"PECO\"");
                 break;
             case 0:
                 reset_conf();

@@ -12,11 +12,6 @@
 
 #define RSYSLOG_ORIGINAL_CONF "/usr/local/etc/rsyslog.conf"
 #define RSYSLOG_FORWARD_CONF "/usr/local/etc/rsyslog.d/50-default.conf"
-#define RSYSLOG_BACKUP_CONF "/root/uhb/base/config/templates/rsyslog.conf.template"
-#define RSYSLOG_REMOTE_CONF "/root/uhb/base/config/templates/50-default.conf"
-
-#define SEND_RFC5424 "$ActionForwardDefaultTemplate RSYSLOG_SyslogProtocol23Format"
-#define WRITE_RFC5424 "$ActionFileDefaultTemplate RSYSLOG_SyslogProtocol23Format"
 
 #define MAX_PORT_SIZE 6 // Buffer up to 6 characters 5 digits + '\0'
 
@@ -101,16 +96,22 @@ void apply_rfc5424() {
     }
 }
 
-void initialize_logging(){
+void initialize_logging(bool copy_from_backup){
     if(log_exists() && check_logging_status()){
-        copy_file(RSYSLOG_ORIGINAL_CONF,CONFIG_LOG);            // Copy to the log configuration
-        copy_file(RSYSLOG_ORIGINAL_CONF,RSYSLOG_BACKUP_CONF);   // Backup the original configuration just in case
+        if(!copy_from_backup){
+            // Copy original conf to UHB
+            copy_file(RSYSLOG_ORIGINAL_CONF,CONFIG_LOG);
+            // Copy original conf to backup
+            copy_file(RSYSLOG_ORIGINAL_CONF,RSYSLOG_BACKUP_CONF);
+        }else{
+            // Copy backup to UHB
+            copy_file(RSYSLOG_BACKUP_CONF,CONFIG_LOG);
+        }
         detect_rfc5424();
     }else if(log_exists() && !check_logging_status()){
         printf("WRN: Rsyslog daemon is detected, but not running!\n");
     }
 }
-
 bool apply_logging_config(){
     printf("MSG: Applying UHB logging configuration...\n");
     if(copy_file(CONFIG_LOG,RSYSLOG_ORIGINAL_CONF)){
@@ -133,7 +134,7 @@ bool apply_logging_config(){
  * Functions to manage logging inside the system
  */
 
-void add_local_logs() {
+void add_local_logging() {
     char msg[MAX_LINE_LENGTH];
     char fp[MAX_LINE_LENGTH];
     char command[MAX_LINE_LENGTH];
