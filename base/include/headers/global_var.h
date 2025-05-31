@@ -25,9 +25,6 @@
 #define CONFIG_DAC "../config/files/dac.sh"
 #define CONFIG_ACL "../config/files/acl.sh"
 #define CONFIG_MAC "../config/files/mac.sh"
-#define CONFIG_LOG "../config/files/log.conf"
-#define CONFIG_AUD "../config/files/aud.conf"
-#define CONFIG_FWL "../config/files/fwl.sh"
 
 // Configuration template filepaths
 #define CONFIG_TEMPLATE_PATH "../config/templates/config_template.txt"

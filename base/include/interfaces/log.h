@@ -1,10 +1,8 @@
 #ifndef LOG_H
 #define LOG_H
 
-#define SEND_RFC5424 "$ActionForwardDefaultTemplate RSYSLOG_SyslogProtocol23Format"
-#define WRITE_RFC5424 "$ActionFileDefaultTemplate RSYSLOG_SyslogProtocol23Format"
-#define RSYSLOG_BACKUP_CONF "/root/uhb/base/config/backups/rsyslog.conf"
-#define RSYSLOG_REMOTE_CONF "/root/uhb/base/config/templates/50-default.conf"
+#define SEND_RFC5424        "$ActionForwardDefaultTemplate RSYSLOG_SyslogProtocol23Format"
+#define WRITE_RFC5424       "$ActionFileDefaultTemplate RSYSLOG_SyslogProtocol23Format"
 
 /**
  * @file log.h
@@ -66,7 +64,7 @@ void initialize_logging(bool copy_from_backup);
  * @brief Applies the logging configuration. This is done by copying the modified log.conf file
  * back to the original rsyslog.conf and restarting the daemon.
  */
-bool apply_logging_config();
+bool apply_logging_configuration();
 
 /**
  * Functions to manage logging inside the system
@@ -135,5 +133,7 @@ void add_log_reception_rule();
  * log aggregation server.
  */
 void add_log_forwarding_rule();
+
+void view_logging_manual();
 
 #endif // LOG_H

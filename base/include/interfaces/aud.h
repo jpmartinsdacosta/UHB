@@ -1,16 +1,6 @@
 #ifndef AUD_H
 #define AUD_H
 
-// Config files to be edited.
-#define UHB_AUDIT_CONTROL "/root/uhb/base/config/templates/audit_control"
-#define UHB_AUDIT_USER "/root/uhb/base/config/templates/audit_user"
-#define UHB_AUDIT_WARN "/root/uhb/base/config/templates/audit_warn"
-
-// Backup original config files.
-#define BACKUP_AUDIT_CONTROL "/root/uhb/base/config/templates/audit_control"
-#define BACKUP_AUDIT_USER "/root/uhb/base/config/templates/audit_user"
-#define BACKUP_AUDIT_WARN "/root/uhb/base/config/templates/audit_warn"
-
 /**
  * @file aud.h
  * @brief File responsible for declaring headers of auditing functions common to all UHB Additions Modules.
@@ -81,6 +71,11 @@ void reset_auditing_configuration();
 void view_auditing_configuration();
 
 /**
+ * @brief Applies the current auditing configuration.
+ */
+void apply_auditing_configuration();
+
+/**
  * Functions regarding the addition of custom auditing policy
  */
 
@@ -103,5 +98,19 @@ void configure_auditing_reception_service();
  * @brief Configures the forwarding of audit messages to remote systems.
  */
 void configure_auditing_forwarding_service();
+
+/**
+ * Functions regarding manuals
+ */
+
+/**
+ * @brief View the auditing service manual.
+ */
+void view_auditing_manual();
+
+/**
+ * @brief View the remote auditing service manual.
+ */
+void view_remote_auditing_manual();
 
 #endif // AUD_H

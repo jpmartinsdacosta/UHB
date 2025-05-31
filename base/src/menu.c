@@ -67,6 +67,8 @@ const char *log_menu_options[] = {
     "5. Add logs to be forwarded to a remote server",
     "6. View current logging configuration",
     "7. Reset current logging configuration",
+    "8. Apply current logging configuration",
+    "9. View rsyslog manual page",
     "0. Return to Main Menu",
     NULL
 };
@@ -75,8 +77,11 @@ const char *aud_menu_options[] = {
     "1. Configure auditing in the system",
     "2. Configure auditing reception service",
     "3. Configure auditing forwarding service",
-    "4. View current auditing configuration",
-    "5. Reset current auditing configuration",
+    "4. Reset current auditing configuration",
+    "5. View current auditing configuration",
+    "6. Apply current auditing configuration",
+    "7. View audit daemon manual page",
+    "8. View remote auditing manual page",
     "0. Return to Main Menu",
     NULL
 };
@@ -234,10 +239,16 @@ void log_menu(){
                 add_log_forwarding_rule();
                 break;
             case 6:
-                view_file(CONFIG_LOG);
+                view_logging_configuration();
                 break;
             case 7:
+                reset_logging_configuration();
                 break;
+            case 8:
+                apply_logging_configuration();
+                break;
+            case 9:
+                view_logging_manual();
             case 0:
                 break;
             default:
@@ -259,13 +270,19 @@ void aud_menu(){
                 configure_auditing_reception_service();
                 break;
             case 3:
-                configure_auditing_forwarding_service();
+                remote_auditing_daemon_exists() ? configure_auditing_forwarding_service() : printf("MSG: Option not available.\n");
                 break;
             case 4:
-                reset_auditing_configuration();
+                remote_auditing_daemon_exists() ? reset_auditing_configuration() : printf("MSG: Option not available.\n");
                 break;
             case 5:
                 view_auditing_configuration();
+                break;
+            case 6:
+                view_auditing_manual();
+                break;
+            case 7:
+                remote_auditing_daemon_exists() ? view_remote_auditing_manual() : printf("MSG: Option not available.\n");
                 break;
             case 0:
                 break;
@@ -288,7 +305,7 @@ void fwl_menu(){
                 printf("MSG: Option not implemented yet.\n");
                 break;
             case 3:
-                view_file(CONFIG_FWL);
+                printf("MSG: Option not implemented yet.\n");
                 break;
             case 0:
                 break;
@@ -359,7 +376,7 @@ void main_menu(){
                 printf("MSG: Option not implemented yet.\n");
                 break;
             case 9:
-                replace_string_in_line("/root/uhb/base/config/templates/auditdistd.conf",20,"\"<addr>\"","\"PECO\"");
+                replace_string_in_line("/root/uhb/base/config/templates/auditd.conf",27,"##tcp_listen_port","tcp_listen_port");
                 break;
             case 0:
                 reset_conf();
