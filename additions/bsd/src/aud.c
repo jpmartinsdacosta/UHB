@@ -19,10 +19,10 @@
 #define BSD_AUDIT_AUDITDISTD_ORIGINAL   "/etc/security/auditdistd.conf"
 
 // Filepath to the configuration files to be used/edited in UHB.
-#define BSD_AUDIT_CONTROL_UHB           "/root/uhb/base/config/templates/audit_control"
-#define BSD_AUDIT_USER_UHB              "/root/uhb/base/config/templates/audit_user"
-#define BSD_AUDIT_WARN_UHB              "/root/uhb/base/config/templates/audit_warn"
-#define BSD_AUDIT_AUDITDISTD_UHB        "/root/uhb/base/config/templates/auditdistd.conf"
+#define BSD_AUDIT_CONTROL_UHB           "/root/uhb/base/config/current/audit_control"
+#define BSD_AUDIT_USER_UHB              "/root/uhb/base/config/current/audit_user"
+#define BSD_AUDIT_WARN_UHB              "/root/uhb/base/config/current/audit_warn"
+#define BSD_AUDIT_AUDITDISTD_UHB        "/root/uhb/base/config/current/auditdistd.conf"
 
 // Filepath to the backup of all configuration files.
 #define BSD_AUDIT_CONTROL_BACKUP        "/root/uhb/base/config/backups/audit_control"

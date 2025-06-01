@@ -14,6 +14,8 @@
         "os_interface.h": "c",
         "file.h": "c",
         "io.h": "c",
-        "module_var.h": "c"
+        "module_var.h": "c",
+        "input_output.h": "c",
+        "aud.h": "c"
     }
 }

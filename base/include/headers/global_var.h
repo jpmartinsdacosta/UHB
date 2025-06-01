@@ -15,21 +15,18 @@
 #define MAX_LINE_LENGTH 2048    // 2048, to be used for commands too.
 #define MAX_NAME_LENGTH 32      // 32, standard.
 
-// Configuration filepaths
-#define CONFIG_FILE_DIR "../config/files"
-
 // Program-wide configuration filepath
 #define CONFIG_UHB "../config/config.sh"
 
 // Service configuration filepaths
-#define CONFIG_DAC "../config/files/dac.sh"
-#define CONFIG_ACL "../config/files/acl.sh"
-#define CONFIG_MAC "../config/files/mac.sh"
+#define CONFIG_DAC "../config/current/dac.sh"
+#define CONFIG_ACL "../config/current/acl.sh"
+#define CONFIG_MAC "../config/current/mac.sh"
 
 // Configuration template filepaths
-#define CONFIG_TEMPLATE_PATH "../config/templates/config_template.txt"
-#define SERVICE_TEMPLATE_PATH "../config/templates/service_template.txt"
-#define MODULE_TEMPLATE_PATH "../config/templates/module_template.txt"
+#define CONFIG_TEMPLATE_PATH "../config/current/config_template.txt"
+#define SERVICE_TEMPLATE_PATH "../config/current/service_template.txt"
+#define MODULE_TEMPLATE_PATH "../config/current/module_template.txt"
 
 /**
  * Structures to manage flags/options when executing each service

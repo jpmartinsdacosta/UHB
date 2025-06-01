@@ -17,8 +17,8 @@
 #define DEB_AUDIT_RULES_ORIGINAL    "/etc/audit/audit.rules"
 
 // Filepath to the configuration files to be used/edited in UHB.
-#define DEB_AUDIT_CONF_UHB          "/root/uhb/base/config/templates/auditd.conf" 
-#define DEB_AUDIT_RULES_UHB         "/root/uhb/base/config/templates/audit.rules" 
+#define DEB_AUDIT_CONF_UHB          "/root/uhb/base/config/current/auditd.conf" 
+#define DEB_AUDIT_RULES_UHB         "/root/uhb/base/config/current/audit.rules" 
 
 // Filepath to the backup of all configuration files.
 #define DEB_AUDIT_CONF_BACKUP       "/root/uhb/base/config/backups/auditd.conf"

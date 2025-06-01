@@ -8,9 +8,20 @@
 #include "global_var.h"
 #include "policy.h"
 
-FlagCollection object_fc, mode_fc;
+// File naming convention: <OS>_<MODULE>_<FILENAME>_<FILEPATH>
 
-const char object_flags[] = {
+// Filepath to the original configuration files.
+#define BSD_MAC_CONFIG_ORIGINAL "/etc/rc.bsdextended"
+
+// Filepath to the configuration files to be used/edited in UHB.
+#define BSD_MAC_CONFIG_UHB      "/root/uhb/base/config/current/rc.bsdextended"
+
+// Filepath to the backup of all configuration files.
+#define BSD_MAC_CONFIG_BACKUP   "/root/uhb/base/config/backups/rc.bsdextended"
+
+FlagCollection type_fc, mode_fc;
+
+const char type_flags[] = {
     'a',    // Any file type
     'r',    // A regular file
     'd',    // A directory
@@ -30,20 +41,74 @@ const char mode_flags[] = {
     'n'     // None
 };
 
+/**
+ * MAC functions available to the user in the menu
+ */
 
 bool mac_exists() {
     if(system("kldstat | grep mac_bsdextended > /dev/null 2>&1") == 0){
         return true;
     }else{
-        printf("MSG: ACL was NOT detected. Configuration will NOT be applied.\n");
+        printf("MSG: MAC was NOT detected. Configuration will NOT be applied.\n");
         return false;
     }
 }
 
-bool get_mac() {
-
+void initialize_mac_module(bool copy_from_backup) {
+    if(mac_exists()){
+        if(!copy_from_backup){
+            // Copy original files to UHB
+            copy_file(BSD_MAC_CONFIG_ORIGINAL,BSD_MAC_CONFIG_UHB);
+            // Copy original files to backup 
+            copy_file(BSD_MAC_CONFIG_ORIGINAL,BSD_MAC_CONFIG_BACKUP);
+        }else{
+            // Copy backup to uHB
+            copy_file(BSD_MAC_CONFIG_BACKUP,BSD_MAC_CONFIG_ORIGINAL);
+        }
+    }
 }
 
-bool set_mac() {
-    
+bool get_mac() {
+    system("ugidfw list | less");
+    system("clear");
+}
+
+void set_mac() {
+    char input[MAX_LINE_LENGTH];
+    char subject[MAX_NAME_LENGTH];
+    char uid[MAX_NAME_LENGTH];
+    char gid[MAX_NAME_LENGTH];
+    char object[MAX_NAME_LENGTH];
+    char filesys[MAX_LINE_LENGTH];
+    char type[MAX_LINE_LENGTH];
+    char mode[MAX_LINE_LENGTH];
+    int opt = 1;
+    init_flag(&type_fc,8,type_flags);
+    init_flag(&mode_fc,6,mode_flags);
+    while(opt == 1){
+        get_user_input("MSG: Please insert ugidfw rule to be added:\n",input,sizeof(input));
+        parse_input_next_token(input," ","subject",subject,sizeof(subject));
+        parse_input_next_token(input," ","uid",uid,sizeof(uid));
+        parse_input_next_token(input," ","gid",gid,sizeof(gid));
+        parse_input_next_token(input," ","object",object,sizeof(object));
+        parse_input_next_token(input," ","filesys",filesys,sizeof(filesys));
+        parse_input_next_token(input," ","type",type,sizeof(type));
+        parse_input_next_token(input," ","mode",mode,sizeof(mode));
+        opt = three_option_input("MSG: Is the above information correct? (Y)es/(N)o/E(x)it:",'Y','N','X');
+    }
+    if(opt == 2){
+        return;
+    }
+    if((!is_empty_input(uid) && check_user(uid)) && (!is_empty_input(gid) && check_group(gid)) && (!is_empty_input(filesys) && path_exists(filesys)) && check_flags(type,&type_fc) && check_flags(mode,&mode_fc)){
+        add_service_command(input, CONFIG_MAC);
+    }
+}
+
+void view_mac_manual() {
+    system("man ugidfw");
+    system("clear");
+}
+
+void view_mac_configuration() {
+    view_mac_manual();
 }

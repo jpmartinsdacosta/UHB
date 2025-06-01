@@ -44,4 +44,28 @@ int get_user_input(const char *prompt, char *buffer, size_t bufferSize);
  */
 bool get_filepath(char *path);
 
+/**
+ * @brief Parses the user's input and retrieves the token after a given target one.
+ * @param input Input to be parsed.
+ * @param delimiter The delimiter in string format in which to divide the input in tokens.
+ * @param target The target token.
+ * @param result The result string.
+ * @param resultSize The size of the result string buffer.
+ * @returns 0 in failure, 1 in success.
+ */
+int parse_input_next_token(char *input, const char *delimiter, const char *target, char *result, size_t resultSize);
+
+/**
+ * @brief Parses the user's input and retrieves the n-th token.
+ * @param input Input to be parsed.
+ * @param delimiter The delimiter in string format in which to divide the input in tokens.
+ * @param index The index of the token that is to be retrieved.
+ * @param result The result string.
+ * @param resultSize The size of the result string buffer.
+ * @returns 0 in failure, 1 in success.
+ */
+int parse_input_index_token(char *input, const char *delimiter, int index, char *result, size_t resultSize);
+
+bool is_empty_input(const char *string);
+
 #endif // INPUT_OUTPUT_H

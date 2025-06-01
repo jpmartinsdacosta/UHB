@@ -17,8 +17,8 @@
 #define BSD_RSYSLOG_REMOTE_ORIGINAL     "/usr/local/etc/rsyslog.d/50-default.conf"
 
 // Filepath to the configuration files to be used/edited in UHB.
-#define BSD_RSYSLOG_CONFIG_UHB          "/root/uhb/base/config/templates/rsyslog.conf"
-#define BSD_RSYSLOG_REMOTE_UHB          "/root/uhb/base/config/templates/50-default.conf"
+#define BSD_RSYSLOG_CONFIG_UHB          "/root/uhb/base/config/current/rsyslog.conf"
+#define BSD_RSYSLOG_REMOTE_UHB          "/root/uhb/base/config/current/50-default.conf"
 
 // Filepath to the backup of all configuration files.
 #define BSD_RSYSLOG_CONFIG_BACKUP       "/root/uhb/base/config/backups/rsyslog.conf"

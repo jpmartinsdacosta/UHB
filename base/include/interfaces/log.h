@@ -1,8 +1,8 @@
 #ifndef LOG_H
 #define LOG_H
 
-#define SEND_RFC5424        "$ActionForwardDefaultTemplate RSYSLOG_SyslogProtocol23Format"
-#define WRITE_RFC5424       "$ActionFileDefaultTemplate RSYSLOG_SyslogProtocol23Format"
+#define SEND_RFC5424  "$ActionForwardDefaultTemplate RSYSLOG_SyslogProtocol23Format"
+#define WRITE_RFC5424 "$ActionFileDefaultTemplate RSYSLOG_SyslogProtocol23Format"
 
 /**
  * @file log.h

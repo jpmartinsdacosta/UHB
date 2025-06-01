@@ -55,6 +55,7 @@ const char *mac_menu_options[] = {
     "1. Get MAC of a file/directory",
     "2. Set MAC of a file/directory",
     "3. View current MAC configuration",
+    "4. View MAC manual page",
     "0. Return to Main Menu",
     NULL
 };
@@ -201,13 +202,16 @@ void mac_menu(){
         choice = select_string_array("MAC Menu", mac_menu_options);
         switch(choice){
             case 1:
-                printf("MSG: Option not implemented yet.\n");
+                get_mac();
                 break;
             case 2:
-                printf("MSG: Option not implemented yet.\n");
+                set_mac();
                 break;
             case 3:
-                view_file(CONFIG_MAC);
+                view_mac_configuration();
+                break;
+            case 4:
+                view_mac_manual();
                 break;
             case 0:
                 break;

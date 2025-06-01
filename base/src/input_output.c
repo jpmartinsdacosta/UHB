@@ -87,3 +87,69 @@ bool get_filepath(char *path) {
     }
 }
 
+int parse_input_next_token(char *input, const char *delimiter, const char *target, char *resultBuffer, size_t bufferSize) {
+    char inputCopy[MAX_LINE_LENGTH]; // Buffer to store a copy of the input
+    strncpy(inputCopy, input, sizeof(inputCopy) - 1);
+    inputCopy[sizeof(inputCopy) - 1] = '\0'; // Ensure null-termination
+
+    char *token;
+    char *nextToken = NULL;
+
+    // Use strtok to split the input string copy
+    token = strtok(inputCopy, delimiter);
+
+    // Loop through the tokens
+    while (token != NULL) {
+        if (strcmp(token, target) == 0) {
+            // If the current token matches the target, get the next token
+            nextToken = strtok(NULL, delimiter);
+            if (nextToken != NULL) {
+                // Copy the next token to the result buffer
+                printf("%s: \t\t%s\n",target, nextToken);
+                strncpy(resultBuffer, nextToken, bufferSize - 1);
+                resultBuffer[bufferSize - 1] = '\0'; // Ensure null-termination
+                return 1; // Success
+            } else {
+                // No token after the target
+                resultBuffer[0] = '\0'; // Empty string
+                return 0; // Failure
+            }
+        }
+        token = strtok(NULL, delimiter);
+    }
+
+    // Target not found
+    resultBuffer[0] = '\0'; // Empty string
+    return 0; // Failure
+}
+
+int parse_input_index_token(const char *input, const char *delimiter, int index, char *result, size_t resultSize) {
+    char inputCopy[MAX_LINE_LENGTH]; // Buffer to store a copy of the input
+
+    // Create a copy of the input string
+    strncpy(inputCopy, input, sizeof(inputCopy) - 1);
+    inputCopy[sizeof(inputCopy) - 1] = '\0'; // Ensure null-termination
+
+    char *token;
+    int count = 0;
+
+    // Use strtok to split the copied input string
+    token = strtok(inputCopy, delimiter);
+
+    while (token != NULL) {
+        if (count == index) {
+            strncpy(result, token, resultSize - 1);
+            result[resultSize - 1] = '\0'; // Ensure null-termination
+            return 1; // Success
+        }
+        count++;
+        token = strtok(NULL, delimiter);
+    }
+
+    result[0] = '\0'; // Empty string if nth token not found
+    return 0; // nth token not found
+}
+
+bool is_empty_input(const char *string) {
+    return string[0] == '\n' || string[0] == '\0';
+}

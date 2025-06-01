@@ -57,7 +57,6 @@ bool set_acl() {
     char path[MAX_FILEPATH_SIZE];
     char acl_spec[MAX_FILEPATH_SIZE];
     char command[MAX_LINE_LENGTH];
-
     init_flag(&set_acl_fc,13,set_acl_flags);
     if(get_filepath(path)){
         get_user_input("MSG 1/2: Please enter ACL flags to be used, followed by a single '-':",flags,MAX_LINE_LENGTH);
