@@ -15,15 +15,16 @@
 #define MAX_LINE_LENGTH 2048    // 2048, to be used for commands too.
 #define MAX_NAME_LENGTH 32      // 32, standard.
 
-// Program-wide configuration filepath
-#define CONFIG_UHB "../config/config.sh"
+// File naming convention: <OS>_<MODULE>_<FILENAME>_<FILEPATH>
 
-// Service configuration filepaths
-#define UHB_DAC_CONFIG_CURRENT  "../config/current/dac.sh"
-#define UHB_ACL_CONFIG_CURRENT  "../config/current/acl.sh"
+// Current UHB base configuration file.
+#define UHB_BASE_CONFIG_CURRENT "../config/current/uhb.conf"
+
+// Backup UHB base configuration file, to be copied to current when resetting.
+#define UHB_BASE_CONFIG_BACKUP  "../config/backups/uhb.conf"
 
 // Configuration template filepaths
-#define CONFIG_TEMPLATE_PATH "../config/current/config_template.txt"
+#define CONFIG_TEMPLATE_PATH    "../config/current/config_template.txt"
 
 /**
  * Structures to manage flags/options when executing each service
@@ -43,7 +44,7 @@ typedef struct{
  * Structures for the validation of DAC, ACL and MAC policy
  */
 
-struct ACLStruct {
+ struct ACLStruct {
     char fs[30];
     char acl[MAX_LINE_LENGTH];
     bool recursive;

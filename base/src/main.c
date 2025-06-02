@@ -13,11 +13,9 @@ int main() {
         return -1;
     }
     if(os != -1){
-        init_dac_array();
-        detect_execs();
-        uhb_conf_exists(CONFIG_UHB);        // Check if the configuration file exists.
+        initialize_uhb();
         main_menu();                        // Show the menu to the user.
-        clear_dac_array();
+        terminate_uhb();
     }else{
         return -1;
     }

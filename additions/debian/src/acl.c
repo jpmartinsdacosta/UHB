@@ -8,6 +8,14 @@
 #include "global_var.h"
 #include "policy.h"
 
+// File naming convention: <OS>_<MODULE>_<FILENAME>_<FILEPATH>
+
+// Filepath to the configuration files to be used/edited in UHB.
+#define UHB_ACL_CONFIG_CURRENT  "../config/current/acl.sh"
+
+// Filepath to the backup of all configuration files.
+#define UHB_ACL_CONFIG_BACKUP  "../config/current/script_template.txt"
+
 FlagCollection get_acl_fc, set_acl_fc;
 
 const char get_acl_flags[] = {
@@ -65,8 +73,6 @@ bool get_acl() {
     }
 }
 
-
-// TODO: Modify this function.
 bool set_acl() {
     char flags[MAX_LINE_LENGTH];
     char path[MAX_FILEPATH_SIZE];
@@ -78,7 +84,7 @@ bool set_acl() {
         get_user_input("MSG 2/2: Please enter the ACL specification:",acl_spec,MAX_LINE_LENGTH);
         printf("MSG: Setting ACL...\n");
         if(check_flags(flags,&set_acl_fc)){
-            //add_acl_element()
+            //add_acl_element();
             snprintf(command,sizeof(command), "setfacl %s %s %s",flags, acl_spec, path);
             add_service_command(command,UHB_ACL_CONFIG_CURRENT);
             return true;
@@ -89,5 +95,23 @@ bool set_acl() {
     }else{
         printf("ERR: Invalid/non-existent path.\n");
         return false;
+    }
+}
+
+void view_acl_configuration() {
+    view_file(UHB_ACL_CONFIG_CURRENT);
+}
+
+void reset_acl_configuration() {
+    copy_file(UHB_ACL_CONFIG_BACKUP,UHB_ACL_CONFIG_CURRENT);
+}
+
+void apply_acl_configuration() {
+    char command[MAX_LINE_LENGTH];
+    snprintf(command,sizeof(command),"sh %s",UHB_ACL_CONFIG_CURRENT);
+    if(system(command) == 0){
+        printf("MSG: ACL configuration applied successfully.\n");
+    }else{
+        fprintf(stderr,"ERR: Unable to apply ACL configuration.\n");
     }
 }

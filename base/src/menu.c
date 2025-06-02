@@ -25,8 +25,6 @@ const char *main_menu_options[] = {
     "5. Auditing configuration",
     "6. Firewall configuration",
     "7. Configuration file options",
-    "8. ...",
-    "9. Test specific function",
     "0. Exit UHB",
     NULL
 };
@@ -98,11 +96,9 @@ const char *fwl_menu_options[] = {
 };
 
 const char *conf_menu_options[] = {
-    "1. Load configuration from backup",
-    "2. View configuration file",
-    "3. Clear configuration file",
-    "4. Apply changes from configuration file",
-    "5. Export current configuration file",
+    "1. Load service configuration files from backup",
+    "2. View current UHB Base configuration",
+    "3. Apply DAC, ACL and MAC configuration",
     "0. Return to Main Menu",
     NULL
 };
@@ -151,13 +147,13 @@ void dac_menu(){
                 view_dac_configuration();
                 break;
             case 4:
-                system("man ls");
+                system("man ls ; clear");
                 break;
             case 5:
-                system("man chmod");
+                system("man chmod ; clear");
                 break;
             case 6:
-                system("man chown");
+                system("man chown ; clear");
                 break;
             case 0:
                 break;
@@ -183,10 +179,10 @@ void acl_menu(){
                 view_acl_configuration();
                 break;
             case 4:
-                system("man getfacl");
+                system("man getfacl ; clear");
                 break;
             case 5:
-                system("man setfacl");
+                system("man setfacl ; clear");
                 break;
             case 0:
                 break;
@@ -327,17 +323,14 @@ void conf_menu(){
         choice = select_string_array("Configuration File Menu", conf_menu_options);
         switch(choice){
             case 1:
-                // Load configuration from backup 
-                printf("MSG: Option not implemented yet.\n");
+                load_from_backup_function();
                 break;
             case 2:
-                view_file(CONFIG_UHB);
+                view_configuration_file();
                 break;
             case 3:
-                clear_conf_prompt();
                 break;
             case 4:
-                apply_service_conf();
                 break;
             case 5:
                 printf("MSG: Option not implemented yet.\n");
@@ -379,8 +372,6 @@ void main_menu(){
                 break;
             case 8:
                 printf("MSG: Option not implemented yet.\n");
-                break;
-            case 9:
                 break;
             case 0:
                 reset_conf();

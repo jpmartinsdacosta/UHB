@@ -8,6 +8,14 @@
 #include "global_var.h"
 #include "policy.h"
 
+// File naming convention: <OS>_<MODULE>_<FILENAME>_<FILEPATH>
+
+// Filepath to the configuration files to be used/edited in UHB.
+#define UHB_DAC_CONFIG_CURRENT  "../config/current/dac.sh"
+
+// Filepath to the backup of all configuration files.
+#define UHB_DAC_CONFIG_BACKUP "../config/backups/script_template.txt"
+
 FlagCollection get_dac_fc, set_dac_fc;
 
 const char get_dac_flags[] = {
@@ -28,6 +36,10 @@ const char set_dac_flags[] = {
     'v',    // verbose
     'R'     // default recursive
 };
+
+/**
+ * Functions available to the user.
+ */
 
 bool get_dac(){ 
     char path[MAX_FILEPATH_SIZE];
@@ -78,5 +90,23 @@ bool set_dac(){
     }else{
         printf("ERR: Invalid/non-existent path.\n");
         return false;
+    }
+}
+
+void view_dac_configuration() {
+    view_file(UHB_DAC_CONFIG_CURRENT);
+}
+
+void reset_dac_configuration() {
+    copy_file(UHB_DAC_CONFIG_BACKUP,UHB_DAC_CONFIG_CURRENT);
+}
+
+void apply_dac_configuration() {
+    char command[MAX_LINE_LENGTH];
+    snprintf(command,sizeof(command),"sh %s",UHB_DAC_CONFIG_CURRENT);
+    if(system(command) == 0){
+        printf("MSG: DAC configuration applied successfully.\n");
+    }else{
+        fprintf(stderr,"ERR: Unable to apply DAC configuration.\n");
     }
 }

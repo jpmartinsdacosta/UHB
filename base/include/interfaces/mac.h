@@ -28,4 +28,8 @@ void view_mac_manual();
 
 void view_mac_configuration();
 
+void reset_mac_configuration();
+
+void apply_mac_configuration();
+
 #endif // MAC_H

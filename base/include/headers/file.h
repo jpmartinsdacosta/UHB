@@ -85,17 +85,9 @@ bool copy_file(const char *source, const char *destination);
  * @param filepath Path to the given file.
  * @param prefix Prefix to search.
  * @returns A pointer to the array of characters of the suffix.
- * @note Used to retrieve the executable that is being searched for a service in a UHB Additions Module.
+ * @note Used to retrieve the value of a parameter in a UHB configuration file.
  */
 char* find_suffix(const char* filepath, const char* prefix);
-
-/**
- * @brief Checks if an executable exists in a given file.
- * @param prefix The uhb_xxx prefix located in the UHB Additions Module configuration file.
- * @param filepath The path to the UHB Additions Module configuration file.
- * @return True if found, false otherwise.
- */
-bool find_exec_in_file(const char* prefix, const char* filepath);
 
 /**
  * @brief This function is used to replace the value of an option in a generic configuration file.

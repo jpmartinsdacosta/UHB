@@ -1,6 +1,19 @@
 #include <stdio.h>
 #include <stdbool.h>
+
+#include "file.h"
+#include "config.h"
+#include "utils.h"
+#include "input_output.h"
 #include "global_var.h"
+#include "policy.h"
+// File naming convention: <OS>_<MODULE>_<FILENAME>_<FILEPATH>
+
+// Filepath to the configuration files to be used/edited in UHB.
+#define UHB_ACL_CONFIG_CURRENT  "../config/current/acl.sh"
+
+// Filepath to the backup of all configuration files.
+#define UHB_ACL_CONFIG_BACKUP  "../config/current/script_template.txt"
 
 FlagCollection get_acl_fc, set_acl_fc;
 
@@ -74,5 +87,23 @@ bool set_acl() {
     }else{
         printf("ERR: Invalid/non-existent path.\n");
         return false;
+    }
+}
+
+void view_acl_configuration() {
+    view_file(UHB_ACL_CONFIG_CURRENT);
+}
+
+void reset_acl_configuration() {
+    copy_file(UHB_ACL_CONFIG_BACKUP,UHB_ACL_CONFIG_CURRENT);
+}
+
+void apply_acl_configuration() {
+    char command[MAX_LINE_LENGTH];
+    snprintf(command,sizeof(command),"sh %s",UHB_ACL_CONFIG_CURRENT);
+    if(system(command) == 0){
+        printf("MSG: ACL configuration applied successfully.\n");
+    }else{
+        fprintf(stderr,"ERR: Unable to apply ACL configuration.\n");
     }
 }

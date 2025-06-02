@@ -90,7 +90,6 @@ bool check_flags(char *command, FlagCollection *fc) {
 /**
  * Generic struct memory allocation functions
  */
-
 size_t dac_size = 0;
 size_t dac_capacity = 0;
 struct DACStruct *dac_array = NULL;
@@ -100,6 +99,10 @@ void* alloc_struct(size_t capacity, size_t element_size) {
 }
 
 void* realloc_struct(void *structure, size_t new_capacity, size_t element_size) {
+    if (new_capacity == 0) {
+        free(structure);
+        return NULL;
+    }
     return realloc(structure, new_capacity * element_size);
 }
 
@@ -109,9 +112,9 @@ void* realloc_struct(void *structure, size_t new_capacity, size_t element_size) 
 
 bool init_dac_array() {
     dac_capacity = 1;
-    dac_array = (struct DACStruct *)alloc_struct(dac_capacity, sizeof(struct DACStruct));
-    if (dac_array == NULL) {
-        perror("Failed to allocate memory for DACStruct array.\n");
+    dac_array = alloc_struct(dac_capacity, sizeof(struct DACStruct));
+    if (!dac_array) {
+        perror("Failed to allocate memory for DACStruct array.");
         return false;
     }
     dac_size = 0;
@@ -120,7 +123,7 @@ bool init_dac_array() {
 }
 
 void clear_dac_array() {
-    for (size_t i = 0; i < dac_size; i++) {
+    for (size_t i = 0; i < dac_size; ++i) {
         free(dac_array[i].acl_array);
         free(dac_array[i].mac_array);
     }
@@ -143,61 +146,50 @@ void get_dac_data(size_t dac_index) {
     printf("Group: %s\n", dac->group);
     printf("DAC Permissions: %s\n", dac->dac);
     printf("Recursive?: %s\n", dac->recursive ? "true" : "false");
-    printf("Timestamp: %s\n", ctime(&dac->timestamp));
+    printf("Timestamp: %s", ctime(&dac->timestamp));  // no need for \n
 }
 
-bool is_dac_contained(const char *filepath){
-    bool result = false;
-    for(size_t i = 0; i < dac_size && !result ; i++){
-        printf("DBG: Is %s contained inside %s?\n",filepath,dac_array[i].fp);
-        if(is_contained(dac_array[i].fp,filepath) && dac_array[i].recursive){
+bool is_dac_contained(const char *filepath) {
+    if (!filepath) return false;
+
+    for (size_t i = 0; i < dac_size; ++i) {
+        printf("DBG: Is %s contained inside %s?\n", filepath, dac_array[i].fp);
+        if (dac_array[i].recursive && is_contained(dac_array[i].fp, filepath)) {
             printf("DBG: Yes, it is contained!\n");
-            result = true;
-        }
-    }
-    return result;
-}
-
-bool dac_filepath_exists(const char *filepath) {
-    if (filepath == NULL) {
-        fprintf(stderr, "ERR: Null pointer passed to dac_filepath_exists().\n");
-        return false;
-    }
-
-    for (size_t i = 0; i < dac_size; i++) {
-        if (strcmp(filepath, dac_array[i].fp) == 0) {
             return true;
         }
     }
-
     return false;
 }
 
 bool add_dac_element(const char *filepath, const char *user, const char *group, const char *dac, bool recursive) {
-    if (filepath == NULL || user == NULL || group == NULL || dac == NULL) {
+    if (!filepath || !user || !group || !dac) {
         fprintf(stderr, "ERR: Null pointer passed to add_dac_element().\n");
         return false;
     }
 
     if (dac_size == dac_capacity) {
-        dac_capacity *= 2;
-        dac_array = (struct DACStruct *)realloc_struct(dac_array, dac_capacity, sizeof(struct DACStruct));
-        if (dac_array == NULL) {
-            perror("Failed to reallocate memory for DACStruct array.\n");
+        size_t new_capacity = dac_capacity * 2;
+        struct DACStruct *new_array = realloc_struct(dac_array, new_capacity, sizeof(struct DACStruct));
+        if (!new_array) {
+            perror("Failed to reallocate memory for DACStruct array.");
             return false;
         }
+        dac_array = new_array;
+        dac_capacity = new_capacity;
     }
 
     struct DACStruct *element = &dac_array[dac_size];
-    strncpy(element->fp, filepath, sizeof(element->fp) - 1);
-    element->fp[sizeof(element->fp) - 1] = '\0';
-    strncpy(element->user, user, sizeof(element->user) - 1);
-    element->user[sizeof(element->user) - 1] = '\0';
-    strncpy(element->group, group, sizeof(element->group) - 1);
-    element->group[sizeof(element->group) - 1] = '\0';
-    strncpy(element->dac, dac, sizeof(element->dac) - 1);
-    element->dac[sizeof(element->dac) - 1] = '\0';
-    element->recursive = false;
+    strncpy(element->fp, filepath, sizeof(element->fp) - 1); element->fp[sizeof(element->fp) - 1] = '\0';
+    strncpy(element->user, user, sizeof(element->user) - 1); element->user[sizeof(element->user) - 1] = '\0';
+    strncpy(element->group, group, sizeof(element->group) - 1); element->group[sizeof(element->group) - 1] = '\0';
+    strncpy(element->dac, dac, sizeof(element->dac) - 1); element->dac[sizeof(element->dac) - 1] = '\0';
+
+    element->recursive = recursive || is_dac_contained(filepath);
+    if (element->recursive) {
+        printf("Contained, adding recursive option...\n");
+    }
+
     element->acl_array = NULL;
     element->acl_size = 0;
     element->acl_capacity = 0;
@@ -205,37 +197,46 @@ bool add_dac_element(const char *filepath, const char *user, const char *group, 
     element->mac_size = 0;
     element->mac_capacity = 0;
     element->timestamp = time(NULL);
-    if(is_dac_contained(filepath) || recursive){
-        if(is_dac_contained(filepath)){
-            printf("Contained, adding recursive option...\n");
-        }
-        element->recursive = true;
-    }else{
-        element->recursive = false;
-    }
+
     dac_size++;
-    get_dac_data(dac_size-1);
+    get_dac_data(dac_size - 1);
     return true;
 }
 
 bool rem_dac_element() {
-    if (dac_size == 0) {
-        return true;
-    }
+    if (dac_size == 0) return true;
 
-    dac_size--;
+    --dac_size;
     free(dac_array[dac_size].acl_array);
     free(dac_array[dac_size].mac_array);
-    dac_array = (struct DACStruct *)realloc_struct(dac_array, dac_size, sizeof(struct DACStruct));
-    if (dac_array == NULL && dac_size != 0) {
-        perror("Failed to reallocate memory for DACStruct array");
-        return false;
+
+    if (dac_size == 0) {
+        free(dac_array);
+        dac_array = NULL;
+        dac_capacity = 0;
+    } else {
+        struct DACStruct *new_array = realloc_struct(dac_array, dac_size, sizeof(struct DACStruct));
+        if (!new_array && dac_size != 0) {
+            perror("Failed to reallocate memory for DACStruct array");
+            return false;
+        }
+        dac_array = new_array;
     }
+
     return true;
 }
 
-size_t get_dacsruct_size() {
-    return dac_size;
+int find_dac_index_by_filepath(const char *filepath) {
+    if (!filepath) {
+        fprintf(stderr, "ERR: Null pointer passed to find_dac_index_by_filepath().\n");
+        return -1;
+    }
+    for (size_t i = 0; i < dac_size; ++i) {
+        if (strcmp(dac_array[i].fp, filepath) == 0) {
+            return (int)i;
+        }
+    }
+    return -1;
 }
 
 /**
@@ -248,19 +249,27 @@ void get_acl_data(size_t dac_index, size_t acl_index) {
         return;
     }
 
-    struct DACStruct *dac = &dac_array[dac_index];
-    printf("Filesystem: %s\n", dac->acl_array[acl_index].fs);
-    printf("ACL: %s\n", dac->acl_array[acl_index].acl);
-    printf("Recursive?: %s\n", dac->acl_array[acl_index].recursive ? "true" : "false");
+    struct ACLStruct *acl = &dac_array[dac_index].acl_array[acl_index];
+    printf("Filesystem: %s\n", acl->fs);
+    printf("ACL: %s\n", acl->acl);
+    printf("Recursive?: %s\n", acl->recursive ? "true" : "false");
 }
 
-bool add_acl_element(size_t dac_index, const char *fs, const char *acl) {
-    if (dac_index >= dac_size || fs == NULL || acl == NULL) {
+bool add_acl_element(const char *filepath, const char *fs, const char *acl) {
+    if (filepath == NULL || fs == NULL || acl == NULL) {
         fprintf(stderr, "ERR: Invalid parameters passed to add_acl_element().\n");
         return false;
     }
 
-    struct DACStruct *dac = &dac_array[dac_index];
+    int index = find_dac_index_by_filepath(filepath);
+    if (index == -1) {
+        if (!add_dac_element(filepath, "default_user", "default_group", "rwx", false)) {
+            return false;
+        }
+        index = (int)(dac_size - 1);
+    }
+
+    struct DACStruct *dac = &dac_array[index];
 
     if (dac->acl_size == dac->acl_capacity) {
         dac->acl_capacity++;
@@ -278,9 +287,10 @@ bool add_acl_element(size_t dac_index, const char *fs, const char *acl) {
     element->acl[sizeof(element->acl) - 1] = '\0';
     element->recursive = false;
     dac->acl_size++;
-    get_acl_data(dac_index, dac->acl_size-1);
+    get_acl_data(index, dac->acl_size - 1);
     return true;
 }
+
 
 bool rem_acl_element(size_t dac_index, size_t acl_index) {
     if (dac_index >= dac_size || acl_index >= dac_array[dac_index].acl_size) {
@@ -289,17 +299,18 @@ bool rem_acl_element(size_t dac_index, size_t acl_index) {
     }
 
     struct DACStruct *dac = &dac_array[dac_index];
-    if (dac->acl_size == 0) {
-        return true;
+    if (acl_index < dac->acl_size - 1) {
+        memmove(&dac->acl_array[acl_index], &dac->acl_array[acl_index + 1],
+                (dac->acl_size - acl_index - 1) * sizeof(struct ACLStruct));
     }
-
     dac->acl_size--;
-    memmove(&dac->acl_array[acl_index], &dac->acl_array[acl_index + 1], (dac->acl_size - acl_index) * sizeof(struct ACLStruct));
-    dac->acl_array = (struct ACLStruct *)realloc_struct(dac->acl_array, dac->acl_size, sizeof(struct ACLStruct));
-    if (dac->acl_array == NULL && dac->acl_size != 0) {
+
+    struct ACLStruct *new_array = realloc_struct(dac->acl_array, dac->acl_size, sizeof(struct ACLStruct));
+    if (!new_array && dac->acl_size != 0) {
         perror("Failed to reallocate memory for ACLStruct");
         return false;
     }
+    dac->acl_array = new_array;
     return true;
 }
 
@@ -313,18 +324,26 @@ void get_mac_data(size_t dac_index, size_t mac_index) {
         return;
     }
 
-    struct DACStruct *dac = &dac_array[dac_index];
-    printf("MAC: %s\n", dac->mac_array[mac_index].mac);
-    printf("Recursive?: %s\n", dac->mac_array[mac_index].recursive ? "true" : "false");
+    struct MACStruct *mac = &dac_array[dac_index].mac_array[mac_index];
+    printf("MAC: %s\n", mac->mac);
+    printf("Recursive?: %s\n", mac->recursive ? "true" : "false");
 }
 
-bool add_mac_element(size_t dac_index, const char *mac) {
-    if (dac_index >= dac_size || mac == NULL) {
+bool add_mac_element(const char *filepath, const char *mac) {
+    if (filepath == NULL || mac == NULL) {
         fprintf(stderr, "ERR: Invalid parameters passed to add_mac_element().\n");
         return false;
     }
 
-    struct DACStruct *dac = &dac_array[dac_index];
+    int index = find_dac_index_by_filepath(filepath);
+    if (index == -1) {
+        if (!add_dac_element(filepath, "default_user", "default_group", "rwx", false)) {
+            return false;
+        }
+        index = (int)(dac_size - 1);
+    }
+
+    struct DACStruct *dac = &dac_array[index];
 
     if (dac->mac_size == dac->mac_capacity) {
         dac->mac_capacity++;
@@ -340,9 +359,10 @@ bool add_mac_element(size_t dac_index, const char *mac) {
     element->mac[sizeof(element->mac) - 1] = '\0';
     element->recursive = false;
     dac->mac_size++;
-    get_mac_data(dac_index, dac->mac_size-1);
+    get_mac_data(index, dac->mac_size - 1);
     return true;
 }
+
 
 bool rem_mac_element(size_t dac_index, size_t mac_index) {
     if (dac_index >= dac_size || mac_index >= dac_array[dac_index].mac_size) {
@@ -351,19 +371,21 @@ bool rem_mac_element(size_t dac_index, size_t mac_index) {
     }
 
     struct DACStruct *dac = &dac_array[dac_index];
-    if (dac->mac_size == 0) {
-        return true;
+    if (mac_index < dac->mac_size - 1) {
+        memmove(&dac->mac_array[mac_index], &dac->mac_array[mac_index + 1],
+                (dac->mac_size - mac_index - 1) * sizeof(struct MACStruct));
     }
-
     dac->mac_size--;
-    memmove(&dac->mac_array[mac_index], &dac->mac_array[mac_index + 1], (dac->mac_size - mac_index) * sizeof(struct MACStruct));
-    dac->mac_array = (struct MACStruct *)realloc_struct(dac->mac_array, dac->mac_size, sizeof(struct MACStruct));
-    if (dac->mac_array == NULL && dac->mac_size != 0) {
+
+    struct MACStruct *new_array = realloc_struct(dac->mac_array, dac->mac_size, sizeof(struct MACStruct));
+    if (!new_array && dac->mac_size != 0) {
         perror("Failed to reallocate memory for MACStruct");
         return false;
     }
+    dac->mac_array = new_array;
     return true;
 }
+
 
 /**
  * Policy-checking functions

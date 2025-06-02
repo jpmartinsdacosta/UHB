@@ -3,83 +3,44 @@
 #include <string.h>
 #include <stdbool.h>
 
+#include "dac.h"
 #include "acl.h"
 #include "mac.h"
 #include "log.h"
 #include "aud.h"
 #include "fwl.h"
+#include "input_output.h"
 #include "file.h"
 #include "config.h"
 #include "policy.h"
 #include "module_var.h"
 #include "global_var.h"
 
-bool config_modified = false;
-
-bool is_conf_file_mod(){
-    return config_modified;
-}
-
-bool reset_uhb_conf(){
-    if(!path_exists(CONFIG_TEMPLATE_PATH)){
-        fprintf(stderr, "ERR: reset_uhb_conf(): UHB template configuration does not exist.\n");
-        return false;
+void load_from_backup_function(){
+    int opt = get_yes_no_input("MSG: Would you like to load from backup? (Y/N):");
+    if(opt == 0){
+        replace_option_value("load_from_backup",' ',"true",UHB_BASE_CONFIG_CURRENT);
+        printf("MSG: Loading from backup enabled.\n");
     }else{
-        copy_file(CONFIG_TEMPLATE_PATH,CONFIG_UHB);
-        return true;
+        replace_option_value("load_from_backup",' ',"false",UHB_BASE_CONFIG_CURRENT);
+        printf("MSG: Loading from backup disabled.\n");
     }
 }
 
-void uhb_conf_exists(const char *filepath){
-    if(!path_exists(filepath)){
-        printf("MSG: Configuration file does not exist. Creating...\n");
-        if(reset_conf()){
-            printf("MSG: Configuration file created successfully.\n");
-        }else{
-            fprintf(stderr, "ERR: uhb_conf_exists(): Error creating configuration file.\n");
-        }
+void view_configuration_file() {view_file(UHB_BASE_CONFIG_CURRENT);}
+
+void apply_file_service_policy() {
+    printf("MSG: Please double-check DAC, ACL and MAC configuration files!\n");
+    if (get_yes_no_input("MSG: Apply DAC, ACL and MAC configuration to the system? (Y/N):") == 0){
+        apply_dac_configuration();
+        apply_acl_configuration();
     }
 }
 
-/**
- * Functions regarding the service configuration files at uhb/base/config/services/*
- */
-
-void detect_execs(){
-    find_exec_in_file("uhb_acl =",MODULE_PATH) ? printf("INI: ACL service detected.\n") : printf("INI: ACL service not found.\n");
-    find_exec_in_file("uhb_mac =",MODULE_PATH) ? printf("INI: MAC service detected.\n") : printf("INI: MAC service not found.\n");
+void initialize_uhb() {
+    init_dac_array();       // Initialize array of DACStruct
 }
 
-
-
-bool add_service_command(const char *command, const char *filepath){
-    FILE *file = fopen(filepath, "a");
-    if (file) {
-        fprintf(file, "%s\n", command);
-        fclose(file);
-        return true;
-    } else {
-        fprintf(stderr, "ERR: add_service_command(): Error adding command to the given configuration file.\n");
-        return false;
-    }
-}
-
-void apply_service_conf() {
-    char command[MAX_LINE_LENGTH];
-    snprintf(command, sizeof(command), "sh \"%s\"", UHB_DAC_CONFIG_CURRENT);
-    system(command);
-    printf("MSG: DAC policy applied.\n");
-    if(acl_exists()){
-        snprintf(command, sizeof(command), "sh \"%s\"", UHB_ACL_CONFIG_CURRENT);
-        system(command);
-        printf("MSG: ACL policy applied.\n");
-    }
-}
-
-/**
- * Functions common to all
- */
-
-bool reset_conf(){
-    return (reset_uhb_conf() && reset_service_conf());
+void terminate_uhb() {
+    clear_dac_array();      // Free memory allocated to DACStruct
 }

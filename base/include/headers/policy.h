@@ -118,15 +118,10 @@ bool add_dac_element(const char *filepath, const char *user, const char *group, 
 bool rem_dac_element();
 
 /**
- * @brief Checks if a given filepath is already present in the DACStruct array.
- * @param filepath Filepath to be searched for.
- * @return True if the filepath exists, false otherwise.
- * @note 1. Needed when checking if another DACStruct element has to be created or not.
- * @note 2. THE RECURSIVE OPTION HAS NOT BEEN IMPLEMENTED YET.
+ * @brief Searches for a DACStruct entry by exact filepath match.
+ * @returns The index if found, otherwise -1.
  */
-bool dac_filepath_exists(const char *filepath);
-
-size_t get_dacstruct_size();
+int find_dac_index_by_filepath(const char *filepath);
 
 /**
  * ACLStruct functions
@@ -141,13 +136,14 @@ void get_acl_data(size_t dac_index, size_t acl_index);
 
 /**
  * @brief Adds an element to the ACLStruct array of a given element of DACStruct.
- * @param dac_index Index of the given DACStruct.
+ * @param filepath Filepath to check whether a new instance of DACStruct needs to
+ * be created or not when adding the new ACLStruct.
  * @param fs Filesystem to be added.
  * @param acl ACL permissions to be added.
  * @note THE RECURSIVE OPTION HAS NOT BEEN IMPLEMENTED YET.
  * @return True if successful, false otherwise.
  */
-bool add_acl_element(size_t dac_index, const char *fs, const char *acl);
+bool add_acl_element(const char *filepath, const char *fs, const char *acl);
 
 /**
  * @brief Removes the last element from the ACLStruct array.
@@ -170,12 +166,13 @@ void get_mac_data(size_t dac_index, size_t mac_index);
 
 /**
  * @brief Adds an element to the MACStruct array of a given element of DACStruct.
- * @param dac_index Index of the given DACStruct.
+ * @param filepath Filepath to check whether a new instance of DACStruct needs to
+ * be created or not when adding the new MACStruct.
  * @param mac MAC permissions to be added.
  * @note THE RECURSIVE OPTION HAS NOT BEEN IMPLEMENTED YET.
  * @return True if successful, false otherwise.
  */
-bool add_mac_element(size_t dac_index, const char *mac);
+bool add_mac_element(const char *filepath, const char *mac);
 
 /**
  * @brief Removes the last element from the MACStruct array.

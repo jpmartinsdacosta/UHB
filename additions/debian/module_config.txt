@@ -1,7 +1,0 @@
-## This is the UHB module configuration file for the Debian operating system.
-## MODULE CONFIGURATION PARAMETERS:
-uhb_os = DEB
-uhb_acl = getfacl
-uhb_mac = false
-uhb_fwl = ufw
-uhb_aud = auditd

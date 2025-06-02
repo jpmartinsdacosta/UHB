@@ -16,6 +16,8 @@
         "io.h": "c",
         "module_var.h": "c",
         "input_output.h": "c",
-        "aud.h": "c"
+        "aud.h": "c",
+        "policy.h": "c",
+        "fwl.h": "c"
     }
 }

@@ -35,4 +35,8 @@ bool set_acl();
 
 void view_acl_configuration();
 
+void reset_acl_configuration();
+
+void apply_acl_configuration();
+
 #endif // ACL_H
