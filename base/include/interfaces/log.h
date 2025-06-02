@@ -134,6 +134,8 @@ void add_log_reception_rule();
  */
 void add_log_forwarding_rule();
 
+void view_logging_configuration();
+
 void view_logging_manual();
 
 #endif // LOG_H

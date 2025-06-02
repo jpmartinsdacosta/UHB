@@ -3,6 +3,7 @@
 #include <stdbool.h>
 
 #include "module_var.h"
+#include "dac.h"
 #include "acl.h"
 #include "mac.h"
 #include "log.h"
@@ -147,7 +148,7 @@ void dac_menu(){
                 set_dac();
                 break;
             case 3:
-                view_file(CONFIG_DAC);
+                view_dac_configuration();
                 break;
             case 4:
                 system("man ls");
@@ -173,13 +174,13 @@ void acl_menu(){
         choice = select_string_array("ACL Menu", acl_menu_options);
         switch(choice){
             case 1:
-                //get_acl();
+                get_acl();
                 break;
             case 2:
-                //set_acl();
+                set_acl();
                 break;
             case 3:
-                view_file(CONFIG_ACL);
+                view_acl_configuration();
                 break;
             case 4:
                 system("man getfacl");
@@ -380,7 +381,6 @@ void main_menu(){
                 printf("MSG: Option not implemented yet.\n");
                 break;
             case 9:
-                replace_string_in_line("/root/uhb/base/config/templates/auditd.conf",27,"##tcp_listen_port","tcp_listen_port");
                 break;
             case 0:
                 reset_conf();

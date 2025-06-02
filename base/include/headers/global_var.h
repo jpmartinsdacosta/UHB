@@ -19,14 +19,11 @@
 #define CONFIG_UHB "../config/config.sh"
 
 // Service configuration filepaths
-#define CONFIG_DAC "../config/current/dac.sh"
-#define CONFIG_ACL "../config/current/acl.sh"
-#define CONFIG_MAC "../config/current/mac.sh"
+#define UHB_DAC_CONFIG_CURRENT  "../config/current/dac.sh"
+#define UHB_ACL_CONFIG_CURRENT  "../config/current/acl.sh"
 
 // Configuration template filepaths
 #define CONFIG_TEMPLATE_PATH "../config/current/config_template.txt"
-#define SERVICE_TEMPLATE_PATH "../config/current/service_template.txt"
-#define MODULE_TEMPLATE_PATH "../config/current/module_template.txt"
 
 /**
  * Structures to manage flags/options when executing each service

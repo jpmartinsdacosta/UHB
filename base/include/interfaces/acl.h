@@ -33,4 +33,6 @@ bool acl_incompatible_fs(char *fp);
  */
 bool set_acl();
 
+void view_acl_configuration();
+
 #endif // ACL_H

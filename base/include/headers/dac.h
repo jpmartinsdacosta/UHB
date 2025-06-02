@@ -24,4 +24,6 @@ bool get_dac();
  */
 bool set_dac();
 
+void view_dac_configuration();
+
 #endif // DAC_H

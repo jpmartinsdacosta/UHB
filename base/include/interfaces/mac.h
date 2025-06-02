@@ -12,9 +12,6 @@
  */
 bool mac_exists();
 
-
-void initialize_mac_module();
-
 /**
  * @brief Gets the current MAC settings of a file.
  * @returns True if successful, false otherwise.

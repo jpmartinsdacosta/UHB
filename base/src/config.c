@@ -16,10 +16,6 @@
 
 bool config_modified = false;
 
-/**
- * Functions regarding the UHB Base Configuration file at uhb/base/config/files/config.sh
- */
-
 bool is_conf_file_mod(){
     return config_modified;
 }
@@ -54,26 +50,7 @@ void detect_execs(){
     find_exec_in_file("uhb_mac =",MODULE_PATH) ? printf("INI: MAC service detected.\n") : printf("INI: MAC service not found.\n");
 }
 
-bool reset_service_conf(){
-    if(!path_exists(SERVICE_TEMPLATE_PATH)){
-        fprintf(stderr, "ERR: reset_uhb_conf(): Service template configuration does not exist.\n");
-        return false;
-    }else{
-        if(!copy_file(SERVICE_TEMPLATE_PATH,CONFIG_DAC)){
-            fprintf(stderr, "ERR: reset_uhb_conf(): Failed to reset DAC.\n");
-            return false;
-        }
-        if(!copy_file(SERVICE_TEMPLATE_PATH,CONFIG_ACL)){
-            fprintf(stderr, "ERR: reset_uhb_conf(): Failed to reset ACL.\n");
-            return false;
-        }
-        if(!copy_file(SERVICE_TEMPLATE_PATH,CONFIG_MAC)){
-            fprintf(stderr, "ERR: reset_uhb_conf(): Failed to reset MAC.\n");
-            return false;
-        }
-        return true;
-    }
-}
+
 
 bool add_service_command(const char *command, const char *filepath){
     FILE *file = fopen(filepath, "a");
@@ -89,18 +66,13 @@ bool add_service_command(const char *command, const char *filepath){
 
 void apply_service_conf() {
     char command[MAX_LINE_LENGTH];
-    snprintf(command, sizeof(command), "sh \"%s\"", CONFIG_DAC);
+    snprintf(command, sizeof(command), "sh \"%s\"", UHB_DAC_CONFIG_CURRENT);
     system(command);
     printf("MSG: DAC policy applied.\n");
     if(acl_exists()){
-        snprintf(command, sizeof(command), "sh \"%s\"", CONFIG_ACL);
+        snprintf(command, sizeof(command), "sh \"%s\"", UHB_ACL_CONFIG_CURRENT);
         system(command);
         printf("MSG: ACL policy applied.\n");
-    }
-    if(mac_exists()){
-        snprintf(command, sizeof(command), "sh \"%s\"", CONFIG_MAC);
-        system(command);
-        printf("MSG: MAC policy applied.\n");
     }
 }
 

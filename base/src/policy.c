@@ -234,6 +234,10 @@ bool rem_dac_element() {
     return true;
 }
 
+size_t get_dacsruct_size() {
+    return dac_size;
+}
+
 /**
  * ACLStruct functions
  */
@@ -364,3 +368,7 @@ bool rem_mac_element(size_t dac_index, size_t mac_index) {
 /**
  * Policy-checking functions
  */
+
+ void retrieve_file_acl(const char *path){
+    
+ }

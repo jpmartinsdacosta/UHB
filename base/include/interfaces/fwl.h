@@ -13,9 +13,25 @@
 bool fwl_exists();
 
 /**
- * 
+ * @brief Checks if the firewall daemon is running.
+ * @returns True if the daemon is running, false otherwise.
  */
-void check_ports();
+bool check_firewall_status();
 
+void initialize_firewall(bool copy_from_backup);
+
+/**
+ * @brief Restarts the firewall daemon. Used when applying firewall configuration.
+ * @returns True if sucessful, false otherwise.
+ */
+bool restart_logging_daemon();
+
+bool apply_firewall_confgiguration();
+
+void add_firewall_rule();
+
+void view_firewall_configuration();
+
+void view_firewall_manual();
 
 #endif // FWL_H

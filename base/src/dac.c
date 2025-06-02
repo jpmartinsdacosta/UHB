@@ -50,6 +50,7 @@ bool get_dac(){
 }
 
 bool set_dac(){
+    char input[MAX_LINE_LENGTH];
     char path[MAX_FILEPATH_SIZE];
     char permission[6];
     char command[MAX_LINE_LENGTH];
@@ -66,9 +67,9 @@ bool set_dac(){
             printf("MSG: Setting DAC...\n");
             add_dac_element(path,user,group,permission,is_recursive(flags));
             snprintf(command, sizeof(command), "chmod %s %s %s", flags, permission, path);
-            add_service_command(command, CONFIG_DAC);
+            add_service_command(command, UHB_DAC_CONFIG_CURRENT);
             snprintf(command, sizeof(command), "chown %s %s:%s %s\n", flags, user, group, path);
-            add_service_command(command, CONFIG_DAC);
+            add_service_command(command, UHB_DAC_CONFIG_CURRENT);
             return true;
         }else{
             fprintf(stderr, "ERR: set_dac(): DAC could not be set.\n");

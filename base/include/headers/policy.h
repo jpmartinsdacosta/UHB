@@ -126,6 +126,8 @@ bool rem_dac_element();
  */
 bool dac_filepath_exists(const char *filepath);
 
+size_t get_dacstruct_size();
+
 /**
  * ACLStruct functions
  */

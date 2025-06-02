@@ -47,9 +47,7 @@ bool log_exists() {
 }
 
 bool check_logging_status() {
-    char command[MAX_LINE_LENGTH];
-    snprintf(command, sizeof(command), "service rsyslogd status >/dev/null 2>&1");
-    if(system(command) == 0){
+    if(system("service rsyslogd status >/dev/null 2>&1") == 0){
         printf("MSG: Rsyslog daemon is running.\n");
         return true;
     }else{

@@ -65,7 +65,7 @@ bool set_acl() {
             printf("MSG: Setting ACL...\n");
             //add_acl_element()
             snprintf(command,sizeof(command), "setfacl %s %s %s",flags, acl_spec, path);
-            add_service_command(command,CONFIG_ACL);
+            add_service_command(command,UHB_ACL_CONFIG_CURRENT);
             return true;
         }else{
             fprintf(stderr, "ERR: set_acl(): ACL could not be set.\n");

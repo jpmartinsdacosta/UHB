@@ -7,4 +7,20 @@ bool mac_exists() {
     return false; 
 }
 
-// Not implemented in Debian at the moment.
+void set_mac() {
+
+}
+
+void get_mac() {
+
+}
+
+void view_mac_manual() {
+
+}
+
+void view_mac_configuration() {
+
+}
+
+// Not implemented in Debian.

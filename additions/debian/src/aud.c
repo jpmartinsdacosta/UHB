@@ -148,7 +148,7 @@ void configure_auditing_reception_service() {
 
 void configure_auditing_forwarding_service() {
     char param[MAX_LINE_LENGTH]; 
-    get_user_input("MSG: Please enter the IP address of the remote server:",param,param,sizeof(param));
+    get_user_input("MSG: Please enter the IP address of the remote server:",param,sizeof(param));
     if(!find_string_in_file("remote_server",DEB_AUDIT_CONF_UHB)){
         char line[MAX_LINE_LENGTH];
         snprintf(line,sizeof(line),"remote_server = %s",param);
