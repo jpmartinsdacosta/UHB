@@ -101,23 +101,29 @@ bool set_acl() {
     char path[MAX_FILEPATH_SIZE];
     char acl_spec[MAX_FILEPATH_SIZE];
     char command[MAX_LINE_LENGTH];
+    int opt = 1;
     init_flag(&set_acl_fc,13,set_acl_flags);
-    if(get_filepath(path)){
+    while(opt == 1){
         get_user_input("MSG 1/2: Please enter ACL flags to be used, followed by a single '-':",flags,MAX_LINE_LENGTH);
         get_user_input("MSG 2/2: Please enter the ACL specification:",acl_spec,MAX_LINE_LENGTH);
-        if(check_flags(flags,&set_acl_fc) && acl_incompatible_fs(path) == 0){
-            printf("MSG: Setting ACL...\n");
-            add_acl_element(path,command);
-            snprintf(command,sizeof(command), "setfacl %s %s %s",flags, acl_spec, path);
-            append_to_file(command, UHB_ACL_CONFIG_CURRENT);
-            return true;
+        opt = three_option_input("MSG: Is the provided information correct? (Y)es/(N)o/E(x)it:",'Y','N','X');
+    }
+    if(opt == 0){
+        if(get_filepath(path)){
+            if(check_flags(flags,&set_acl_fc) && acl_incompatible_fs(path) == 0){
+                printf("MSG: Setting ACL...\n");
+                add_acl_element(path,command);
+                snprintf(command,sizeof(command), "setfacl %s %s %s",flags, acl_spec, path);
+                append_to_file(command, UHB_ACL_CONFIG_CURRENT);
+                return true;
+            }else{
+                fprintf(stderr, "ERR: set_acl(): ACL could not be set.\n");
+                return false;
+            }
         }else{
-            fprintf(stderr, "ERR: set_acl(): ACL could not be set.\n");
+            printf("ERR: Invalid/non-existent path.\n");
             return false;
         }
-    }else{
-        printf("ERR: Invalid/non-existent path.\n");
-        return false;
     }
 }
 

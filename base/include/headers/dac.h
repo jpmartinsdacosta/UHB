@@ -14,15 +14,14 @@
  * This function gets the DAC of a file by executing "ls -l --" on the file.
  * @return true if the file exists, false otherwise.
  */
-bool get_dac();
+void get_dac();
 
 /**
  * @brief Set the DAC of a file.
  * This function sets the DAC of a file by executing "chmod" and "chown" on the file.
  * It also adds the commands to the configuration file.
- * @return true if the DAC is set, false otherwise.
  */
-bool set_dac();
+void set_dac();
 
 void view_dac_configuration();
 
