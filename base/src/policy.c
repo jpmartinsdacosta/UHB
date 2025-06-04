@@ -250,13 +250,12 @@ void get_acl_data(size_t dac_index, size_t acl_index) {
     }
 
     struct ACLStruct *acl = &dac_array[dac_index].acl_array[acl_index];
-    printf("Filesystem: %s\n", acl->fs);
     printf("ACL: %s\n", acl->acl);
     printf("Recursive?: %s\n", acl->recursive ? "true" : "false");
 }
 
-bool add_acl_element(const char *filepath, const char *fs, const char *acl) {
-    if (filepath == NULL || fs == NULL || acl == NULL) {
+bool add_acl_element(const char *filepath, const char *acl) {
+    if (filepath == NULL || acl == NULL) {
         fprintf(stderr, "ERR: Invalid parameters passed to add_acl_element().\n");
         return false;
     }
@@ -281,8 +280,6 @@ bool add_acl_element(const char *filepath, const char *fs, const char *acl) {
     }
 
     struct ACLStruct *element = &dac->acl_array[dac->acl_size];
-    strncpy(element->fs, fs, sizeof(element->fs) - 1);
-    element->fs[sizeof(element->fs) - 1] = '\0';
     strncpy(element->acl, acl, sizeof(element->acl) - 1);
     element->acl[sizeof(element->acl) - 1] = '\0';
     element->recursive = false;
@@ -385,12 +382,3 @@ bool rem_mac_element(size_t dac_index, size_t mac_index) {
     dac->mac_array = new_array;
     return true;
 }
-
-
-/**
- * Policy-checking functions
- */
-
- void retrieve_file_acl(const char *path){
-    
- }

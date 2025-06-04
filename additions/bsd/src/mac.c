@@ -100,7 +100,7 @@ void set_mac() {
         return;
     }
     if((!is_empty_input(uid) && check_user(uid)) && (!is_empty_input(gid) && check_group(gid)) && (!is_empty_input(filesys) && path_exists(filesys)) && check_flags(type,&type_fc) && check_flags(mode,&mode_fc)){
-        add_service_command(input, BSD_MAC_CONFIG_UHB);
+        append_to_file(input, BSD_MAC_CONFIG_UHB);
     }
 }
 

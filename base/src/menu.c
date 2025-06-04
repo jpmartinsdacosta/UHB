@@ -98,7 +98,9 @@ const char *fwl_menu_options[] = {
 const char *conf_menu_options[] = {
     "1. Load service configuration files from backup",
     "2. View current UHB Base configuration",
-    "3. Apply DAC, ACL and MAC configuration",
+    "3. Reset current UHB Base configuration",
+    "4. Reset DAC, ACL and MAC configuration",
+    "5. Apply DAC, ACL and MAC configuration",
     "0. Return to Main Menu",
     NULL
 };
@@ -108,7 +110,6 @@ void clear_conf_prompt(){
     while(choice == -1){
         choice = get_yes_no_input("MSG: Are you sure that you want to clear the config file? (y/n):\n");
         if(choice == 0){
-            reset_conf();
             clear_dac_array();
             init_dac_array();
             printf("MSG: Config file cleared...\n");
@@ -120,10 +121,9 @@ void clear_conf_prompt(){
 
 void final_prompt(){
     int choice = -1;
-    while(choice == -1 && is_conf_file_mod()){
+    while(choice == -1){
         choice = get_yes_no_input("MSG: Clear the config file before leaving? (y/n):\n");
         if(choice == 0){
-            reset_conf();
             clear_dac_array();
             printf("MSG: Config file cleared, exiting UHB...\n");
         }else{
@@ -329,11 +329,13 @@ void conf_menu(){
                 view_configuration_file();
                 break;
             case 3:
+                reset_configuration_file();
                 break;
             case 4:
+                reset_file_service_policy();
                 break;
             case 5:
-                printf("MSG: Option not implemented yet.\n");
+                apply_file_service_policy();
                 break;
             case 0:
                 break;
@@ -374,7 +376,6 @@ void main_menu(){
                 printf("MSG: Option not implemented yet.\n");
                 break;
             case 0:
-                reset_conf();
                 printf("\nFIN: Goodbye!\n");
                 break;
             default:

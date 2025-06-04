@@ -24,7 +24,7 @@
 #define UHB_BASE_CONFIG_BACKUP  "../config/backups/uhb.conf"
 
 // Configuration template filepaths
-#define CONFIG_TEMPLATE_PATH    "../config/current/config_template.txt"
+#define UHB_SCRIPT_TEMPLATE_PATH    "../config/current/config_template.txt"
 
 /**
  * Structures to manage flags/options when executing each service
@@ -45,7 +45,6 @@ typedef struct{
  */
 
  struct ACLStruct {
-    char fs[30];
     char acl[MAX_LINE_LENGTH];
     bool recursive;
 };

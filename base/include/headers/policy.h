@@ -138,12 +138,11 @@ void get_acl_data(size_t dac_index, size_t acl_index);
  * @brief Adds an element to the ACLStruct array of a given element of DACStruct.
  * @param filepath Filepath to check whether a new instance of DACStruct needs to
  * be created or not when adding the new ACLStruct.
- * @param fs Filesystem to be added.
  * @param acl ACL permissions to be added.
  * @note THE RECURSIVE OPTION HAS NOT BEEN IMPLEMENTED YET.
  * @return True if successful, false otherwise.
  */
-bool add_acl_element(const char *filepath, const char *fs, const char *acl);
+bool add_acl_element(const char *filepath, const char *acl);
 
 /**
  * @brief Removes the last element from the ACLStruct array.

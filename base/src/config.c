@@ -27,7 +27,20 @@ void load_from_backup_function(){
     }
 }
 
+void reset_configuration_file() {copy_file(UHB_BASE_CONFIG_BACKUP,UHB_BASE_CONFIG_CURRENT);}
+
 void view_configuration_file() {view_file(UHB_BASE_CONFIG_CURRENT);}
+
+void reset_file_service_policy() {
+    if(get_yes_no_input("MSG: Reset current file service policy? (Y/N):") == 0){
+        printf("MSG: Resetting file service policy...\n");
+        reset_dac_configuration();
+        reset_acl_configuration();
+        //reset_mac_configuration();
+        clear_dac_array();
+        init_dac_array();
+    }
+}
 
 void apply_file_service_policy() {
     printf("MSG: Please double-check DAC, ACL and MAC configuration files!\n");

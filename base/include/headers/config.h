@@ -15,7 +15,14 @@
   */
 void load_from_backup_function();
 
+void reset_configuration_file();
+
 void view_configuration_file();
+
+/**
+ * @brief Resets and clears current DAC, ACL and MAC configurations.
+ */
+void reset_file_service_policy();
 
 /**
  * @brief Applies the current DAC, ACL and MAC configurations.

@@ -13,10 +13,17 @@
 // Filepath to the configuration files to be used/edited in UHB.
 #define UHB_ACL_CONFIG_CURRENT  "../config/current/acl.sh"
 
-// Filepath to the backup of all configuration files.
-#define UHB_ACL_CONFIG_BACKUP  "../config/current/script_template.txt"
-
 FlagCollection get_acl_fc, set_acl_fc;
+
+const char *non_acl_fs_types[] = {
+    "vfat",
+    "ntfs",
+    "iso9660",
+    "squashfs",
+    "tmpfs",
+    "udf",
+    NULL
+};
 
 const char get_acl_flags[] = {
     'a',    // Display the file access control list
@@ -53,6 +60,30 @@ bool acl_exists() {
     }
 }
 
+int acl_incompatible_fs(char *filepath) {
+    char command[MAX_LINE_LENGTH];
+    snprintf(command, sizeof(command),"df -T %s 2>/dev/null | awk 'NR==2 {print $2}'", filepath);
+    FILE *fp = popen(command, "r");
+    if (!fp) {
+        perror("popen");
+        return -1;
+    }
+    char fs_type[64] = {0};
+    if (fgets(fs_type, sizeof(fs_type), fp) == NULL) {
+        pclose(fp);
+        fprintf(stderr, "ERR: Could not determine filesystem type.\n");
+        return -1;
+    }
+    pclose(fp);
+    fs_type[strcspn(fs_type, "\n")] = 0;
+    for (int i = 0; non_acl_fs_types[i]; i++) {
+        if (strcmp(fs_type, non_acl_fs_types[i]) == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
 bool get_acl() {
     char flags[MAX_LINE_LENGTH];
     char path[MAX_FILEPATH_SIZE];
@@ -60,7 +91,7 @@ bool get_acl() {
     init_flag(&get_acl_fc,13,get_acl_flags);
     if(get_filepath(path)){
         get_user_input("MSG: Please enter additional flags followed by a single '-':", flags, MAX_LINE_LENGTH);
-        if(check_flags(flags,&get_acl_fc)){
+        if(check_flags(flags,&get_acl_fc) && acl_incompatible_fs(path) == 0){
             printf("MSG: Press q to exit current view.\n");
             snprintf(command, sizeof(command), "getfacl \"%s\" \"%s\" | less", flags, path);
             system(command);
@@ -83,10 +114,10 @@ bool set_acl() {
         get_user_input("MSG 1/2: Please enter ACL flags to be used, followed by a single '-':",flags,MAX_LINE_LENGTH);
         get_user_input("MSG 2/2: Please enter the ACL specification:",acl_spec,MAX_LINE_LENGTH);
         printf("MSG: Setting ACL...\n");
-        if(check_flags(flags,&set_acl_fc)){
-            //add_acl_element();
+        if(check_flags(flags,&get_acl_fc) && acl_incompatible_fs(path) == 0){
+            add_acl_element(path,command);
             snprintf(command,sizeof(command), "setfacl %s %s %s",flags, acl_spec, path);
-            add_service_command(command,UHB_ACL_CONFIG_CURRENT);
+            append_to_file(command, UHB_ACL_CONFIG_CURRENT);
             return true;
         }else{
             fprintf(stderr, "ERR: set_acl(): ACL could not be set.\n");
@@ -103,7 +134,7 @@ void view_acl_configuration() {
 }
 
 void reset_acl_configuration() {
-    copy_file(UHB_ACL_CONFIG_BACKUP,UHB_ACL_CONFIG_CURRENT);
+    copy_file(UHB_SCRIPT_TEMPLATE_PATH,UHB_ACL_CONFIG_CURRENT);
 }
 
 void apply_acl_configuration() {

@@ -1,9 +1,8 @@
 #include <stdio.h>
-#include "utils.h"
-#include "policy.h"
+
 #include "menu.h"
 #include "config.h"
-#include "log.h"
+
 
 int main() {
     int os = os_detect();
@@ -14,7 +13,7 @@ int main() {
     }
     if(os != -1){
         initialize_uhb();
-        main_menu();                        // Show the menu to the user.
+        main_menu();
         terminate_uhb();
     }else{
         return -1;

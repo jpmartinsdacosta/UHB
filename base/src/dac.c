@@ -13,9 +13,6 @@
 // Filepath to the configuration files to be used/edited in UHB.
 #define UHB_DAC_CONFIG_CURRENT  "../config/current/dac.sh"
 
-// Filepath to the backup of all configuration files.
-#define UHB_DAC_CONFIG_BACKUP "../config/backups/script_template.txt"
-
 FlagCollection get_dac_fc, set_dac_fc;
 
 const char get_dac_flags[] = {
@@ -79,9 +76,9 @@ bool set_dac(){
             printf("MSG: Setting DAC...\n");
             add_dac_element(path,user,group,permission,is_recursive(flags));
             snprintf(command, sizeof(command), "chmod %s %s %s", flags, permission, path);
-            add_service_command(command, UHB_DAC_CONFIG_CURRENT);
+            append_to_file(command, UHB_DAC_CONFIG_CURRENT);
             snprintf(command, sizeof(command), "chown %s %s:%s %s\n", flags, user, group, path);
-            add_service_command(command, UHB_DAC_CONFIG_CURRENT);
+            append_to_file(command, UHB_DAC_CONFIG_CURRENT);
             return true;
         }else{
             fprintf(stderr, "ERR: set_dac(): DAC could not be set.\n");
@@ -98,7 +95,7 @@ void view_dac_configuration() {
 }
 
 void reset_dac_configuration() {
-    copy_file(UHB_DAC_CONFIG_BACKUP,UHB_DAC_CONFIG_CURRENT);
+    copy_file(UHB_SCRIPT_TEMPLATE_PATH,UHB_DAC_CONFIG_CURRENT);
 }
 
 void apply_dac_configuration() {
