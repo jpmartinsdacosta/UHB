@@ -51,9 +51,9 @@ void apply_file_service_policy() {
 }
 
 void initialize_uhb() {
-    init_dac_array();       // Initialize array of DACStruct
+    init_all_arrays();
 }
 
 void terminate_uhb() {
-    clear_dac_array();      // Free memory allocated to DACStruct
+    clear_all_arrays();
 }

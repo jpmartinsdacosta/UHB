@@ -83,104 +83,59 @@ void* realloc_struct(void *structure, size_t new_capacity, size_t size);
  * DACStruct functions
  */
 
-/**
- * @brief Initializes the array of DACStruct.
- * @return True if successful, false otherwise.
- */
-bool init_dac_array();
+ bool init_dac_array();
 
-/**
- * @brief Clears the array of DACStruct.
- */
-void clear_dac_array();
+ void clear_dac_array();
 
-/**
- * @brief Retrieves data of a given element of DACStruct.
- * @param dac_index Index of the given DACStruct.
- */
-void get_dac_data(size_t dac_index);
+ void get_dac_data(size_t i);
 
-/**
- * @brief Adds an element to the DACStruct array.
- * @param Filepath Filepath where the permissions are being set.
- * @param user User to be added.
- * @param group Group to be added.
- * @param dac DAC permissions to be added.
- * @param recursive If a recursive flag is present.
- * @return True if successful, false otherwise.
- */
-bool add_dac_element(const char *filepath, const char *user, const char *group, const char *dac, bool recursive);
+ bool is_dac_contained(const char *fp);
 
-/**
- * @brief Removes the last element from the DACStruct array.
- * @return True if successful, false otherwise.
- */
-bool rem_dac_element();
+ bool add_dac_element(const char *fp, const char *user, const char *group, const char *dac, bool recursive);
 
-/**
- * @brief Searches for a DACStruct entry by exact filepath match.
- * @returns The index if found, otherwise -1.
- */
-int find_dac_index_by_filepath(const char *filepath);
+ bool rem_dac_element();
+
+ int find_dac_index_by_filepath(const char *fp);
 
 /**
  * ACLStruct functions
  */
 
-/**
- * @brief Retrieves the ACLStruct data of a given element of DACStruct.
- * @param dac_index Index of the given DACStruct.
- * @param acl_index Index of the given ACLStruct.
- */
-void get_acl_data(size_t dac_index, size_t acl_index);
+ bool init_acl_array();
 
-/**
- * @brief Adds an element to the ACLStruct array of a given element of DACStruct.
- * @param filepath Filepath to check whether a new instance of DACStruct needs to
- * be created or not when adding the new ACLStruct.
- * @param acl ACL permissions to be added.
- * @note THE RECURSIVE OPTION HAS NOT BEEN IMPLEMENTED YET.
- * @return True if successful, false otherwise.
- */
-bool add_acl_element(const char *filepath, const char *acl);
+ void clear_acl_array();
 
-/**
- * @brief Removes the last element from the ACLStruct array.
- * @param dac_index Index of the given DACStruct.
- * @param acl_index Index of the given ACLStruct.
- * @return True if successful, false otherwise.
- */
-bool rem_acl_element(size_t dac_index, size_t acl_index);
+ void get_acl_data(size_t i);
+
+ bool add_acl_element(const char *fp, const char *acl);
+
+ bool rem_acl_element(size_t i);
+
+ int find_acl_index_by_filepath(const char *fp);
 
 /**
  * MACStruct functions
  */
 
- /**
- * @brief Retrieves the MACStruct data of a given element of DACStruct.
- * @param dac_index Index of the given DACStruct.
- * @param acl_index Index of the given MACStruct.
- */
-void get_mac_data(size_t dac_index, size_t mac_index);
+ bool init_mac_array();
+
+ void clear_mac_array();
+
+ void get_mac_data(size_t i);
+
+ bool add_mac_element(const char *fp, const char *mac);
+
+ bool rem_mac_element(size_t i);
+
+ int find_mac_index_by_filepath(const char *fp);
 
 /**
- * @brief Adds an element to the MACStruct array of a given element of DACStruct.
- * @param filepath Filepath to check whether a new instance of DACStruct needs to
- * be created or not when adding the new MACStruct.
- * @param mac MAC permissions to be added.
- * @note THE RECURSIVE OPTION HAS NOT BEEN IMPLEMENTED YET.
- * @return True if successful, false otherwise.
+ * Common to all
  */
-bool add_mac_element(const char *filepath, const char *mac);
 
-/**
- * @brief Removes the last element from the MACStruct array.
- * @param dac_index Index of the given DACStruct.
- * @param mac_index Index of the given MACStruct.
- * @return True if successful, false otherwise.
- */
-bool rem_mac_element(size_t dac_index, size_t mac_index);
+ void init_all_arrays();
 
+ void clear_all_arrays();
 /**
  * Policy-checking functions
  */

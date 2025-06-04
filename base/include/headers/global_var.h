@@ -44,29 +44,35 @@ typedef struct{
  * Structures for the validation of DAC, ACL and MAC policy
  */
 
- struct ACLStruct {
+typedef struct {
     char acl[MAX_LINE_LENGTH];
+    char fp[MAX_FILEPATH_SIZE];
     bool recursive;
-};
+} ACLStruct;
 
-struct MACStruct {
+typedef struct {
     char mac[MAX_LINE_LENGTH];
+    char fp[MAX_FILEPATH_SIZE];
     bool recursive;
-};
+} MACStruct;
 
-struct DACStruct {
+typedef struct {
     char fp[MAX_FILEPATH_SIZE];
     char user[MAX_NAME_LENGTH];
     char group[MAX_NAME_LENGTH];
     char dac[6];
     bool recursive;
-    struct ACLStruct *acl_array;
-    size_t acl_size, acl_capacity;
-    struct MACStruct *mac_array;
-    size_t mac_size, mac_capacity;
     time_t timestamp;
-};
+} DACStruct;
 
-extern struct DACStruct *dac_array;
+// Global policy arrays
+extern DACStruct *dac_array;
+extern size_t dac_size, dac_capacity;
+
+extern ACLStruct *acl_array;
+extern size_t acl_size, acl_capacity;
+
+extern MACStruct *mac_array;
+extern size_t mac_size, mac_capacity;
 
 #endif // GLOBAL_VAR_H
