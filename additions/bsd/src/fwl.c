@@ -1,6 +1,12 @@
 #include <stdio.h>
 #include <stdbool.h>
+
+#include "file.h"
+#include "config.h"
+#include "utils.h"
+#include "input_output.h"
 #include "global_var.h"
+#include "policy.h"
 
 // File naming convention: <OS>_<MODULE>_<FILENAME>_<FILEPATH>
 
@@ -8,10 +14,10 @@
 #define BSD_FIREWALL_RULES_ORIGINAL "/etc/ipfw.rules"
 
 // Filepath to the configuration files to be used/edited in UHB.
-#define BSD_FIREWALL_RULES_CURRENT "/root/uhb/base/config/current/ipfw.rules"
+#define BSD_FIREWALL_RULES_CURRENT  "/root/uhb/base/config/current/ipfw.rules"
 
 // Filepath to the backup of all configuration files.
-#define BSD_FIREWALL_RULES_BACKUP "/root/uhb/base/config/backups/ipfw.rules"
+#define BSD_FIREWALL_RULES_BACKUP   "/root/uhb/base/config/backups/ipfw.rules"
 
 bool fwl_exists() {
     if(exec_exists("ipfw")){
@@ -30,8 +36,16 @@ bool check_firewall_status() {
     }
 }
 
-void view_firewall_configuration(){
-    
+void view_firewall_configuration() {
+    view_file(BSD_FIREWALL_RULES_CURRENT);
+}
+
+void reset_firewall_configuration() {
+    copy_file(BSD_FIREWALL_RULES_ORIGINAL, BSD_FIREWALL_RULES_CURRENT);
+}
+
+void apply_firewall_configuration() {
+    copy_file(BSD_FIREWALL_RULES_CURRENT, BSD_FIREWALL_RULES_ORIGINAL);
 }
 
 void view_firewall_manual(){

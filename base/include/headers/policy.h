@@ -109,7 +109,7 @@ void* realloc_struct(void *structure, size_t new_capacity, size_t size);
 
  bool add_acl_element(const char *fp, const char *acl);
 
- bool rem_acl_element(size_t i);
+ bool rem_acl_element();
 
  int find_acl_index_by_filepath(const char *fp);
 
@@ -125,7 +125,7 @@ void* realloc_struct(void *structure, size_t new_capacity, size_t size);
 
  bool add_mac_element(const char *fp, const char *mac);
 
- bool rem_mac_element(size_t i);
+ bool rem_mac_element();
 
  int find_mac_index_by_filepath(const char *fp);
 

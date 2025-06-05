@@ -203,8 +203,10 @@ void clear_acl_array() {
 void get_acl_data(size_t i) {
     if (i >= acl_size) return;
     ACLStruct *a = &acl_array[i];
-    printf("ACL: %s\nFilepath: %s\nRecursive: %s\n", a->acl, a->fp, a->recursive ? "true" : "false");
+    printf("ACL: %s\nFilepath: %s\nRecursive: %s\nTimestamp: %s",
+           a->acl, a->fp, a->recursive ? "true" : "false", ctime(&a->timestamp));
 }
+
 
 bool add_acl_element(const char *fp, const char *acl) {
     if (!fp || !acl) return false;
@@ -219,17 +221,25 @@ bool add_acl_element(const char *fp, const char *acl) {
     strncpy(a->fp, fp, MAX_FILEPATH_SIZE - 1); a->fp[MAX_FILEPATH_SIZE - 1] = '\0';
     strncpy(a->acl, acl, MAX_LINE_LENGTH - 1); a->acl[MAX_LINE_LENGTH - 1] = '\0';
     a->recursive = false;
+    a->timestamp = time(NULL);  // Set timestamp
+
     get_acl_data(acl_size - 1);
     return true;
 }
 
-bool rem_acl_element(size_t i) {
-    if (i >= acl_size) return false;
-    if (i < acl_size - 1) {
-        memmove(&acl_array[i], &acl_array[i + 1], (acl_size - i - 1) * sizeof(ACLStruct));
-    }
+
+bool rem_acl_element() {
+    if (acl_size == 0) return true;
+
     --acl_size;
-    acl_array = realloc_struct(acl_array, acl_size, sizeof(ACLStruct));
+
+    ACLStruct *new_array = realloc_struct(acl_array, acl_size, sizeof(ACLStruct));
+    if (!new_array && acl_size != 0) {
+        perror("Failed to reallocate memory for ACLStruct");
+        return false;
+    }
+
+    acl_array = new_array;
     return true;
 }
 
@@ -257,7 +267,7 @@ bool init_mac_array() {
 }
 
 void clear_mac_array() {
-    free(acl_array);
+    free(mac_array);
     mac_array = NULL;
     mac_size = 0;
     mac_capacity = 0;
@@ -266,8 +276,10 @@ void clear_mac_array() {
 void get_mac_data(size_t i) {
     if (i >= mac_size) return;
     MACStruct *m = &mac_array[i];
-    printf("MAC: %s\nFilepath: %s\nRecursive: %s\n", m->mac, m->fp, m->recursive ? "true" : "false");
+    printf("MAC: %s\nFilepath: %s\nRecursive: %s\nTimestamp: %s",
+           m->mac, m->fp, m->recursive ? "true" : "false", ctime(&m->timestamp));
 }
+
 
 bool add_mac_element(const char *fp, const char *mac) {
     if (!fp || !mac) return false;
@@ -282,17 +294,25 @@ bool add_mac_element(const char *fp, const char *mac) {
     strncpy(m->fp, fp, MAX_FILEPATH_SIZE - 1); m->fp[MAX_FILEPATH_SIZE - 1] = '\0';
     strncpy(m->mac, mac, MAX_LINE_LENGTH - 1); m->mac[MAX_LINE_LENGTH - 1] = '\0';
     m->recursive = false;
+    m->timestamp = time(NULL);  // Set timestamp
+
     get_mac_data(mac_size - 1);
     return true;
 }
 
-bool rem_mac_element(size_t i) {
-    if (i >= mac_size) return false;
-    if (i < mac_size - 1) {
-        memmove(&mac_array[i], &mac_array[i + 1], (mac_size - i - 1) * sizeof(MACStruct));
-    }
+
+bool rem_mac_element() {
+    if (mac_size == 0) return true;
+
     --mac_size;
-    mac_array = realloc_struct(mac_array, mac_size, sizeof(MACStruct));
+
+    MACStruct *new_array = realloc_struct(mac_array, mac_size, sizeof(MACStruct));
+    if (!new_array && mac_size != 0) {
+        perror("Failed to reallocate memory for MACStruct");
+        return false;
+    }
+
+    mac_array = new_array;
     return true;
 }
 

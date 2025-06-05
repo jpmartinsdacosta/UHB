@@ -33,9 +33,11 @@ const char *dac_menu_options[] = {
     "1. Get DAC of a file/directory",
     "2. Set DAC of a file/directory",
     "3. View current DAC configuration",
-    "4. View ls manual page",
-    "5. View chmod manual page",
-    "6. View chown manual page",
+    "4. Reset current DAC configuration",
+    "5. Remove last DAC entry",
+    "6. View ls manual page",
+    "7. View chmod manual page",
+    "8. View chown manual page",
     "0. Return to Main Menu",
     NULL
 };
@@ -44,8 +46,10 @@ const char *acl_menu_options[] = {
     "1. Get ACL of a file/directory",
     "2. Set ACL of a file/directory",
     "3. View current ACL configuration",
-    "4. View getfacl manual page",
-    "5. View setfacl manual page",
+    "4. Reset current ACL configuration",
+    "5. Remove last ACL entry",
+    "6. View getfacl manual page",
+    "7. View setfacl manual page",
     "0. Return to Main Menu",
     NULL
 };
@@ -54,7 +58,9 @@ const char *mac_menu_options[] = {
     "1. Get MAC of a file/directory",
     "2. Set MAC of a file/directory",
     "3. View current MAC configuration",
-    "4. View MAC manual page",
+    "4. Reset current MAC configuration",
+    "5. Remove last MAC entry",
+    "6. View MAC manual page",
     "0. Return to Main Menu",
     NULL
 };
@@ -91,6 +97,8 @@ const char *fwl_menu_options[] = {
     "2. Add a firewall rule",
     "3. View current firewall configuration",
     "4. Reset current firewall configuration",
+    "5. Apply current firewall configuration",
+    "6. View firewall manual",
     "0. Return to Main Menu",
     NULL
 };
@@ -147,12 +155,18 @@ void dac_menu(){
                 view_dac_configuration();
                 break;
             case 4:
-                system("man ls ; clear");
+                reset_dac_configuration();
                 break;
             case 5:
-                system("man chmod ; clear");
+                rem_dac_element();
                 break;
             case 6:
+                system("man ls ; clear");
+                break;
+            case 7:
+                system("man chmod ; clear");
+                break;
+            case 8:
                 system("man chown ; clear");
                 break;
             case 0:
@@ -179,9 +193,15 @@ void acl_menu(){
                 view_acl_configuration();
                 break;
             case 4:
-                system("man getfacl ; clear");
+                reset_acl_configuration();
                 break;
             case 5:
+                rem_acl_element();
+                break;
+            case 6:
+                system("man getfacl ; clear");
+                break;
+            case 7:
                 system("man setfacl ; clear");
                 break;
             case 0:
@@ -208,6 +228,12 @@ void mac_menu(){
                 view_mac_configuration();
                 break;
             case 4:
+                reset_mac_configuration();
+                break;
+            case 5:
+                rem_mac_element();
+                break;
+            case 6:
                 view_mac_manual();
                 break;
             case 0:
@@ -303,10 +329,19 @@ void fwl_menu(){
                 printf("MSG: Option not implemented yet.\n");
                 break;
             case 2:
-                printf("MSG: Option not implemented yet.\n");
+                add_firewall_rule();
                 break;
             case 3:
-                printf("MSG: Option not implemented yet.\n");
+                view_firewall_configuration();
+                break;
+            case 4:
+                reset_firewall_configuration();
+                break;
+            case 5:
+                apply_firewall_confgiuration();
+                break;
+            case 6:
+                view_firewall_manual();
                 break;
             case 0:
                 break;
