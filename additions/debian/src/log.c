@@ -13,16 +13,16 @@
 // File naming convention: <OS>_<MODULE>_<FILENAME>_<FILEPATH>
 
 // Filepath to the original configuration files.
-#define DEB_RSYSLOG_CONFIG_ORIGINAL     "/etc/rsyslog.conf"
-#define DEB_RSYSLOG_REMOTE_ORIGINAL     "/etc/rsyslog.d/50-default.conf"
+#define DEB_RSYSLOG_CONFIG_ORIGINAL         "/etc/rsyslog.conf"
+#define DEB_RSYSLOG_REMOTE_ORIGINAL         "/etc/rsyslog.d/50-default.conf"
 
 // Filepath to the configuration files to be used/edited in UHB.
-#define DEB_RSYSLOG_CONFIG_UHB          "/root/uhb/base/config/current/rsyslog.conf"
-#define DEB_RSYSLOG_REMOTE_UHB          "/root/uhb/base/config/current/50-default.conf"
+#define DEB_RSYSLOG_CONFIG_CURRENT          "/root/uhb/base/config/current/rsyslog.conf"
+#define DEB_RSYSLOG_REMOTE_CURRENT          "/root/uhb/base/config/current/50-default.conf"
 
 // Filepath to the backup of all configuration files.
-#define DEB_RSYSLOG_CONFIG_BACKUP       "/root/uhb/base/config/backups/rsyslog.conf"
-#define DEB_RSYSLOG_REMOTE_BACKUP       "/root/uhb/base/config/backups/50-default.conf"
+#define DEB_RSYSLOG_CONFIG_BACKUP           "/root/uhb/base/config/backups/rsyslog.conf"
+#define DEB_RSYSLOG_REMOTE_BACKUP           "/root/uhb/base/config/backups/50-default.conf"
 
 #define MAX_PORT_SIZE 6 // Buffer up to 6 characters 5 digits + '\0'
 
@@ -76,12 +76,12 @@ bool restart_logging_daemon() {
  */
 
 void detect_rfc5424() {
-    if(find_string_in_file(SEND_RFC5424,DEB_RSYSLOG_CONFIG_UHB)){
+    if(find_string_in_file(SEND_RFC5424,DEB_RSYSLOG_CONFIG_CURRENT)){
         rfc_5424_send = true;
     }else{
         rfc_5424_send = false;
     }
-    if(find_string_in_file(WRITE_RFC5424,DEB_RSYSLOG_CONFIG_UHB)){
+    if(find_string_in_file(WRITE_RFC5424,DEB_RSYSLOG_CONFIG_CURRENT)){
         rfc_5424_write = true;
     }else{
         rfc_5424_write = false;
@@ -90,19 +90,19 @@ void detect_rfc5424() {
 
 void apply_rfc5424() {
     int opt = get_yes_no_input("MSG 1/2: Use RFC5424 standard for remote logs? (Y/N):");
-    if(opt == 0 && !find_string_in_file(SEND_RFC5424,DEB_RSYSLOG_CONFIG_UHB)){
-        append_to_file(SEND_RFC5424,DEB_RSYSLOG_CONFIG_UHB);
+    if(opt == 0 && !find_string_in_file(SEND_RFC5424,DEB_RSYSLOG_CONFIG_CURRENT)){
+        append_to_file(SEND_RFC5424,DEB_RSYSLOG_CONFIG_CURRENT);
         rfc_5424_send = true;
     }else if(opt == 1){
-        find_and_replace(SEND_RFC5424,"",DEB_RSYSLOG_CONFIG_UHB);
+        find_and_replace(SEND_RFC5424,"",DEB_RSYSLOG_CONFIG_CURRENT);
         rfc_5424_send = false;
     }
     opt = get_yes_no_input("MSG 2/2: Use RFC5424 standard when storing logs in the system? (Y/N):");
-    if(opt == 0 && !find_string_in_file(WRITE_RFC5424,DEB_RSYSLOG_CONFIG_UHB)){
-        append_to_file(WRITE_RFC5424,DEB_RSYSLOG_CONFIG_UHB);
+    if(opt == 0 && !find_string_in_file(WRITE_RFC5424,DEB_RSYSLOG_CONFIG_CURRENT)){
+        append_to_file(WRITE_RFC5424,DEB_RSYSLOG_CONFIG_CURRENT);
         rfc_5424_write = true;
     }else if(opt == 1){
-        find_and_replace(WRITE_RFC5424,"",DEB_RSYSLOG_CONFIG_UHB);
+        find_and_replace(WRITE_RFC5424,"",DEB_RSYSLOG_CONFIG_CURRENT);
         rfc_5424_write = false;
     }
 }
@@ -111,15 +111,15 @@ void initialize_logging(bool copy_from_backup){
     if(log_exists() && check_logging_status()){
         if(!copy_from_backup){
             // Copy original conf to UHB
-            copy_file(DEB_RSYSLOG_CONFIG_ORIGINAL,DEB_RSYSLOG_CONFIG_UHB);
-            copy_file(DEB_RSYSLOG_REMOTE_ORIGINAL,DEB_RSYSLOG_REMOTE_UHB);
+            copy_file(DEB_RSYSLOG_CONFIG_ORIGINAL,DEB_RSYSLOG_CONFIG_CURRENT);
+            copy_file(DEB_RSYSLOG_REMOTE_ORIGINAL,DEB_RSYSLOG_REMOTE_CURRENT);
             // Copy original conf to backup
             copy_file(DEB_RSYSLOG_CONFIG_ORIGINAL,DEB_RSYSLOG_CONFIG_BACKUP);
             copy_file(DEB_RSYSLOG_CONFIG_ORIGINAL,DEB_RSYSLOG_REMOTE_BACKUP);
         }else{
             // Copy backup to UHB
-            copy_file(DEB_RSYSLOG_CONFIG_BACKUP,DEB_RSYSLOG_CONFIG_UHB);
-            copy_file(DEB_RSYSLOG_REMOTE_BACKUP,DEB_RSYSLOG_REMOTE_UHB);
+            copy_file(DEB_RSYSLOG_CONFIG_BACKUP,DEB_RSYSLOG_CONFIG_CURRENT);
+            copy_file(DEB_RSYSLOG_REMOTE_BACKUP,DEB_RSYSLOG_REMOTE_CURRENT);
         }
         detect_rfc5424();
     }else if(log_exists() && !check_logging_status()){
@@ -130,26 +130,26 @@ void initialize_logging(bool copy_from_backup){
 void reset_logging_configuration() {
     printf("MSG: Resetting auditing configuration...\n");
     // Copy backup to UHB
-    copy_file(DEB_RSYSLOG_CONFIG_BACKUP,DEB_RSYSLOG_CONFIG_UHB);
-    copy_file(DEB_RSYSLOG_REMOTE_BACKUP,DEB_RSYSLOG_REMOTE_UHB);
+    copy_file(DEB_RSYSLOG_CONFIG_BACKUP,DEB_RSYSLOG_CONFIG_CURRENT);
+    copy_file(DEB_RSYSLOG_REMOTE_BACKUP,DEB_RSYSLOG_REMOTE_CURRENT);
 }
 
 void view_logging_configuration() {
     int opt = three_option_input("MSG 1/2: View rsyslog.conf file?. (Y)es/(N)o/E(x)it:",'Y','N','X');
     if(opt == 0)
-        view_file(DEB_RSYSLOG_CONFIG_UHB);
+        view_file(DEB_RSYSLOG_CONFIG_CURRENT);
     if(opt == 2)
          return;
     opt = three_option_input("MSG 2/2: View 50-default.conf file?. (Y)es/(N)o/E(x)it:",'Y','N','X');
     if(opt == 0)
-        view_file(DEB_RSYSLOG_REMOTE_UHB);
+        view_file(DEB_RSYSLOG_REMOTE_CURRENT);
     if(opt == 2)
          return;
 }
 
 bool apply_logging_configuration(){
     printf("MSG: Applying UHB logging configuration...\n");
-    if(copy_file(DEB_RSYSLOG_CONFIG_UHB,DEB_RSYSLOG_CONFIG_ORIGINAL)){
+    if(copy_file(DEB_RSYSLOG_CONFIG_CURRENT,DEB_RSYSLOG_CONFIG_ORIGINAL)){
         if(restart_logging_daemon()){
             printf("MSG: UHB logging configuration successfully applied.\n");
             return true;
@@ -184,7 +184,7 @@ void add_local_logging() {
         opt = get_yes_no_input("MSG: Is the information correct? (Y/N):");
     }
     snprintf(command,sizeof(command),"%s    %s\n",msg, fp);
-    append_to_file(command,DEB_RSYSLOG_CONFIG_UHB);
+    append_to_file(command,DEB_RSYSLOG_CONFIG_CURRENT);
     if(!path_exists(fp)){
         return create_file(fp);
     }else{
@@ -201,29 +201,29 @@ void add_local_logging() {
 void enable_udp_module(){
     char a[MAX_LINE_LENGTH];
     snprintf(a,sizeof(a),"input(type=\"imudp\" port=\"%s\")",udp_port);
-    find_and_replace("#module(load=\"imudp\")","module(load=\"imudp\")",DEB_RSYSLOG_CONFIG_UHB);
-    find_and_replace("#input(type=\"imudp\" port=\"514\")",a,DEB_RSYSLOG_CONFIG_UHB);
+    find_and_replace("#module(load=\"imudp\")","module(load=\"imudp\")",DEB_RSYSLOG_CONFIG_CURRENT);
+    find_and_replace("#input(type=\"imudp\" port=\"514\")",a,DEB_RSYSLOG_CONFIG_CURRENT);
 }
 
 void enable_tcp_module(){
     char b[MAX_LINE_LENGTH];
     snprintf(b,sizeof(b),"input(type=\"imtcp\" port=\"%s\")",tcp_port);
-    find_and_replace("#module(load=\"imtcp\")","module(load=\"imtcp\")",DEB_RSYSLOG_CONFIG_UHB);
-    find_and_replace("#input(type=\"imtcp\" port=\"514\")",b,DEB_RSYSLOG_CONFIG_UHB);
+    find_and_replace("#module(load=\"imtcp\")","module(load=\"imtcp\")",DEB_RSYSLOG_CONFIG_CURRENT);
+    find_and_replace("#input(type=\"imtcp\" port=\"514\")",b,DEB_RSYSLOG_CONFIG_CURRENT);
 }
 
 void disable_udp_module(){
     char a[MAX_LINE_LENGTH];
     snprintf(a,sizeof(a),"input(type=\"imudp\" port=\"%s\")",udp_port);
-    find_and_replace("module(load=\"imudp\")","#module(load=\"imudp\")",DEB_RSYSLOG_CONFIG_UHB);
-    find_and_replace(a,"#input(type=\"imudp\" port=\"514\")",DEB_RSYSLOG_CONFIG_UHB);
+    find_and_replace("module(load=\"imudp\")","#module(load=\"imudp\")",DEB_RSYSLOG_CONFIG_CURRENT);
+    find_and_replace(a,"#input(type=\"imudp\" port=\"514\")",DEB_RSYSLOG_CONFIG_CURRENT);
 }
 
 void disable_tcp_module(){
     char b[MAX_LINE_LENGTH];
     snprintf(b,sizeof(b),"input(type=\"imtcp\" port=\"%s\")",tcp_port);
-    find_and_replace("module(load=\"imtcp\")","#module(load=\"imtcp\")",DEB_RSYSLOG_CONFIG_UHB);
-    find_and_replace(b,"#input(type=\"imtcp\" port=\"514\")",DEB_RSYSLOG_CONFIG_UHB);
+    find_and_replace("module(load=\"imtcp\")","#module(load=\"imtcp\")",DEB_RSYSLOG_CONFIG_CURRENT);
+    find_and_replace(b,"#input(type=\"imtcp\" port=\"514\")",DEB_RSYSLOG_CONFIG_CURRENT);
 }
 
 bool edit_udp_module(const char *port){
@@ -237,8 +237,8 @@ bool edit_udp_module(const char *port){
         fprintf(stderr, "ERR: edit_udp_module(): Could not retrieve replacement UDP module info.\n");
         return false;
     }
-    find_and_replace("#module(load=\"imudp\")","module(load=\"imudp\")",DEB_RSYSLOG_CONFIG_UHB);
-    return find_and_replace(current,replace,DEB_RSYSLOG_CONFIG_UHB);
+    find_and_replace("#module(load=\"imudp\")","module(load=\"imudp\")",DEB_RSYSLOG_CONFIG_CURRENT);
+    return find_and_replace(current,replace,DEB_RSYSLOG_CONFIG_CURRENT);
 }
 
 bool edit_tcp_module(const char *port){
@@ -252,8 +252,8 @@ bool edit_tcp_module(const char *port){
         fprintf(stderr, "ERR: edit_tcp_module(): Could not retrieve replacement TCP module info.\n");
         return false;
     }
-    find_and_replace("#module(load=\"imtcp\")","module(load=\"imtcp\")",DEB_RSYSLOG_CONFIG_UHB);
-    return find_and_replace(current,replace,DEB_RSYSLOG_CONFIG_UHB);
+    find_and_replace("#module(load=\"imtcp\")","module(load=\"imtcp\")",DEB_RSYSLOG_CONFIG_CURRENT);
+    return find_and_replace(current,replace,DEB_RSYSLOG_CONFIG_CURRENT);
 }
 
 void set_log_reception_service(){
@@ -283,9 +283,9 @@ void add_log_reception_rule(){
     char line[MAX_LINE_LENGTH];
     get_user_input("MSG: Where would you like to store receving log messages?\n",filename,sizeof(filename));
     snprintf(line,sizeof(line),"\n$template RemoteLogs,\"%s\"",filename);
-    append_to_file(line,DEB_RSYSLOG_CONFIG_UHB);
-    append_to_file("*.* ?RemoteLogs",DEB_RSYSLOG_CONFIG_UHB);
-    append_to_file("& ~",DEB_RSYSLOG_CONFIG_UHB);
+    append_to_file(line,DEB_RSYSLOG_CONFIG_CURRENT);
+    append_to_file("*.* ?RemoteLogs",DEB_RSYSLOG_CONFIG_CURRENT);
+    append_to_file("& ~",DEB_RSYSLOG_CONFIG_CURRENT);
 }
 
 void add_log_forwarding_rule(){
@@ -312,7 +312,7 @@ void add_log_forwarding_rule(){
             return;
             break;
     }
-    append_to_file(command,DEB_RSYSLOG_REMOTE_UHB);
+    append_to_file(command,DEB_RSYSLOG_REMOTE_CURRENT);
 }
 
 void view_logging_manual() {

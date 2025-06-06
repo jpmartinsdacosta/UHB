@@ -17,8 +17,8 @@
 #define DEB_AUDIT_RULES_ORIGINAL    "/etc/audit/audit.rules"
 
 // Filepath to the configuration files to be used/edited in UHB.
-#define DEB_AUDIT_CONF_UHB          "/root/uhb/base/config/current/auditd.conf" 
-#define DEB_AUDIT_RULES_UHB         "/root/uhb/base/config/current/audit.rules" 
+#define DEB_AUDIT_CONF_CURRENT      "/root/uhb/base/config/current/auditd.conf" 
+#define DEB_AUDIT_RULES_CURRENT     "/root/uhb/base/config/current/audit.rules" 
 
 // Filepath to the backup of all configuration files.
 #define DEB_AUDIT_CONF_BACKUP       "/root/uhb/base/config/backups/auditd.conf"
@@ -72,15 +72,15 @@ void initialize_auditing(bool copy_from_backup){
     if(aud_exists() && check_auditing_status()){
         if(!copy_from_backup){
             // Copy original files to UHB
-            copy_file(DEB_AUDIT_CONF_ORIGINAL,DEB_AUDIT_CONF_UHB);
-            copy_file(DEB_AUDIT_RULES_ORIGINAL,DEB_AUDIT_RULES_UHB);
+            copy_file(DEB_AUDIT_CONF_ORIGINAL,DEB_AUDIT_CONF_CURRENT);
+            copy_file(DEB_AUDIT_RULES_ORIGINAL,DEB_AUDIT_RULES_CURRENT);
             // Copy original files to backup
             copy_file(DEB_AUDIT_CONF_ORIGINAL,DEB_AUDIT_CONF_BACKUP);
             copy_file(DEB_AUDIT_RULES_ORIGINAL,DEB_AUDIT_RULES_BACKUP);
         }else{
             // Copy backup to UHB
-            copy_file(DEB_AUDIT_CONF_BACKUP,DEB_AUDIT_CONF_UHB);
-            copy_file(DEB_AUDIT_RULES_BACKUP,DEB_AUDIT_RULES_UHB);
+            copy_file(DEB_AUDIT_CONF_BACKUP,DEB_AUDIT_CONF_CURRENT);
+            copy_file(DEB_AUDIT_RULES_BACKUP,DEB_AUDIT_RULES_CURRENT);
         }
     }
 }
@@ -88,19 +88,19 @@ void initialize_auditing(bool copy_from_backup){
 void reset_auditing_configuration() {
     printf("MSG: Resetting auditing configuration...\n");
     // Copy backup to UHB
-    copy_file(DEB_AUDIT_CONF_BACKUP,DEB_AUDIT_CONF_UHB);
-    copy_file(DEB_AUDIT_RULES_BACKUP,DEB_AUDIT_RULES_UHB);
+    copy_file(DEB_AUDIT_CONF_BACKUP,DEB_AUDIT_CONF_CURRENT);
+    copy_file(DEB_AUDIT_RULES_BACKUP,DEB_AUDIT_RULES_CURRENT);
 }
 
 void view_auditing_configuration() {
     int opt = three_option_input("MSG 1/2: View auditd.conf file?. (Y)es/(N)o/E(x)it:",'Y','N','X');
     if(opt == 0)
-        view_file(DEB_AUDIT_CONF_UHB);
+        view_file(DEB_AUDIT_CONF_CURRENT);
     if(opt == 2)
          return;
     opt = three_option_input("MSG 2/2: View audit.rules file?. (Y)es/(N)o/E(x)it:",'Y','N','X');
     if(opt == 0)
-        view_file(DEB_AUDIT_RULES_UHB);
+        view_file(DEB_AUDIT_RULES_CURRENT);
     if(opt == 2)
          return;
 }
@@ -113,7 +113,7 @@ void add_local_auditing() {
         opt = three_option_input("Is the information correct? (Y)es/(N)o/E(x)it",'Y','N','X');
     }
     if(opt == 0) {
-        append_to_file(rule,DEB_AUDIT_RULES_UHB);
+        append_to_file(rule,DEB_AUDIT_RULES_CURRENT);
     }
 
 }
@@ -122,8 +122,8 @@ void apply_auditing_configuration() {
     if(get_yes_no_input("MSG: Apply the current auditing configuration? (Y/N):")){
         printf("MSG: Applying auditing configuration...\n");
         // Copy UHB files to original location and reset auditing service
-        copy_file(DEB_AUDIT_CONF_UHB,DEB_AUDIT_CONF_ORIGINAL);
-        copy_file(DEB_AUDIT_RULES_UHB,DEB_AUDIT_RULES_ORIGINAL);
+        copy_file(DEB_AUDIT_CONF_CURRENT,DEB_AUDIT_CONF_ORIGINAL);
+        copy_file(DEB_AUDIT_RULES_CURRENT,DEB_AUDIT_RULES_ORIGINAL);
         // Load rules from the audit.rules file
         system("augenrules --load");
         // Restart auditing daemon
@@ -138,23 +138,23 @@ void apply_auditing_configuration() {
 void configure_auditing_reception_service() {
     char param[MAX_LINE_LENGTH];
     get_user_input("MSG: Which TCP port should the auditing daemon listen to?:",param,sizeof(param));
-    if(!find_string_in_file("tcp_listen_port",DEB_AUDIT_CONF_UHB))
-        replace_string_in_line(DEB_AUDIT_CONF_UHB,27,"##tcp_listen_port","tcp_listen_port");
-    replace_option_value("tcp_listen_port",'=',param,DEB_AUDIT_CONF_UHB);
-    if(!find_string_in_file("tcp_client_ports",DEB_AUDIT_CONF_UHB))
-        replace_string_in_line(DEB_AUDIT_CONF_UHB,27,"##tcp_client_ports","tcp_client_ports");
-    replace_option_value("tcp_client_ports",'=',param,DEB_AUDIT_CONF_UHB);
+    if(!find_string_in_file("tcp_listen_port",DEB_AUDIT_CONF_CURRENT))
+        replace_string_in_line(DEB_AUDIT_CONF_CURRENT,27,"##tcp_listen_port","tcp_listen_port");
+    replace_option_value("tcp_listen_port",'=',param,DEB_AUDIT_CONF_CURRENT);
+    if(!find_string_in_file("tcp_client_ports",DEB_AUDIT_CONF_CURRENT))
+        replace_string_in_line(DEB_AUDIT_CONF_CURRENT,27,"##tcp_client_ports","tcp_client_ports");
+    replace_option_value("tcp_client_ports",'=',param,DEB_AUDIT_CONF_CURRENT);
 }
 
 void configure_auditing_forwarding_service() {
     char param[MAX_LINE_LENGTH]; 
     get_user_input("MSG: Please enter the IP address of the remote server:",param,sizeof(param));
-    if(!find_string_in_file("remote_server",DEB_AUDIT_CONF_UHB)){
+    if(!find_string_in_file("remote_server",DEB_AUDIT_CONF_CURRENT)){
         char line[MAX_LINE_LENGTH];
         snprintf(line,sizeof(line),"remote_server = %s",param);
-        append_to_file(line,DEB_AUDIT_CONF_UHB);
+        append_to_file(line,DEB_AUDIT_CONF_CURRENT);
     }
-    replace_option_value("remote_server",'=',param,DEB_AUDIT_CONF_UHB);
+    replace_option_value("remote_server",'=',param,DEB_AUDIT_CONF_CURRENT);
 }
 
 /**

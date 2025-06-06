@@ -15,6 +15,8 @@
   */
 void load_from_backup_function();
 
+void show_debug_messages_function();
+
 void reset_configuration_file();
 
 void view_configuration_file();

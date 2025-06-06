@@ -42,7 +42,15 @@ bool check_firewall_status() {
 }
 
 void initialize_firewall(bool copy_from_backup) {
-    
+    if(!copy_from_backup){
+        copy_file(DEB_FIREWALL_CONFIG_ORIGINAL,DEB_FIREWALL_CONFIG_CURRENT);
+        copy_file(DEB_FIREWALL_CONFIG_ORIGINAL,DEB_FIREWALL_CONFIG_BACKUP);
+        copy_file(DEB_FIREWALL_USERRULES_ORIGINAL,DEB_FIREWALL_USERRULES_CURRENT);
+        copy_file(DEB_FIREWALL_USERRULES_ORIGINAL,DEB_FIREWALL_USERRULES_BACKUP);
+    }else{
+        copy_file(DEB_FIREWALL_CONFIG_BACKUP,DEB_FIREWALL_CONFIG_CURRENT);
+        copy_file(DEB_FIREWALL_USERRULES_BACKUP,DEB_FIREWALL_USERRULES_CURRENT);
+    }
 }
 
 void add_firewall_rule() {

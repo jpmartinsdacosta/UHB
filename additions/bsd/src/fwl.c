@@ -38,7 +38,12 @@ bool check_firewall_status() {
 }
 
 void initialize_firewall(bool copy_from_backup) {
-    
+    if(!copy_from_backup){
+        copy_file(BSD_FIREWALL_RULES_ORIGINAL,BSD_FIREWALL_RULES_CURRENT);
+        copy_file(BSD_FIREWALL_RULES_ORIGINAL,BSD_FIREWALL_RULES_BACKUP);
+    }else{
+        copy_file(BSD_FIREWALL_RULES_BACKUP,BSD_FIREWALL_RULES_CURRENT);
+    }
 }
 
 void add_firewall_rule() {

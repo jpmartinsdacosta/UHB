@@ -14,7 +14,7 @@
 #define BSD_MAC_CONFIG_ORIGINAL "/etc/rc.bsdextended"
 
 // Filepath to the configuration files to be used/edited in UHB.
-#define BSD_MAC_CONFIG_UHB      "/root/uhb/base/config/current/rc.bsdextended"
+#define BSD_MAC_CONFIG_CURRENT  "/root/uhb/base/config/current/rc.bsdextended"
 
 // Filepath to the backup of all configuration files.
 #define BSD_MAC_CONFIG_BACKUP   "/root/uhb/base/config/backups/rc.bsdextended"
@@ -54,20 +54,6 @@ bool mac_exists() {
     }
 }
 
-void initialize_mac_module(bool copy_from_backup) {
-    if(mac_exists()){
-        if(!copy_from_backup){
-            // Copy original files to UHB
-            copy_file(BSD_MAC_CONFIG_ORIGINAL,BSD_MAC_CONFIG_UHB);
-            // Copy original files to backup 
-            copy_file(BSD_MAC_CONFIG_ORIGINAL,BSD_MAC_CONFIG_BACKUP);
-        }else{
-            // Copy backup to uHB
-            copy_file(BSD_MAC_CONFIG_BACKUP,BSD_MAC_CONFIG_ORIGINAL);
-        }
-    }
-}
-
 bool get_mac() {
     system("ugidfw list | less");
     system("clear");
@@ -100,7 +86,21 @@ void set_mac() {
         return;
     }
     if((!is_empty_input(uid) && check_user(uid)) && (!is_empty_input(gid) && check_group(gid)) && (!is_empty_input(filesys) && path_exists(filesys)) && check_flags(type,&type_fc) && check_flags(mode,&mode_fc)){
-        append_to_file(input, BSD_MAC_CONFIG_UHB);
+        append_to_file(input, BSD_MAC_CONFIG_CURRENT);
+    }
+}
+
+void initialize_mac_module(bool copy_from_backup) {
+    if(mac_exists()){
+        if(!copy_from_backup){
+            // Copy original files to UHB
+            copy_file(BSD_MAC_CONFIG_ORIGINAL,BSD_MAC_CONFIG_CURRENT);
+            // Copy original files to backup 
+            copy_file(BSD_MAC_CONFIG_ORIGINAL,BSD_MAC_CONFIG_BACKUP);
+        }else{
+            // Copy backup to uHB
+            copy_file(BSD_MAC_CONFIG_BACKUP,BSD_MAC_CONFIG_ORIGINAL);
+        }
     }
 }
 
@@ -111,4 +111,18 @@ void view_mac_manual() {
 
 void view_mac_configuration() {
     view_mac_manual();
+}
+
+void reset_mac_configuration(bool load_from_backup) {
+    if(!load_from_backup){
+        copy_file(BSD_MAC_CONFIG_ORIGINAL,BSD_MAC_CONFIG_CURRENT);
+        copy_file(BSD_MAC_CONFIG_ORIGINAL,BSD_MAC_CONFIG_BACKUP);
+    }else{
+        copy_file(BSD_MAC_CONFIG_BACKUP,BSD_MAC_CONFIG_CURRENT);
+    }
+}
+
+void apply_mac_configuration() {
+    copy_file(BSD_MAC_CONFIG_CURRENT,BSD_MAC_CONFIG_ORIGINAL);
+    printf("MSG: To apply MAC configuration in FreeBSD, reboot the system!\n");
 }

@@ -111,4 +111,6 @@ int replace_string_in_line(const char *filepath, int line, const char *target, c
  */
 int smart_replacement(const char *prompt, const char *filepath, int line, const char *target);
 
+bool get_option_value(const char *option_name, char separator, const char *param, const char *filepath);
+
 #endif // FILE_H

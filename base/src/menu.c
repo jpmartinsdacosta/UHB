@@ -362,7 +362,7 @@ void conf_menu(){
                 load_from_backup_function();
                 break;
             case 2:
-                show_debugging_messages();
+                show_debug_messages_function();
                 break;
             case 3:
                 view_configuration_file();
