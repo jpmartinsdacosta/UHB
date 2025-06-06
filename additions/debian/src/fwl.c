@@ -7,6 +7,7 @@
 #include "input_output.h"
 #include "global_var.h"
 #include "policy.h"
+#include "fwl.h"
 
 // File naming convention: <OS>_<MODULE>_<FILENAME>_<FILEPATH>
 
@@ -38,6 +39,14 @@ bool check_firewall_status() {
     }else{
         return false;
     }
+}
+
+void initialize_firewall(bool copy_from_backup) {
+    
+}
+
+void add_firewall_rule() {
+    
 }
 
 void view_firewall_configuration() {

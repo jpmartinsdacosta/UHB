@@ -26,7 +26,7 @@ void initialize_firewall(bool copy_from_backup);
  */
 bool restart_logging_daemon();
 
-bool apply_firewall_confgiuration();
+void apply_firewall_confgiuration();
 
 void add_firewall_rule();
 

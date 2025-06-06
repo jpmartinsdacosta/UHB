@@ -68,7 +68,7 @@ bool restart_auditing_daemon() {
  * Functions regarding module configuration
  */
 
-void initialize_auditing_module(bool copy_from_backup){
+void initialize_auditing(bool copy_from_backup){
     if(aud_exists() && check_auditing_status()){
         if(!copy_from_backup){
             // Copy original files to UHB

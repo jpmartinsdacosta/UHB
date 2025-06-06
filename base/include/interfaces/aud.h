@@ -51,7 +51,7 @@ bool restart_auditing_daemon();
  * It will initialize the remote auditing daemon's configuration if present.
  * @param copy_from_backup          Boolean to determine whether to copy from backup.
  */
-void initialize_auditing_module(bool copy_from_backup);
+void initialize_auditing(bool copy_from_backup);
 
 /**
  * @brief Resets the auditing module. This is done ONLY by copying the original audit service

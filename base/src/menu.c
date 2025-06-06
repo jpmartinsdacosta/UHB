@@ -105,10 +105,11 @@ const char *fwl_menu_options[] = {
 
 const char *conf_menu_options[] = {
     "1. Load service configuration files from backup",
-    "2. View current UHB Base configuration",
-    "3. Reset current UHB Base configuration",
-    "4. Reset DAC, ACL and MAC configuration",
-    "5. Apply DAC, ACL and MAC configuration",
+    "2. Show debugging messages",
+    "3. View current UHB Base configuration",
+    "4. Reset current UHB Base configuration",
+    "5. Reset DAC, ACL and MAC configuration",
+    "6. Apply DAC, ACL and MAC configuration",
     "0. Return to Main Menu",
     NULL
 };
@@ -361,15 +362,18 @@ void conf_menu(){
                 load_from_backup_function();
                 break;
             case 2:
-                view_configuration_file();
+                show_debugging_messages();
                 break;
             case 3:
-                reset_configuration_file();
+                view_configuration_file();
                 break;
             case 4:
-                reset_file_service_policy();
+                reset_configuration_file();
                 break;
             case 5:
+                reset_file_service_policy();
+                break;
+            case 6:
                 apply_file_service_policy();
                 break;
             case 0:

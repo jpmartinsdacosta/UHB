@@ -18,13 +18,13 @@
 // File naming convention: <OS>_<MODULE>_<FILENAME>_<FILEPATH>
 
 // Current UHB base configuration file.
-#define UHB_BASE_CONFIG_CURRENT "../config/current/uhb.conf"
+#define UHB_BASE_CONFIG_CURRENT     "../config/current/uhb.conf"
 
 // Backup UHB base configuration file, to be copied to current when resetting.
-#define UHB_BASE_CONFIG_BACKUP  "../config/backups/uhb.conf"
+#define UHB_BASE_CONFIG_BACKUP      "../config/backups/uhb.conf"
 
 // Configuration template filepaths
-#define UHB_SCRIPT_TEMPLATE_PATH    "../config/current/config_template.txt"
+#define UHB_SCRIPT_TEMPLATE_PATH    "../config/backups/script_template.txt"
 
 /**
  * Structures to manage flags/options when executing each service
