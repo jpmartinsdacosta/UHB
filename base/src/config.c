@@ -68,6 +68,8 @@ void apply_file_service_policy() {
 }
 
 void initialize_uhb() {
+    load_from_backup = find_string_in_file("load_from_backup = true",UHB_BASE_CONFIG_CURRENT);
+    show_debug_messages = find_string_in_file("show_debug_messages = true",UHB_BASE_CONFIG_CURRENT);
     reset_dac_configuration();
     if(acl_exists())
         reset_acl_configuration();

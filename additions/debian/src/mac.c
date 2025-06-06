@@ -7,5 +7,29 @@ bool mac_exists() {
 }
 
 /**
- * NO MAC TO BE ADDED FOR DEBIAN
+ * NO MAC TO BE ADDED FOR DEBIAN, EMPTY FUNCTIONS BELOW.
  */
+
+bool get_mac(){
+    return false;
+}
+
+bool set_mac(){
+    return false;
+}
+
+void view_mac_manual(){
+
+}
+
+void view_mac_configuration(){
+
+}
+
+void reset_mac_configuration(){
+
+}
+
+void apply_mac_configuration(){
+
+}
