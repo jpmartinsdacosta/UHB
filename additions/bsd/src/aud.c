@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdbool.h>
-#include <stdbool.h>
 #include <string.h>
 
 #include "global_var.h"
@@ -79,7 +78,7 @@ bool restart_auditing_daemon() {
             return false;
         }
     }else{
-        printf("ERR: Auditing daemon must be mannualy enabled in rc.conf.\n");
+        printf("ERR: Auditing daemon must be manually enabled in rc.conf.\n");
         return false;
     }
 }
@@ -109,23 +108,22 @@ bool restart_remote_auditing_service() {
 void initialize_auditing(bool copy_from_backup) {
     if(aud_exists() && check_auditing_status()){
         if(!copy_from_backup){
-            // Copy original files to UHB
             copy_file(BSD_AUDIT_CONTROL_ORIGINAL,BSD_AUDIT_CONTROL_CURRENT); 
             copy_file(BSD_AUDIT_USER_ORIGINAL,BSD_AUDIT_USER_CURRENT);       
             copy_file(BSD_AUDIT_WARN_ORIGINAL,BSD_AUDIT_WARN_CURRENT); 
             if(remote_auditing_present)
-                copy_file(BSD_AUDIT_AUDITDISTD_CURRENT,BSD_AUDIT_AUDITDISTD_BACKUP);
-            // Copy original files to backup     
+                copy_file(BSD_AUDIT_AUDITDISTD_ORIGINAL,BSD_AUDIT_AUDITDISTD_BACKUP);    
             copy_file(BSD_AUDIT_CONTROL_ORIGINAL,BSD_AUDIT_CONTROL_BACKUP); 
             copy_file(BSD_AUDIT_USER_ORIGINAL,BSD_AUDIT_USER_BACKUP);       
             copy_file(BSD_AUDIT_WARN_ORIGINAL,BSD_AUDIT_WARN_BACKUP);
+            if(remote_auditing_present)
+                copy_file(BSD_AUDIT_AUDITDISTD_ORIGINAL,BSD_AUDIT_AUDITDISTD_BACKUP);
         }else{
-            // Copy backup to UHB
             copy_file(BSD_AUDIT_CONTROL_BACKUP,BSD_AUDIT_CONTROL_CURRENT); 
             copy_file(BSD_AUDIT_USER_BACKUP,BSD_AUDIT_USER_CURRENT);       
             copy_file(BSD_AUDIT_WARN_BACKUP,BSD_AUDIT_WARN_CURRENT); 
             if(remote_auditing_present)
-                copy_file(BSD_AUDIT_AUDITDISTD_CURRENT,BSD_AUDIT_AUDITDISTD_BACKUP);
+                copy_file(BSD_AUDIT_AUDITDISTD_BACKUP,BSD_AUDIT_AUDITDISTD_CURRENT);
         }          
     }else if(aud_exists() && !check_auditing_status()){
         printf("WRN: Auditing daemon is detected, but not running!\n");
@@ -134,26 +132,31 @@ void initialize_auditing(bool copy_from_backup) {
 
 void reset_auditing_configuration() {
     printf("MSG: Resetting auditing configuration...\n");
-    // Copy backup to UHB
     copy_file(BSD_AUDIT_CONTROL_BACKUP,BSD_AUDIT_CONTROL_CURRENT); 
     copy_file(BSD_AUDIT_USER_BACKUP,BSD_AUDIT_USER_CURRENT);       
     copy_file(BSD_AUDIT_WARN_BACKUP,BSD_AUDIT_WARN_CURRENT);
+    copy_file(BSD_AUDIT_AUDITDISTD_BACKUP,BSD_AUDIT_AUDITDISTD_CURRENT);
 }
 
 void view_auditing_configuration(){
-    int opt = three_option_input("MSG 1/3: View audit_control file?. (Y)es/(N)o/E(x)it:",'Y','N','X');
+    int opt = three_option_input("MSG 1/4: View audit_control file?. (Y)es/(N)o/E(x)it:",'Y','N','X');
     if(opt == 0)
         view_file(BSD_AUDIT_CONTROL_CURRENT);
     if(opt == 2)
          return;
-    opt = three_option_input("MSG 2/3: View audit_user file?. (Y)es/(N)o/E(x)it:",'Y','N','X');
+    opt = three_option_input("MSG 2/4: View audit_user file?. (Y)es/(N)o/E(x)it:",'Y','N','X');
     if(opt == 0)
         view_file(BSD_AUDIT_USER_CURRENT);
     if(opt == 2)
          return;
-    opt = three_option_input("MSG 3/3: View audit_warn file?. (Y)es/(N)o/E(x)it:",'Y','N','X');
+    opt = three_option_input("MSG 3/4: View audit_warn file?. (Y)es/(N)o/E(x)it:",'Y','N','X');
     if(opt == 0)
         view_file(BSD_AUDIT_WARN_CURRENT);
+    if(opt == 2)
+         return;
+    opt = three_option_input("MSG 4/4: View auditdistd.conf file?. (Y)es/(N)o/E(x)it:",'Y','N','X');
+    if(opt == 0)
+        view_file(BSD_AUDIT_AUDITDISTD_CURRENT);
     if(opt == 2)
          return;
 }

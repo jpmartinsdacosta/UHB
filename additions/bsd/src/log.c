@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdbool.h>
-#include <stdbool.h>
 #include <string.h>
 
 #include "global_var.h"
@@ -108,14 +107,11 @@ void apply_rfc5424() {
 void initialize_logging(bool copy_from_backup){
     if(log_exists() && check_logging_status()){
         if(!copy_from_backup){
-            // Copy original conf to UHB
             copy_file(BSD_RSYSLOG_CONFIG_ORIGINAL,BSD_RSYSLOG_CONFIG_CURRENT);
             copy_file(BSD_RSYSLOG_REMOTE_ORIGINAL,BSD_RSYSLOG_REMOTE_CURRENT);
-            // Copy original conf to backup
             copy_file(BSD_RSYSLOG_CONFIG_ORIGINAL,BSD_RSYSLOG_CONFIG_BACKUP);
             copy_file(BSD_RSYSLOG_REMOTE_ORIGINAL,BSD_RSYSLOG_REMOTE_BACKUP);
         }else{
-            // Copy backup to UHB
             copy_file(BSD_RSYSLOG_CONFIG_BACKUP,BSD_RSYSLOG_CONFIG_CURRENT);
             copy_file(BSD_RSYSLOG_REMOTE_BACKUP,BSD_RSYSLOG_REMOTE_CURRENT);
         }
@@ -126,8 +122,7 @@ void initialize_logging(bool copy_from_backup){
 }
 
 void reset_logging_configuration() {
-    printf("MSG: Resetting auditing configuration...\n");
-    // Copy backup to UHB
+    printf("MSG: Resetting logging configuration...\n");
     copy_file(BSD_RSYSLOG_CONFIG_BACKUP,BSD_RSYSLOG_CONFIG_CURRENT);
     copy_file(BSD_RSYSLOG_REMOTE_BACKUP,BSD_RSYSLOG_REMOTE_CURRENT);
 }
@@ -178,11 +173,8 @@ void add_local_logging() {
     }
     snprintf(command,sizeof(command),"%s    %s\n",msg, fp);
     append_to_file(command,BSD_RSYSLOG_CONFIG_CURRENT);
-    if(!path_exists(fp)){
-        return create_file(fp);
-    }else{
-        return true;
-    }
+    if(!path_exists(fp))
+        create_file(fp);
 }
 
 // Add logrotate functionality afterwards
@@ -305,7 +297,7 @@ void add_log_forwarding_rule(){
             return;
             break;
     }
-    append_to_file(command,BSD_RSYSLOG_REMOTE_ORIGINAL);
+    append_to_file(command,BSD_RSYSLOG_REMOTE_CURRENT);
 }
 
 void view_logging_manual() {

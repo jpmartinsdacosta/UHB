@@ -15,7 +15,7 @@
 
 FlagCollection get_dac_fc, set_dac_fc;
 
-const char get_dac_flags[] = {
+static const char get_dac_flags[] = {
     'a',    // Include entries with .
     'l',    // Long listing format
     'h',    // With -l print human-readable sizes
@@ -27,7 +27,7 @@ const char get_dac_flags[] = {
     'd',    // List directories
 };
 
-const char set_dac_flags[] = {
+static const char set_dac_flags[] = {
     'c',    // like verbose but report only when a change is made
     'f',    // supress most error messages
     'v',    // verbose

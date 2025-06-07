@@ -54,8 +54,7 @@ void reset_file_service_policy() {
         reset_dac_configuration();
         reset_acl_configuration();
         //reset_mac_configuration();
-        clear_dac_array();
-        init_dac_array();
+        clear_all_arrays();
     }
 }
 
@@ -85,5 +84,7 @@ void initialize_uhb() {
 }
 
 void terminate_uhb() {
+    if(show_debug_messages)
+        printf("DBG: All DAC/ACL/MACStructs cleared.\n");
     clear_all_arrays();
 }

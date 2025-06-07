@@ -30,7 +30,7 @@ bool fwl_exists() {
 }
 
 bool check_firewall_status() {
-    if(system("service ipfw status >/dev/null 2>&1") == 0){
+    if(system("service ipfw status >/dev/null 2>&1")){
         return true;
     }else{
         return false;
@@ -63,7 +63,7 @@ void view_firewall_configuration() {
 }
 
 void reset_firewall_configuration() {
-    copy_file(BSD_FIREWALL_RULES_ORIGINAL, BSD_FIREWALL_RULES_CURRENT);
+    copy_file(BSD_FIREWALL_RULES_BACKUP, BSD_FIREWALL_RULES_CURRENT);
 }
 
 void apply_firewall_configuration() {

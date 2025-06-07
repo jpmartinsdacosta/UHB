@@ -21,7 +21,7 @@
 
 FlagCollection type_fc, mode_fc;
 
-const char type_flags[] = {
+static const char type_flags[] = {
     'a',    // Any file type
     'r',    // A regular file
     'd',    // A directory
@@ -32,7 +32,7 @@ const char type_flags[] = {
     'p'     // A named pipe (FIFO)
 };
 
-const char mode_flags[] = {
+static const char mode_flags[] = {
     'a',    // Administrative operations
     'r',    // Read access
     's',    // Access to file attributes
@@ -69,8 +69,8 @@ void set_mac() {
     char type[MAX_LINE_LENGTH];
     char mode[MAX_LINE_LENGTH];
     int opt = 1;
-    init_flag(&type_fc,8,type_flags);
-    init_flag(&mode_fc,6,mode_flags);
+    init_flag(&type_fc,sizeof(type_flags)-1,type_flags);
+    init_flag(&mode_fc,sizeof(mode_flags)-1,mode_flags);
     while(opt == 1){
         get_user_input("MSG: Please insert ugidfw rule to be added:\n",input,sizeof(input));
         parse_input_next_token(input," ","subject",subject,sizeof(subject));
@@ -82,24 +82,20 @@ void set_mac() {
         parse_input_next_token(input," ","mode",mode,sizeof(mode));
         opt = three_option_input("MSG: Is the above information correct? (Y)es/(N)o/E(x)it:",'Y','N','X');
     }
-    if(opt == 2){
-        return;
-    }
-    if((!is_empty_input(uid) && check_user(uid)) && (!is_empty_input(gid) && check_group(gid)) && (!is_empty_input(filesys) && path_exists(filesys)) && check_flags(type,&type_fc) && check_flags(mode,&mode_fc)){
+    if(opt == 0 && (!is_empty_input(uid) && check_user(uid)) && (!is_empty_input(gid) && check_group(gid)) && (!is_empty_input(filesys) && path_exists(filesys)) && check_flags(type,&type_fc) && check_flags(mode,&mode_fc)){
         append_to_file(input, BSD_MAC_CONFIG_CURRENT);
+    }else{
+        fprintf(stderr,"ERR: set_mac(): Failed to add MAC policy entry.\n");
     }
 }
 
 void initialize_mac_module(bool copy_from_backup) {
     if(mac_exists()){
         if(!copy_from_backup){
-            // Copy original files to UHB
             copy_file(BSD_MAC_CONFIG_ORIGINAL,BSD_MAC_CONFIG_CURRENT);
-            // Copy original files to backup 
             copy_file(BSD_MAC_CONFIG_ORIGINAL,BSD_MAC_CONFIG_BACKUP);
         }else{
-            // Copy backup to uHB
-            copy_file(BSD_MAC_CONFIG_BACKUP,BSD_MAC_CONFIG_ORIGINAL);
+            copy_file(BSD_MAC_CONFIG_BACKUP,BSD_MAC_CONFIG_CURRENT);
         }
     }
 }

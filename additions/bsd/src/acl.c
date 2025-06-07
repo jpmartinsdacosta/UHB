@@ -17,7 +17,7 @@
 
 FlagCollection get_acl_fc, set_acl_fc;
 
-const char *non_acl_fs_types[] = {
+static const char *non_acl_fs_types[] = {
     "vfat",
     "ntfs",
     "iso9660",
@@ -27,7 +27,7 @@ const char *non_acl_fs_types[] = {
     NULL
 };
 
-const char get_acl_flags[] = {
+static const char get_acl_flags[] = {
     'd',    // The operation applies to	the default ACL	of a directory instead of the access ACL.
     'h',    // If the target of the operation is a symbolic link, return the ACL from	the symbolic link itself  rather  than	following  the link.
     'i',    // For  NFSv4  ACLs,  append numerical ID at the end of each entry containing user or group	name.  Ignored for POSIX.1e ACLs.
@@ -61,7 +61,7 @@ bool get_acl() {
     char flags[MAX_LINE_LENGTH];
     char path[MAX_FILEPATH_SIZE];
     char command[MAX_LINE_LENGTH];
-    init_flag(&get_acl_fc,13,get_acl_flags);
+    init_flag(&get_acl_fc, sizeof(get_acl_flags)-1, get_acl_flags);
     if(get_filepath(path)){
         get_user_input("MSG: Please enter additional flags followed by a single '-':", flags, MAX_LINE_LENGTH);
         if(check_flags(flags,&get_acl_fc)){
@@ -83,7 +83,7 @@ bool set_acl() {
     char acl_spec[MAX_LINE_LENGTH];
     char command[MAX_LINE_LENGTH];
     int opt = 1;
-    init_flag(&set_acl_fc, 13, set_acl_flags);
+    init_flag(&set_acl_fc, sizeof(set_acl_flags)-1, set_acl_flags);
     while (opt == 1) {
         get_user_input("MSG 1/3: Please enter absolute filepath:", path, sizeof(path));
         get_user_input("MSG 2/3: Please enter ACL flags to be used, followed by a single '-':", flags, MAX_LINE_LENGTH);
