@@ -1,4 +1,7 @@
 #include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
+
 #include "os_interface.h"
 
 #ifndef MODULE_VAR_H
@@ -21,7 +24,5 @@
  * @returns True if enabled, false if disabled or not present.
  */
 bool enabled_in_rc_conf(const char *service);
-
-void add_audit_control_option();
 
 #endif // MODULE_VAR_H

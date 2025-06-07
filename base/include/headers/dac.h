@@ -23,6 +23,8 @@ void get_dac();
  */
 void set_dac();
 
+void rem_dac_entry();
+
 void view_dac_configuration();
 
 void reset_dac_configuration();

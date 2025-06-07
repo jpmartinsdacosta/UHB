@@ -14,8 +14,6 @@
 // FreeBSD headers.
 #endif
 
-
-
 char os[] = "## uhb_os = BSD";
 
 char* get_os(){
@@ -25,5 +23,5 @@ char* get_os(){
 bool enabled_in_rc_conf(const char *service){
     char command[MAX_LINE_LENGTH];
     snprintf(command,sizeof(command),"%s=\"YES\"",service);
-    return find_string_in_file(command,RC_CONF);
+    return find_string_in_file(command,"/etc/rc.conf");
 }

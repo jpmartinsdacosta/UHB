@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include "file.h"
 #include "os_interface.h"
+#include "module_var.h"
 #include "global_var.h"
 
 #ifdef _WIN32

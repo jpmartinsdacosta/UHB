@@ -1,12 +1,15 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+#include "acl.h"
 #include "file.h"
 #include "config.h"
 #include "utils.h"
 #include "input_output.h"
+#include "module_var.h"
 #include "global_var.h"
 #include "policy.h"
+
 // File naming convention: <OS>_<MODULE>_<FILENAME>_<FILEPATH>
 
 // Filepath to the configuration files to be used/edited in UHB.
@@ -30,7 +33,8 @@ const char get_acl_flags[] = {
     'i',    // For  NFSv4  ACLs,  append numerical ID at the end of each entry containing user or group	name.  Ignored for POSIX.1e ACLs.
     'n',    // Display user and	group IDs numerically rather  than  converting to a user or group name.	 Ignored for POSIX.1e ACLs.
     'q',    // Do  not	write commented	information about file name and	ownership.  This is useful when dealing with filenames with unprintable characters.
-    'v'     // For NFSv4 ACLs, display access mask  and	 flags	in  a  verbose form.  Ignored for POSIX.1e ACLs.
+    'v',     // For NFSv4 ACLs, display access mask  and	 flags	in  a  verbose form.  Ignored for POSIX.1e ACLs.
+    NULL
 };
 
 const char set_acl_flags[] = {
@@ -40,7 +44,8 @@ const char set_acl_flags[] = {
     'd',    // All operations apply to the Default ACL.
     'R',    // Apply operations to all files and directories recursively.
     'L',    // Logical walk, follow symbolic links to directories. The default behavior is to follow symbolic link arguments, and skip symbolic links encountered in subdirectories.
-    'P'     // Physical walk, do not follow symbolic links to directories.
+    'P',     // Physical walk, do not follow symbolic links to directories.
+    NULL
 };
 
 bool acl_exists() {
@@ -50,30 +55,6 @@ bool acl_exists() {
         printf("MSG: ACL was NOT detected. Configuration will NOT be applied.\n");
         return false;
     }
-}
-
-int acl_incompatible_fs(char *filepath) {
-    char command[MAX_LINE_LENGTH];
-    snprintf(command, sizeof(command),"df -T %s 2>/dev/null | awk 'NR==2 {print $2}'", filepath);
-    FILE *fp = popen(command, "r");
-    if (!fp) {
-        perror("popen");
-        return -1;
-    }
-    char fs_type[64] = {0};
-    if (fgets(fs_type, sizeof(fs_type), fp) == NULL) {
-        pclose(fp);
-        fprintf(stderr, "ERR: Could not determine filesystem type.\n");
-        return -1;
-    }
-    pclose(fp);
-    fs_type[strcspn(fs_type, "\n")] = 0;
-    for (int i = 0; non_acl_fs_types[i]; i++) {
-        if (strcmp(fs_type, non_acl_fs_types[i]) == 0) {
-            return 1;
-        }
-    }
-    return 0;
 }
 
 bool get_acl() {
@@ -99,32 +80,37 @@ bool get_acl() {
 bool set_acl() {
     char flags[MAX_LINE_LENGTH];
     char path[MAX_FILEPATH_SIZE];
-    char acl_spec[MAX_FILEPATH_SIZE];
+    char acl_spec[MAX_LINE_LENGTH];
     char command[MAX_LINE_LENGTH];
     int opt = 1;
-    init_flag(&set_acl_fc,13,set_acl_flags);
-    while(opt == 1){
-        get_user_input("MSG 1/2: Please enter ACL flags to be used, followed by a single '-':",flags,MAX_LINE_LENGTH);
-        get_user_input("MSG 2/2: Please enter the ACL specification:",acl_spec,MAX_LINE_LENGTH);
-        opt = three_option_input("MSG: Is the provided information correct? (Y)es/(N)o/E(x)it:",'Y','N','X');
+    init_flag(&set_acl_fc, 13, set_acl_flags);
+    while (opt == 1) {
+        get_user_input("MSG 1/3: Please enter absolute filepath:", path, sizeof(path));
+        get_user_input("MSG 2/3: Please enter ACL flags to be used, followed by a single '-':", flags, MAX_LINE_LENGTH);
+        get_user_input("MSG 3/3: Please enter the ACL specification:", acl_spec, MAX_LINE_LENGTH);
+        opt = three_option_input("MSG: Is the provided information correct? (Y)es/(N)o/E(x)it:", 'Y', 'N', 'X'); 
     }
-    if(opt == 0){
-        if(get_filepath(path)){
-            if(check_flags(flags,&set_acl_fc) && acl_incompatible_fs(path) == 0){
-                printf("MSG: Setting ACL...\n");
-                add_acl_element(path,command);
-                snprintf(command,sizeof(command), "setfacl %s %s %s",flags, acl_spec, path);
-                append_to_file(command, UHB_ACL_CONFIG_CURRENT);
-                return true;
-            }else{
-                fprintf(stderr, "ERR: set_acl(): ACL could not be set.\n");
+    if (opt == 0) {
+        if (path_exists(path) && check_flags(flags, &set_acl_fc)) {
+            printf("MSG: Setting ACL...\n");
+            snprintf(command, sizeof(command), "setfacl %s '%s' '%s'", flags, acl_spec, path);
+            if (!add_acl_element(path, command)) {
+                fprintf(stderr, "ERR: set_acl(): Failed to add ACL policy element.\n");
                 return false;
             }
-        }else{
-            printf("ERR: Invalid/non-existent path.\n");
+            append_to_file(command, UHB_ACL_CONFIG_CURRENT);
+            return true;
+        } else {
+            fprintf(stderr, "ERR: set_acl(): ACL could not be set.\n");
             return false;
         }
     }
+
+    return false;
+}
+
+void rem_acl_rule() {
+    remove_last_n_lines(UHB_ACL_CONFIG_CURRENT,2);
 }
 
 void view_acl_configuration() {

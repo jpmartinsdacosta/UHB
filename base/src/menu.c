@@ -93,8 +93,8 @@ const char *aud_menu_options[] = {
 };
 
 const char *fwl_menu_options[] = {
-    "1. Check for open ports",
-    "2. Add a firewall rule",
+    "1. Add a firewall rule",
+    "2. Remove remove last firewall rule",
     "3. View current firewall configuration",
     "4. Reset current firewall configuration",
     "5. Apply current firewall configuration",
@@ -159,7 +159,7 @@ void dac_menu(){
                 reset_dac_configuration();
                 break;
             case 5:
-                rem_dac_element();
+                rem_dac_entry();
                 break;
             case 6:
                 system("man ls ; clear");
@@ -339,7 +339,7 @@ void fwl_menu(){
                 reset_firewall_configuration();
                 break;
             case 5:
-                apply_firewall_confgiuration();
+                apply_firewall_configuration();
                 break;
             case 6:
                 view_firewall_manual();

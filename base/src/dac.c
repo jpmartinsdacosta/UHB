@@ -66,29 +66,31 @@ void set_dac(){
     int opt = 1;
     init_flag(&set_dac_fc,4,set_dac_flags);
     while(opt == 1){
-        get_user_input("MSG 1/4: Please enter the permission (e.g. 0777):", permission, 6);
-        get_user_input("MSG 2/4: Please enter the target user:", user, MAX_NAME_LENGTH);
-        get_user_input("MSG 3/4: Please enter the target group:", group, MAX_NAME_LENGTH);
-        get_user_input("MSG 4/4: Please enter additional flags followed by a single '-':", flags, MAX_LINE_LENGTH);
+        get_user_input("MSG 1/5: Please enter the absolute filepath:", path, sizeof(path));
+        get_user_input("MSG 2/5: Please enter the permission (e.g. 0777):", permission, 6);
+        get_user_input("MSG 3/5: Please enter the target user:", user, MAX_NAME_LENGTH);
+        get_user_input("MSG 4/5: Please enter the target group:", group, MAX_NAME_LENGTH);
+        get_user_input("MSG 5/5: Please enter additional flags followed by a single '-':", flags, MAX_LINE_LENGTH);
         opt = three_option_input("MSG: Is the provided information correct? (Y)es/(N)o/E(x)it:",'Y','N','X');
     }
     if(opt == 0){
-        if(get_filepath(path)){
-            if(check_permission(permission) && check_user(user) && check_group(group) && check_flags(flags,&set_dac_fc)){
-                printf("MSG: Setting DAC...\n");
-                add_dac_element(path,user,group,permission,is_recursive(flags));
-                snprintf(command, sizeof(command), "chmod %s %s %s", flags, permission, path);
-                append_to_file(command, UHB_DAC_CONFIG_CURRENT);
-                snprintf(command, sizeof(command), "chown %s %s:%s %s\n", flags, user, group, path);
-                append_to_file(command, UHB_DAC_CONFIG_CURRENT);
-                return true;
-            }else{
-                fprintf(stderr, "ERR: set_dac(): DAC could not be set.\n");
-            }
+        if(path_exists(path) && check_permission(permission) && check_user(user) && check_group(group) && check_flags(flags,&set_dac_fc)){
+            printf("MSG: Setting DAC...\n");
+            add_dac_element(path,user,group,permission,is_recursive(flags));
+            snprintf(command, sizeof(command), "chmod %s %s %s", flags, permission, path);
+            append_to_file(command, UHB_DAC_CONFIG_CURRENT);
+            snprintf(command, sizeof(command), "chown %s %s:%s %s\n", flags, user, group, path);
+            append_to_file(command, UHB_DAC_CONFIG_CURRENT);
+            return true;
         }else{
-            printf("ERR: Invalid/non-existent path.\n");
+            fprintf(stderr, "ERR: set_dac(): DAC could not be set.\n");
         }
     } 
+}
+
+void rem_dac_entry() {
+    remove_last_n_lines(UHB_DAC_CONFIG_CURRENT,3);
+    rem_dac_element();
 }
 
 void view_dac_configuration() {

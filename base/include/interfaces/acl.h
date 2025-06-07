@@ -3,8 +3,6 @@
 #ifndef ACL_H
 #define ACL_H
 
-
-
 /**
  * @file acl.h
  * @brief File responsible for declaring headers of ACL functions common to all UHB Additions Modules.
@@ -23,17 +21,12 @@ bool acl_exists();
 bool get_acl();
 
 /**
- * @brief Checks if the filesystem of a given file is compatible with ACLs.
- * @param fp The path to the file to check.
- * @return -1 if error, 0 if compatible, 1 if incompatible.
- */
-int acl_incompatible_fs(char *fp);
-
-/**
  * @brief Sets the current ACL settings of a file.
  * @return true if successful, false otherwise.
  */
 bool set_acl();
+
+void rem_acl_rule();
 
 void view_acl_configuration();
 

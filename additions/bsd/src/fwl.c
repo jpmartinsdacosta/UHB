@@ -47,7 +47,15 @@ void initialize_firewall(bool copy_from_backup) {
 }
 
 void add_firewall_rule() {
-
+    char rule[MAX_LINE_LENGTH];
+    int opt = 1;
+    while(opt == 1){
+        get_user_input("MSG: Please insert the firewall rule to be added:",rule,sizeof(rule));
+        opt = three_option_input("Is the information correct? (Y)es/(N)o/E(x)it",'Y','N','X');
+    }
+    if(opt == 0){
+        append_to_file(rule,BSD_FIREWALL_RULES_CURRENT);
+    }
 }
 
 void view_firewall_configuration() {

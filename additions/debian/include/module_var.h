@@ -1,4 +1,7 @@
 #include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
+
 #include "os_interface.h"
 
 #ifndef MODULE_VAR_H

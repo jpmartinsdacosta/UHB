@@ -179,7 +179,7 @@ bool append_to_file(const char *text, const char *filepath){
         perror("Error opening file");
         return false;
     }
-    fprintf(file, "\n%s\n", text);
+    fprintf(file, "%s\n", text);
     fclose(file);
     return true;
 }
@@ -328,4 +328,57 @@ int smart_replacement(const char *prompt, const char *filepath, int line, const 
     }else if(opt == 2){
         return 1;
     }
+}
+
+int remove_last_n_lines(const char *filename, int n) {
+    if (n < 0) return -1;
+
+    FILE *file = fopen(filename, "r");
+    if (!file) {
+        perror("Error opening file");
+        return -1;
+    }
+
+    // Count total lines
+    int total_lines = 0;
+    char buffer[MAX_LINE_LENGTH];
+    while (fgets(buffer, sizeof(buffer), file)) {
+        total_lines++;
+    }
+
+    if (n >= total_lines) {
+        // Too risky – avoid emptying the file
+        fprintf(stderr, "Refusing to remove %d lines from a file with only %d lines.\n", n, total_lines);
+        fclose(file);
+        return -2;
+    }
+
+    // Copy first (total_lines - n) lines
+    rewind(file);
+    FILE *temp = tmpfile();
+    if (!temp) {
+        perror("Error creating temporary file");
+        fclose(file);
+        return -1;
+    }
+
+    int current_line = 0;
+    while (fgets(buffer, sizeof(buffer), file)) {
+        if (current_line++ < total_lines - n) {
+            fputs(buffer, temp);
+        } else {
+            break;
+        }
+    }
+
+    // Overwrite original file with temp contents
+    freopen(filename, "w", file);
+    rewind(temp);
+    while (fgets(buffer, sizeof(buffer), temp)) {
+        fputs(buffer, file);
+    }
+
+    fclose(file);
+    fclose(temp);
+    return 0;
 }

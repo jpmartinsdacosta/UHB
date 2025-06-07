@@ -111,4 +111,6 @@ int replace_string_in_line(const char *filepath, int line, const char *target, c
  */
 int smart_replacement(const char *prompt, const char *filepath, int line, const char *target);
 
+int remove_last_n_lines(const char *filename, int n);
+
 #endif // FILE_H
