@@ -105,7 +105,7 @@ int parse_input_next_token(char *input, const char *delimiter, const char *targe
             nextToken = strtok(NULL, delimiter);
             if (nextToken != NULL) {
                 // Copy the next token to the result buffer
-                printf("%s: \t\t%s\n",target, nextToken);
+                printf("%s: %s\n",target, nextToken);
                 strncpy(resultBuffer, nextToken, bufferSize - 1);
                 resultBuffer[bufferSize - 1] = '\0'; // Ensure null-termination
                 return 1; // Success

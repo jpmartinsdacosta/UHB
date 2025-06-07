@@ -69,8 +69,8 @@ void set_mac() {
     char type[MAX_LINE_LENGTH];
     char mode[MAX_LINE_LENGTH];
     int opt = 1;
-    init_flag(&type_fc,sizeof(type_flags)-1,type_flags);
-    init_flag(&mode_fc,sizeof(mode_flags)-1,mode_flags);
+    //init_flag(&type_fc,sizeof(type_flags)-1,type_flags);
+    //init_flag(&mode_fc,sizeof(mode_flags)-1,mode_flags);
     while(opt == 1){
         get_user_input("MSG: Please insert ugidfw rule to be added:\n",input,sizeof(input));
         parse_input_next_token(input," ","subject",subject,sizeof(subject));
@@ -82,8 +82,9 @@ void set_mac() {
         parse_input_next_token(input," ","mode",mode,sizeof(mode));
         opt = three_option_input("MSG: Is the above information correct? (Y)es/(N)o/E(x)it:",'Y','N','X');
     }
-    if(opt == 0 && (!is_empty_input(uid) && check_user(uid)) && (!is_empty_input(gid) && check_group(gid)) && (!is_empty_input(filesys) && path_exists(filesys)) && check_flags(type,&type_fc) && check_flags(mode,&mode_fc)){
+    if(opt == 0){
         append_to_file(input, BSD_MAC_CONFIG_CURRENT);
+        add_mac_element(filesys,input,subject,uid,gid,object,type,mode);
     }else{
         fprintf(stderr,"ERR: set_mac(): Failed to add MAC policy entry.\n");
     }

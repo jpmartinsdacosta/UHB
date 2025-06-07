@@ -286,10 +286,10 @@ void clear_mac_array() {
 void get_mac_data(size_t i) {
     if (!mac_array || i >= mac_size) return;
     MACStruct *m = &mac_array[i];
-    printf("Filepath: %s\nRecursive: %s\nTimestamp: %s",
-           m->fp, m->recursive ? "true" : "false", ctime(&m->timestamp));
+    printf("Filepath: %s\nInput: %s\nSubject: %s\nUID: %s\nGID: %s\nObject: %s\nType: %s\nMode: %s\nRecursive: %s\nTimestamp: %s",
+           m->fp, m->input, m->subject, m->uid, m->gid, m->object, m->type, m->mode,
+           m->recursive ? "true" : "false", ctime(&m->timestamp));
 }
-
 bool add_mac_element(const char *fp, const char *input, const char *subject, const char *uid, const char *gid, const char *object, const char *type, const char *mode) {
     if (!fp) return false;
 
