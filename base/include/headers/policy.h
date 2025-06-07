@@ -101,33 +101,23 @@ void* realloc_struct(void *structure, size_t new_capacity, size_t size);
  * ACLStruct functions
  */
 
- bool init_acl_array();
-
- void clear_acl_array();
-
- void get_acl_data(size_t i);
-
- bool add_acl_element(const char *fp, const char *acl);
-
- bool rem_acl_element();
-
- int find_acl_index_by_filepath(const char *fp);
+bool init_acl_array();
+void clear_acl_array();
+void get_acl_data(size_t i);
+bool add_acl_element(const char *flag, const char *entry, const char *fp);
+bool rem_acl_element();
+int find_acl_index_by_filepath(const char *fp);
 
 /**
  * MACStruct functions
  */
 
- bool init_mac_array();
-
- void clear_mac_array();
-
- void get_mac_data(size_t i);
-
- bool add_mac_element(const char *fp, const char *mac);
-
- bool rem_mac_element();
-
- int find_mac_index_by_filepath(const char *fp);
+bool init_mac_array();
+void clear_mac_array();
+void get_mac_data(size_t i);
+bool add_mac_element(const char *fp, const char *input, const char *subject, const char *uid, const char *gid, const char *object, const char *type, const char *mode);
+bool rem_mac_element();
+int find_mac_index_by_filepath(const char *fp);
 
 /**
  * Common to all

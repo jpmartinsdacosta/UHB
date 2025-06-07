@@ -210,12 +210,12 @@ void clear_acl_array() {
 void get_acl_data(size_t i) {
     if (!acl_array || i >= acl_size) return;
     ACLStruct *a = &acl_array[i];
-    printf("ACL: %s\nFilepath: %s\nRecursive: %s\nTimestamp: %s",
-           a->acl, a->fp, a->recursive ? "true" : "false", ctime(&a->timestamp));
+    printf("Flag: %s\nEntry: %s\nFilepath: %s\nRecursive: %s\nTimestamp: %s",
+           a->flag, a->entry, a->fp, a->recursive ? "true" : "false", ctime(&a->timestamp));
 }
 
-bool add_acl_element(const char *fp, const char *acl) {
-    if (!fp || !acl) return false;
+bool add_acl_element(const char *flag, const char *entry, const char *fp) {
+    if (!flag || !entry || !fp) return false;
 
     if (acl_size == acl_capacity) {
         acl_capacity = (acl_capacity == 0) ? 1 : acl_capacity * 2;
@@ -225,8 +225,12 @@ bool add_acl_element(const char *fp, const char *acl) {
     }
 
     ACLStruct *a = &acl_array[acl_size++];
-    strncpy(a->fp, fp, MAX_FILEPATH_SIZE - 1); a->fp[MAX_FILEPATH_SIZE - 1] = '\0';
-    strncpy(a->acl, acl, MAX_LINE_LENGTH - 1); a->acl[MAX_LINE_LENGTH - 1] = '\0';
+    strncpy(a->flag, flag, MAX_LINE_LENGTH - 1);
+    a->flag[MAX_LINE_LENGTH - 1] = '\0';
+    strncpy(a->entry, entry, MAX_LINE_LENGTH - 1);
+    a->entry[MAX_LINE_LENGTH - 1] = '\0';
+    strncpy(a->fp, fp, MAX_FILEPATH_SIZE - 1);
+    a->fp[MAX_FILEPATH_SIZE - 1] = '\0';
     a->recursive = false;
     a->timestamp = time(NULL);
 

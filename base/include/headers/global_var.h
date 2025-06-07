@@ -45,7 +45,8 @@ typedef struct{
  */
 
 typedef struct {
-    char acl[MAX_LINE_LENGTH];
+    char flag[MAX_LINE_LENGTH];
+    char entry[MAX_LINE_LENGTH];
     char fp[MAX_FILEPATH_SIZE];
     bool recursive;
     time_t timestamp;

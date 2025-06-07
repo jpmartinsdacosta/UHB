@@ -90,23 +90,19 @@ bool set_acl() {
     char acl_entries[512];
     char filepath[MAX_LINE_LENGTH];
     int opt = 1;
-
     while (opt == 1) {
         get_user_input("MSG: Please enter ACL entry to be added:", input, sizeof(input));
-        parse_setfacl_command(input, acl_flag, sizeof(acl_flag),
-                              acl_entries, sizeof(acl_entries),
-                              filepath, sizeof(filepath));
+        parse_setfacl_command(input, acl_flag, sizeof(acl_flag),acl_entries, sizeof(acl_entries),filepath, sizeof(filepath));
         printf("ACL Flag: %s\n", acl_flag);
         printf("ACL Entries: %s\n", acl_entries);
         printf("Target Path: %s\n", filepath);
-
         opt = three_option_input("MSG: Is the provided information correct? (Y)es/(N)o/E(x)it:", 'Y', 'N', 'X');
     }
     if (opt == 0) {
         if(path_exists(filepath)){
             printf("MSG: Setting ACL...\n");
             append_to_file(input, UHB_ACL_CONFIG_CURRENT);
-            //add_acl_element()
+            add_acl_element(acl_flag,acl_entries,filepath);
         }else{
             fprintf(stderr, "MSG: Unable to add ACL entry.\n");
         }
