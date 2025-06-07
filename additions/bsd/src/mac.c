@@ -89,6 +89,10 @@ void set_mac() {
     }
 }
 
+void rem_mac_rule() {
+    remove_last_n_lines(BSD_MAC_CONFIG_CURRENT,2);
+}
+
 void initialize_mac_module(bool copy_from_backup) {
     if(mac_exists()){
         if(!copy_from_backup){

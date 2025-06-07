@@ -52,8 +52,14 @@ typedef struct {
 } ACLStruct;
 
 typedef struct {
-    char mac[MAX_LINE_LENGTH];
     char fp[MAX_FILEPATH_SIZE];
+    char input[MAX_LINE_LENGTH];
+    char subject[MAX_NAME_LENGTH];
+    char uid[MAX_NAME_LENGTH];
+    char gid[MAX_NAME_LENGTH];
+    char object[MAX_NAME_LENGTH];
+    char type[MAX_LINE_LENGTH];
+    char mode[MAX_LINE_LENGTH];
     bool recursive;
     time_t timestamp;
 } MACStruct;

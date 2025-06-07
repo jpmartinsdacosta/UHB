@@ -85,39 +85,36 @@ bool get_acl() {
 }
 
 bool set_acl() {
-    char flags[MAX_LINE_LENGTH];
-    char path[MAX_FILEPATH_SIZE];
-    char acl_spec[MAX_LINE_LENGTH];
-    char command[MAX_LINE_LENGTH];
+    char input[MAX_LINE_LENGTH];
+    char acl_flag[8];
+    char acl_entries[512];
+    char filepath[MAX_LINE_LENGTH];
     int opt = 1;
-    init_flag(&set_acl_fc, 8, set_acl_flags);
+
     while (opt == 1) {
-        get_user_input("MSG 1/3: Please enter absolute filepath:", path, sizeof(path));
-        get_user_input("MSG 2/3: Please enter ACL flags to be used, followed by a single '-':", flags, MAX_LINE_LENGTH);
-        get_user_input("MSG 3/3: Please enter the ACL specification:", acl_spec, MAX_LINE_LENGTH);
-        opt = three_option_input("MSG: Is the provided information correct? (Y)es/(N)o/E(x)it:", 'Y', 'N', 'X'); 
+        get_user_input("MSG: Please enter ACL entry to be added:", input, sizeof(input));
+        parse_setfacl_command(input, acl_flag, sizeof(acl_flag),
+                              acl_entries, sizeof(acl_entries),
+                              filepath, sizeof(filepath));
+        printf("ACL Flag: %s\n", acl_flag);
+        printf("ACL Entries: %s\n", acl_entries);
+        printf("Target Path: %s\n", filepath);
+
+        opt = three_option_input("MSG: Is the provided information correct? (Y)es/(N)o/E(x)it:", 'Y', 'N', 'X');
     }
     if (opt == 0) {
-        if (path_exists(path) && check_flags(flags, &set_acl_fc)) {
+        if(path_exists(filepath)){
             printf("MSG: Setting ACL...\n");
-            snprintf(command, sizeof(command), "setfacl %s '%s' '%s'", flags, acl_spec, path);
-            if (!add_acl_element(path, command)) {
-                fprintf(stderr, "ERR: set_acl(): Failed to add ACL policy element.\n");
-                return false;
-            }
-            append_to_file(command, UHB_ACL_CONFIG_CURRENT);
-            return true;
-        } else {
-            fprintf(stderr, "ERR: set_acl(): ACL could not be set.\n");
-            return false;
+            append_to_file(input, UHB_ACL_CONFIG_CURRENT);
+            //add_acl_element()
+        }else{
+            fprintf(stderr, "MSG: Unable to add ACL entry.\n");
         }
     }
-
-    return false;
 }
 
 void rem_acl_rule() {
-    remove_last_n_lines(UHB_ACL_CONFIG_CURRENT,2);
+    remove_last_n_lines(UHB_ACL_CONFIG_CURRENT,1);
 }
 
 void view_acl_configuration() {

@@ -282,12 +282,12 @@ void clear_mac_array() {
 void get_mac_data(size_t i) {
     if (!mac_array || i >= mac_size) return;
     MACStruct *m = &mac_array[i];
-    printf("MAC: %s\nFilepath: %s\nRecursive: %s\nTimestamp: %s",
-           m->mac, m->fp, m->recursive ? "true" : "false", ctime(&m->timestamp));
+    printf("Filepath: %s\nRecursive: %s\nTimestamp: %s",
+           m->fp, m->recursive ? "true" : "false", ctime(&m->timestamp));
 }
 
-bool add_mac_element(const char *fp, const char *mac) {
-    if (!fp || !mac) return false;
+bool add_mac_element(const char *fp, const char *input, const char *subject, const char *uid, const char *gid, const char *object, const char *type, const char *mode) {
+    if (!fp) return false;
 
     if (mac_size == mac_capacity) {
         mac_capacity = (mac_capacity == 0) ? 1 : mac_capacity * 2;
@@ -297,8 +297,36 @@ bool add_mac_element(const char *fp, const char *mac) {
     }
 
     MACStruct *m = &mac_array[mac_size++];
-    strncpy(m->fp, fp, MAX_FILEPATH_SIZE - 1); m->fp[MAX_FILEPATH_SIZE - 1] = '\0';
-    strncpy(m->mac, mac, MAX_LINE_LENGTH - 1); m->mac[MAX_LINE_LENGTH - 1] = '\0';
+    strncpy(m->fp, fp, MAX_FILEPATH_SIZE - 1);
+    m->fp[MAX_FILEPATH_SIZE - 1] = '\0';
+    if (input) {
+        strncpy(m->input, input, MAX_LINE_LENGTH - 1);
+        m->input[MAX_LINE_LENGTH - 1] = '\0';
+    }
+    if (subject) {
+        strncpy(m->subject, subject, MAX_NAME_LENGTH - 1);
+        m->subject[MAX_NAME_LENGTH - 1] = '\0';
+    }
+    if (uid) {
+        strncpy(m->uid, uid, MAX_NAME_LENGTH - 1);
+        m->uid[MAX_NAME_LENGTH - 1] = '\0';
+    }
+    if (gid) {
+        strncpy(m->gid, gid, MAX_NAME_LENGTH - 1);
+        m->gid[MAX_NAME_LENGTH - 1] = '\0';
+    }
+    if (object) {
+        strncpy(m->object, object, MAX_NAME_LENGTH - 1);
+        m->object[MAX_NAME_LENGTH - 1] = '\0';
+    }
+    if (type) {
+        strncpy(m->type, type, MAX_LINE_LENGTH - 1);
+        m->type[MAX_LINE_LENGTH - 1] = '\0';
+    }
+    if (mode) {
+        strncpy(m->mode, mode, MAX_LINE_LENGTH - 1);
+        m->mode[MAX_LINE_LENGTH - 1] = '\0';
+    }
     m->recursive = false;
     m->timestamp = time(NULL);
 
@@ -322,7 +350,7 @@ bool rem_mac_element() {
 }
 
 int find_mac_index_by_filepath(const char *fp) {
-    for (size_t i = 0; i < mac_size; ++i) {  // FIXED: was using acl_size before
+    for (size_t i = 0; i < mac_size; ++i) {
         if (strcmp(mac_array[i].fp, fp) == 0) return (int)i;
     }
     return -1;
@@ -343,3 +371,9 @@ void clear_all_arrays() {
     clear_acl_array();
     clear_mac_array();
 }
+
+/**
+ * Policy-checking functions
+ */
+
+
