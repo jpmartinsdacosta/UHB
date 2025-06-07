@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdbool.h>
-#include <stdbool.h>
 #include <string.h>
 
 #include "global_var.h"
@@ -14,14 +13,20 @@
 
 // Filepath to the original configuration files.
 #define DEB_AUDIT_CONF_ORIGINAL     "/etc/audit/auditd.conf"
+#define DEB_AUDIT_AUDISP_ORIGINAL   "/etc/audit/audisp-remote.conf"
+#define DEB_AUDIT_REMOTE_ORIGINAL   "/etc/audit/plugins.d/au-remote.conf"
 #define DEB_AUDIT_RULES_ORIGINAL    "/etc/audit/audit.rules"
 
 // Filepath to the configuration files to be used/edited in UHB.
 #define DEB_AUDIT_CONF_CURRENT      "/root/uhb/base/config/current/auditd.conf" 
+#define DEB_AUDIT_AUDISP_CURRENT    "/root/uhb/base/config/current/audisp-remote.conf"
+#define DEB_AUDIT_REMOTE_CURRENT    "/root/uhb/base/config/current/au-remote.conf"
 #define DEB_AUDIT_RULES_CURRENT     "/root/uhb/base/config/current/audit.rules" 
 
 // Filepath to the backup of all configuration files.
 #define DEB_AUDIT_CONF_BACKUP       "/root/uhb/base/config/backups/auditd.conf"
+#define DEB_AUDIT_AUDISP_BACKUP     "/root/uhb/base/config/backups/audisp-remote.conf"
+#define DEB_AUDIT_REMOTE_BACKUP     "/root/uhb/base/config/backups/au-remote.conf"
 #define DEB_AUDIT_RULES_BACKUP      "/root/uhb/base/config/backups/audit.rules"
 
 
@@ -37,7 +42,9 @@ bool aud_exists() {
     }
 }
 
-bool remote_auditing_daemon_exists(){return aud_exists();}
+bool remote_auditing_exists(){
+    return (path_exists(DEB_AUDIT_AUDISP_CURRENT) && path_exists(DEB_AUDIT_REMOTE_CURRENT));
+}
 
 bool check_auditing_status() {
     char command[MAX_LINE_LENGTH];
@@ -73,13 +80,19 @@ void initialize_auditing(bool copy_from_backup){
         if(!copy_from_backup){
             // Copy original files to UHB
             copy_file(DEB_AUDIT_CONF_ORIGINAL,DEB_AUDIT_CONF_CURRENT);
+            copy_file(DEB_AUDIT_AUDISP_ORIGINAL,DEB_AUDIT_AUDISP_CURRENT);
+            copy_file(DEB_AUDIT_REMOTE_ORIGINAL,DEB_AUDIT_REMOTE_CURRENT);
             copy_file(DEB_AUDIT_RULES_ORIGINAL,DEB_AUDIT_RULES_CURRENT);
             // Copy original files to backup
             copy_file(DEB_AUDIT_CONF_ORIGINAL,DEB_AUDIT_CONF_BACKUP);
+            copy_file(DEB_AUDIT_AUDISP_ORIGINAL,DEB_AUDIT_AUDISP_BACKUP);
+            copy_file(DEB_AUDIT_REMOTE_ORIGINAL,DEB_AUDIT_REMOTE_BACKUP);
             copy_file(DEB_AUDIT_RULES_ORIGINAL,DEB_AUDIT_RULES_BACKUP);
         }else{
             // Copy backup to UHB
             copy_file(DEB_AUDIT_CONF_BACKUP,DEB_AUDIT_CONF_CURRENT);
+            copy_file(DEB_AUDIT_AUDISP_BACKUP,DEB_AUDIT_AUDISP_CURRENT);
+            copy_file(DEB_AUDIT_REMOTE_BACKUP,DEB_AUDIT_REMOTE_CURRENT);
             copy_file(DEB_AUDIT_RULES_BACKUP,DEB_AUDIT_RULES_CURRENT);
         }
     }
@@ -87,18 +100,29 @@ void initialize_auditing(bool copy_from_backup){
 
 void reset_auditing_configuration() {
     printf("MSG: Resetting auditing configuration...\n");
-    // Copy backup to UHB
     copy_file(DEB_AUDIT_CONF_BACKUP,DEB_AUDIT_CONF_CURRENT);
+    copy_file(DEB_AUDIT_AUDISP_BACKUP,DEB_AUDIT_AUDISP_CURRENT);
+    copy_file(DEB_AUDIT_REMOTE_BACKUP,DEB_AUDIT_REMOTE_CURRENT);
     copy_file(DEB_AUDIT_RULES_BACKUP,DEB_AUDIT_RULES_CURRENT);
 }
 
 void view_auditing_configuration() {
-    int opt = three_option_input("MSG 1/2: View auditd.conf file?. (Y)es/(N)o/E(x)it:",'Y','N','X');
+    int opt = three_option_input("MSG 1/4: View auditd.conf file?. (Y)es/(N)o/E(x)it:",'Y','N','X');
     if(opt == 0)
         view_file(DEB_AUDIT_CONF_CURRENT);
     if(opt == 2)
          return;
-    opt = three_option_input("MSG 2/2: View audit.rules file?. (Y)es/(N)o/E(x)it:",'Y','N','X');
+    opt = three_option_input("MSG 2/4: View audisp-remote.conf file?. (Y)es/(N)o/E(x)it:",'Y','N','X');
+    if(opt == 0)
+        view_file(DEB_AUDIT_AUDISP_CURRENT);
+    if(opt == 2)
+         return;
+    opt = three_option_input("MSG 3/4: View au-remote.conf file?. (Y)es/(N)o/E(x)it:",'Y','N','X');
+    if(opt == 0)
+        view_file(DEB_AUDIT_REMOTE_CURRENT);
+    if(opt == 2)
+         return;
+    opt = three_option_input("MSG 4/4: View audit.rules file?. (Y)es/(N)o/E(x)it:",'Y','N','X');
     if(opt == 0)
         view_file(DEB_AUDIT_RULES_CURRENT);
     if(opt == 2)
@@ -119,15 +143,20 @@ void add_local_auditing() {
 }
 
 void apply_auditing_configuration() {
-    if(get_yes_no_input("MSG: Apply the current auditing configuration? (Y/N):")){
-        printf("MSG: Applying auditing configuration...\n");
-        // Copy UHB files to original location and reset auditing service
-        copy_file(DEB_AUDIT_CONF_CURRENT,DEB_AUDIT_CONF_ORIGINAL);
-        copy_file(DEB_AUDIT_RULES_CURRENT,DEB_AUDIT_RULES_ORIGINAL);
-        // Load rules from the audit.rules file
-        system("augenrules --load");
-        // Restart auditing daemon
-        restart_auditing_daemon();
+    if(get_yes_no_input("MSG: Apply the current auditing configuration? (Y/N):") == 0){
+        printf("MSG: Applying UHB auditing configuration...\n");
+        if(copy_file(DEB_AUDIT_CONF_CURRENT,DEB_AUDIT_CONF_ORIGINAL) && 
+        copy_file(DEB_AUDIT_AUDISP_CURRENT,DEB_AUDIT_AUDISP_ORIGINAL) &&
+        copy_file(DEB_AUDIT_REMOTE_CURRENT,DEB_AUDIT_REMOTE_ORIGINAL) &&
+        copy_file(DEB_AUDIT_RULES_CURRENT,DEB_AUDIT_RULES_ORIGINAL)){
+            if(system("augenrules --load") == 0 && restart_auditing_daemon()){
+                printf("MSG: UHB auditing configuration successfully applied.\n");
+            }else{
+                fprintf(stderr, "ERR: apply_auditing_configuration(): Could not restart auditing daemon.\n");
+            }
+        }else{
+            fprintf(stderr, "ERR: apply_auditing_configuration(): Could not apply configuration file.\n");
+        }
     }
 }
 
@@ -136,25 +165,58 @@ void apply_auditing_configuration() {
  */
 
 void configure_auditing_reception_service() {
-    char param[MAX_LINE_LENGTH];
-    get_user_input("MSG: Which TCP port should the auditing daemon listen to?:",param,sizeof(param));
-    if(!find_string_in_file("tcp_listen_port",DEB_AUDIT_CONF_CURRENT))
-        replace_string_in_line(DEB_AUDIT_CONF_CURRENT,27,"##tcp_listen_port","tcp_listen_port");
-    replace_option_value("tcp_listen_port",'=',param,DEB_AUDIT_CONF_CURRENT);
-    if(!find_string_in_file("tcp_client_ports",DEB_AUDIT_CONF_CURRENT))
-        replace_string_in_line(DEB_AUDIT_CONF_CURRENT,27,"##tcp_client_ports","tcp_client_ports");
-    replace_option_value("tcp_client_ports",'=',param,DEB_AUDIT_CONF_CURRENT);
+    char ip[MAX_LINE_LENGTH];
+    char port[MAX_LINE_LENGTH];
+    int opt = 1;
+    bool forward = false;
+    while(opt == 1){
+        if(get_yes_no_input("MSG 1/3: Enable remote auditing? (Y/N):") == 0){
+            forward = true;
+            get_user_input("MSG 2/3: Enter remote server IP:",ip,sizeof(ip));
+            get_user_input("MSG 3/3: Enter remote server port:",port,sizeof(port));
+        }else{
+            forward = false;
+        }
+        opt = three_option_input("MSG: Is the provided information correct? (Y)es/(N)o/E(x)it:", 'Y', 'N', 'X');
+    }
+    if(forward && opt == 0) {
+        replace_option_value("active",'=',"yes",DEB_AUDIT_REMOTE_CURRENT);
+        replace_option_value("direction",'=',"in",DEB_AUDIT_REMOTE_CURRENT);
+        if(is_valid_ipv4)
+            replace_option_value("remote_server",'=',ip,DEB_AUDIT_AUDISP_CURRENT);
+        if(is_valid_port(port))
+            replace_option_value("port",'=',port,DEB_AUDIT_AUDISP_CURRENT);
+    }else if(!forward && opt == 0) {
+        replace_option_value("active",'=',"no",DEB_AUDIT_AUDISP_CURRENT);
+        replace_option_value("direction",'=',"",DEB_AUDIT_AUDISP_CURRENT);
+    }
 }
 
 void configure_auditing_forwarding_service() {
-    char param[MAX_LINE_LENGTH]; 
-    get_user_input("MSG: Please enter the IP address of the remote server:",param,sizeof(param));
-    if(!find_string_in_file("remote_server",DEB_AUDIT_CONF_CURRENT)){
-        char line[MAX_LINE_LENGTH];
-        snprintf(line,sizeof(line),"remote_server = %s",param);
-        append_to_file(line,DEB_AUDIT_CONF_CURRENT);
+    char ip[MAX_LINE_LENGTH];
+    char port[MAX_LINE_LENGTH];
+    int opt = 1;
+    bool forward = false;
+    while(opt == 1){
+        if(get_yes_no_input("MSG 1/3: Enable remote auditing? (Y/N):") == 0){
+            forward = true;
+            get_user_input("MSG 2/3: Enter remote server IP:",ip,sizeof(ip));
+            get_user_input("MSG 3/3: Enter remote server port:",port,sizeof(port));
+        }else{
+            forward = false;
+        }
+        opt = three_option_input("MSG: Is the provided information correct? (Y)es/(N)o/E(x)it:", 'Y', 'N', 'X');
     }
-    replace_option_value("remote_server",'=',param,DEB_AUDIT_CONF_CURRENT);
+    if(forward && opt == 0) {
+        replace_option_value("active",'=',"yes",DEB_AUDIT_REMOTE_CURRENT);
+        replace_option_value("direction",'=',"out",DEB_AUDIT_REMOTE_CURRENT);
+        if(is_valid_ipv4)
+            replace_option_value("remote_server",'=',ip,DEB_AUDIT_AUDISP_CURRENT);
+        if(is_valid_port(port))
+            replace_option_value("port",'=',port,DEB_AUDIT_AUDISP_CURRENT);
+    }else if(!forward && opt == 0) {
+        replace_option_value("active",'=',"no",DEB_AUDIT_REMOTE_CURRENT);
+    }
 }
 
 /**

@@ -298,20 +298,22 @@ void aud_menu(){
                 configure_auditing_reception_service();
                 break;
             case 3:
-                remote_auditing_daemon_exists() ? configure_auditing_forwarding_service() : printf("MSG: Option not available.\n");
+                remote_auditing_exists() ? configure_auditing_forwarding_service() : printf("MSG: Option not available.\n");
                 break;
             case 4:
-                remote_auditing_daemon_exists() ? reset_auditing_configuration() : printf("MSG: Option not available.\n");
+                remote_auditing_exists() ? reset_auditing_configuration() : printf("MSG: Option not available.\n");
                 break;
             case 5:
                 view_auditing_configuration();
                 break;
             case 6:
-                view_auditing_manual();
+                apply_auditing_configuration();
                 break;
             case 7:
-                remote_auditing_daemon_exists() ? view_remote_auditing_manual() : printf("MSG: Option not available.\n");
+                view_auditing_manual();
                 break;
+            case 8:
+                remote_auditing_exists() ? view_remote_auditing_manual() : printf("MSG: Option not available.\n");
             case 0:
                 break;
             default:

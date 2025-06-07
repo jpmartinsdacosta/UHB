@@ -31,13 +31,13 @@ void load_from_backup_function(){
 }
 
 void show_debug_messages_function(){
-    int opt = get_yes_no_input("MSG: Would you like to load from backup? (Y/N):");
+    int opt = get_yes_no_input("MSG: Show debug messages? (Y/N):");
     if(opt == 0){
         replace_option_value("show_debug_messages",'=',"true",UHB_BASE_CONFIG_CURRENT);
-        printf("MSG: Loading from backup enabled.\n");
+        printf("MSG: Showing debug messages.\n");
     }else{
         replace_option_value("show_debug_messages",'=',"false",UHB_BASE_CONFIG_CURRENT);
-        printf("MSG: Loading from backup disabled.\n");
+        printf("MSG: Hiding debug messages.\n");
     }
 }
 

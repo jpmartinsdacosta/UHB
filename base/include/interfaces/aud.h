@@ -21,7 +21,7 @@ bool aud_exists();
  * or not in the system.
  * @return True if detected, false otherwise.
  */
-bool remote_auditing_daemon_exists();
+bool remote_auditing_exists();
 
 /**
  * @brief Checks whether the auditing daemon is running.

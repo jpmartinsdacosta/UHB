@@ -147,19 +147,18 @@ void view_logging_configuration() {
          return;
 }
 
-bool apply_logging_configuration(){
-    printf("MSG: Applying UHB logging configuration...\n");
-    if(copy_file(DEB_RSYSLOG_CONFIG_CURRENT,DEB_RSYSLOG_CONFIG_ORIGINAL)){
-        if(restart_logging_daemon()){
-            printf("MSG: UHB logging configuration successfully applied.\n");
-            return true;
+void apply_logging_configuration(){
+    if(get_yes_no_input("MSG: Apply the current logging configuration? (Y/N):") == 0){
+        printf("MSG: Applying UHB logging configuration...\n");
+        if(copy_file(DEB_RSYSLOG_CONFIG_CURRENT,DEB_RSYSLOG_CONFIG_ORIGINAL)){
+            if(restart_logging_daemon()){
+                printf("MSG: UHB logging configuration successfully applied.\n");
+            }else{
+                fprintf(stderr, "ERR: apply_logging_configuration(): Could not restart logging daemon.\n");
+            }
         }else{
-            fprintf(stderr, "ERR: apply_logging_configuration(): Could not restart logging daemon.\n");
-            return false;
+            fprintf(stderr, "ERR: apply_logging_configuration(): Could not apply configuration file.\n");
         }
-    }else{
-        fprintf(stderr, "ERR: apply_logging_configuration(): Could not apply configuration file.\n");
-        return false;
     }
 }
 

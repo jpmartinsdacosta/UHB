@@ -66,7 +66,7 @@ void reset_logging_configuration();
  * @brief Applies the logging configuration. This is done by copying the modified log.conf file
  * back to the original rsyslog.conf and restarting the daemon.
  */
-bool apply_logging_configuration();
+void apply_logging_configuration();
 
 /**
  * Functions to manage logging inside the system

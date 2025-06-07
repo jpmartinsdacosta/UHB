@@ -17,7 +17,6 @@ bool path_exists(const char *path) {
         fclose(file);
         return true;
     } else {
-        fprintf(stderr, "ERR: path_exists(): File path %s does not exist.\n", path);
         return false;
     }
 }
@@ -187,13 +186,11 @@ bool append_to_file(const char *text, const char *filepath){
 bool copy_file(const char *source, const char *destination) {
     FILE *source_file = fopen(source, "rb");
     if (source_file == NULL) {
-        perror("Error opening source file");
         return false;
     }
 
     FILE *destination_file = fopen(destination, "wb");
     if (destination_file == NULL) {
-        perror("Error opening destination file");
         fclose(source_file);
         return false;
     }
@@ -212,50 +209,63 @@ bool copy_file(const char *source, const char *destination) {
 }
 
 void replace_option_value(const char *option_name, char separator, const char *param, const char *filepath) {
-    FILE *file = fopen(filepath, "r+");
-    if (file == NULL) {
-        perror("Error opening file");
+    char temp_filepath[FILENAME_MAX];
+    snprintf(temp_filepath, sizeof(temp_filepath), "%s.tmp", filepath);
+
+    FILE *src = fopen(filepath, "r");
+    if (!src) {
+        perror("Error opening original file");
+        return;
+    }
+
+    FILE *dst = fopen(temp_filepath, "w");
+    if (!dst) {
+        perror("Error creating temporary file");
+        fclose(src);
         return;
     }
 
     char buffer[MAX_LINE_LENGTH];
-    long int pos = 0;
     int option_name_length = strlen(option_name);
     int found = 0;
 
-    while (fgets(buffer, sizeof(buffer), file) != NULL) {
-        pos = ftell(file);
+    while (fgets(buffer, sizeof(buffer), src)) {
+        // Preserve the original line for writing
+        char original_line[MAX_LINE_LENGTH];
+        strncpy(original_line, buffer, sizeof(original_line));
+        original_line[sizeof(original_line) - 1] = '\0';  // Ensure null-termination
 
-        // Remove the newline character from buffer, if present
+        // Strip newline for processing
         buffer[strcspn(buffer, "\n")] = '\0';
 
-        // Check if the line starts with option_name followed by the separator
         if (strncmp(buffer, option_name, option_name_length) == 0 &&
             buffer[option_name_length] == ' ' &&
             buffer[option_name_length + 1] == separator) {
-
-            // Move the file pointer to the beginning of the line
-            fseek(file, pos - strlen(buffer) - 1, SEEK_SET);
-
-            // Calculate the length of the new line
-            int new_line_length = snprintf(NULL, 0, "%s %c %s", option_name, separator, param);
-
-            // Write the new line with the updated parameter, followed by spaces to overwrite any remaining characters
-            fprintf(file, "%s %c %s", option_name, separator, param);
-            for (int i = new_line_length; i < strlen(buffer); i++) {
-                fputc(' ', file);
-            }
-
+            // Write updated line
+            fprintf(dst, "%s %c %s\n", option_name, separator, param);
             found = 1;
-            break;
+        } else {
+            fputs(original_line, dst);  // Write original line as-is
         }
+    }
+
+    fclose(src);
+    fclose(dst);
+
+    // Replace original file with modified version
+    if (remove(filepath) != 0) {
+        perror("Error deleting original file");
+        return;
+    }
+
+    if (rename(temp_filepath, filepath) != 0) {
+        perror("Error renaming temporary file");
+        return;
     }
 
     if (!found) {
         printf("Option '%s' not found in the file.\n", option_name);
     }
-
-    fclose(file);
 }
 
 int replace_string_in_line(const char *filepath, int line, const char *target, const char *replacement) {

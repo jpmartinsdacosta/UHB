@@ -44,7 +44,7 @@ bool aud_exists() {
     }
 }
 
-bool remote_auditing_daemon_exists(){
+bool remote_auditing_exists(){
     if(exec_exists("auditdistd")){
         remote_auditing_present = true;
         return true;
@@ -159,17 +159,27 @@ void view_auditing_configuration(){
 }
 
 void apply_auditing_configuration() {
-    if(get_yes_no_input("MSG: Apply the current auditing configuration? (Y/N):")){
+    if(get_yes_no_input("MSG: Apply the current auditing configuration? (Y/N):") == 0){
         printf("MSG: Applying auditing configuration...\n");
-        // Copy UHB files to original location and reset auditing service
-        copy_file(BSD_AUDIT_CONTROL_CURRENT,BSD_AUDIT_CONTROL_ORIGINAL);
-        copy_file(BSD_AUDIT_USER_CURRENT,BSD_AUDIT_USER_ORIGINAL);
-        copy_file(BSD_AUDIT_WARN_CURRENT,BSD_AUDIT_WARN_ORIGINAL);
-        // Restart auditing daemon
-        restart_auditing_daemon();
-        if(remote_auditing_daemon_exists()){
-            copy_file(BSD_AUDIT_AUDITDISTD_CURRENT,BSD_AUDIT_AUDITDISTD_ORIGINAL);
-            restart_remote_auditing_service();
+        if(copy_file(BSD_AUDIT_CONTROL_CURRENT,BSD_AUDIT_CONTROL_ORIGINAL) && copy_file(BSD_AUDIT_USER_CURRENT,BSD_AUDIT_USER_ORIGINAL) && copy_file(BSD_AUDIT_WARN_CURRENT,BSD_AUDIT_WARN_ORIGINAL)){
+            if(restart_auditing_daemon()){
+                printf("MSG: UHB auditing configuration successfully applied.\n");
+            }else{
+                fprintf(stderr, "ERR: apply_auditing_configuration(): Could not restart auditing daemon.\n");
+            }
+            if(remote_auditing_exists()){
+                if(copy_file(BSD_AUDIT_AUDITDISTD_CURRENT,BSD_AUDIT_AUDITDISTD_ORIGINAL)){
+                    if(restart_remote_auditing_service()){
+                        printf("MSG: Remote UHB auditing configuration successfully applied.\n");
+                    }else{
+                        fprintf(stderr, "ERR: apply_auditing_configuration(): Could not restart remote auditing daemon.\n");
+                    }
+                }else{
+                    fprintf(stderr, "ERR: apply_auditing_configuration(): Could not apply remote auditing configuration file.\n");
+                }
+            }
+        }else{
+            fprintf(stderr, "ERR: apply_auditing_configuration(): Could not apply configuration file.\n");
         }
     } 
 }

@@ -145,23 +145,18 @@ void view_logging_configuration() {
          return;
 }
 
-bool apply_logging_configuration() {
+void apply_logging_configuration() {
     printf("MSG: Applying UHB logging configuration...\n");
     if(copy_file(BSD_RSYSLOG_CONFIG_CURRENT,BSD_RSYSLOG_CONFIG_ORIGINAL)){
         if(restart_logging_daemon()){
             printf("MSG: UHB logging configuration successfully applied.\n");
-            return true;
         }else{
             fprintf(stderr, "ERR: apply_logging_configuration(): Could not restart logging daemon.\n");
-            return false;
         }
     }else{
         fprintf(stderr, "ERR: apply_logging_configuration(): Could not apply configuration file.\n");
-        return false;
     }
 }
-
-// View logging configuration is already implemented in the menu function
 
 /**
  * Functions to manage logging inside the system

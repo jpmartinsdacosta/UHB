@@ -168,13 +168,63 @@ bool is_recursive(const char *flags){
     return false;
 }
 
+bool is_valid_port(const char *port_str) {
+    if (port_str == NULL || strlen(port_str) == 0) {
+        fprintf(stderr,"ERR: is_valid_port(): Invalid port number.\n");
+        return false;
+    }
+    for (size_t i = 0; i < strlen(port_str); ++i) {
+        if (!isdigit((unsigned char)port_str[i])) {
+            fprintf(stderr,"ERR: is_valid_port(): Invalid port number.\n");
+            return false;
+        }
+    }
+    long port = strtol(port_str, NULL, 10);
+    return (port >= 1 && port <= 65535);
+}
+
 bool is_port_open(int port) {
     char command[256];
     snprintf(command, sizeof(command), "ss -tuln | grep '%d ' | grep 'LISTEN' >/dev/null 2>&1", port);
     if(system(command) == 0){
         return true;
     }else{
+        
         return false;
     }
 }
 
+bool is_valid_ipv4(const char *ip_str) {
+    if (ip_str == NULL){
+        fprintf(stderr,"ERR: is_valid_port(): Invalid IP.\n");
+        return false;
+    } 
+    int num, dots = 0;
+    const char *ptr = ip_str;
+    char *endptr;
+    while (*ptr) {
+        // Convert segment to integer
+        num = strtol(ptr, &endptr, 10);
+
+        // Check if conversion failed or number is out of range
+        if (ptr == endptr || num < 0 || num > 255) {
+            fprintf(stderr,"ERR: is_valid_port(): Invalid IP.\n");
+            return false;
+        }
+        ptr = endptr;
+        if (*ptr == '.') {
+            dots++;
+            ptr++;
+            // Reject consecutive dots or trailing dot
+            if (*ptr == '.' || *ptr == '\0') {
+                fprintf(stderr,"ERR: is_valid_port(): Invalid IP.\n");
+                return false;
+            }
+        } else if (*ptr != '\0') {
+            fprintf(stderr,"ERR: is_valid_port(): Invalid IP.\n");
+            return false; // Unexpected character
+        }
+    }
+
+    return (dots == 3);
+}

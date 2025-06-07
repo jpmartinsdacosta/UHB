@@ -103,4 +103,8 @@ bool is_recursive(const char *flags);
  */
 bool is_port_open(int port);
 
+bool is_valid_port(const char *port_str);
+
+bool is_valid_ipv4(const char *ip_str);
+
 #endif // UTILS_H
