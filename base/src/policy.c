@@ -4,6 +4,9 @@
 #include <string.h>
 #include <time.h>
 
+#include "dac.h"
+#include "acl.h"
+#include "mac.h"
 #include "global_var.h"
 #include "file.h"
 
@@ -379,4 +382,75 @@ void clear_all_arrays() {
  * Policy-checking functions
  */
 
+bool is_dac_deny(const char *dac) {
+    return dac[0] == '0'; // Simplified: 0xxx means no permission
+}
+
+bool is_mac_deny(const char *mode) {
+    return strcmp(mode, "deny") == 0; // For FreeBSD mac_bsdextended/ugidfw
+}
+
+bool is_acl_deny(const char *flag) {
+    return strcmp(flag, "deny") == 0; // For FreeBSD NFSv4 ACLs
+}
+
+static int parse_dac_mode(const char *dac_str) {
+    if (!dac_str) return 0;
+    int mode = 0;
+    // Example: "4740" -> get last digit for 'others', second for 'group', first for 'user'
+    // We'll parse user permissions only (first digit)
+    if (strlen(dac_str) >= 1) {
+        char user_perm = dac_str[0];
+        if (user_perm >= '0' && user_perm <= '7') {
+            mode = user_perm - '0';  // octal digit 0-7
+        }
+    }
+    return mode;
+}
+
+// Core validation function
+bool validate_policy_conflicts() {
+    bool conflict_found = false;
+
+    for (size_t i = 0; i < dac_size; i++) {
+        DACStruct *dac = &dac_array[i];
+        int dac_mode = parse_dac_mode(dac->dac);
+
+        // Check all MAC entries for same filepath (or recursive?)
+        for (size_t j = 0; j < mac_size; j++) {
+            MACStruct *mac = &mac_array[j];
+
+            // Basic filepath match; improve if recursive support is needed
+            if (strcmp(dac->fp, mac->fp) == 0) {
+                int mac_mode = parse_mac_mode_flags(mac->mode);
+
+                // Example conflict logic:
+                // DAC allows read (4), MAC denies read (missing 'r' flag)
+                bool dac_allows_read = (dac_mode & 4) != 0;
+                bool mac_allows_read = (mac_mode & 0x02) != 0;  // MAC_MODE_READ = 0x02
+
+                bool dac_allows_write = (dac_mode & 2) != 0;
+                bool mac_allows_write = (mac_mode & 0x04) != 0;  // MAC_MODE_WRITE = 0x04
+
+                bool dac_allows_exec = (dac_mode & 1) != 0;
+                bool mac_allows_exec = (mac_mode & 0x08) != 0;   // MAC_MODE_EXEC = 0x08
+
+                // Detect any denial conflicts
+                if ((dac_allows_read && !mac_allows_read) ||
+                    (dac_allows_write && !mac_allows_write) ||
+                    (dac_allows_exec && !mac_allows_exec)) {
+
+                    printf("CONFLICT DETECTED:\n");
+                    printf("File: %s\n", dac->fp);
+                    printf("DAC allows rwx: %d%d%d\n",
+                           dac_allows_read, dac_allows_write, dac_allows_exec);
+                    printf("MAC denies required permissions: %s\n", mac->mode);
+                    conflict_found = true;
+                }
+            }
+        }
+    }
+
+    return conflict_found;
+}
 

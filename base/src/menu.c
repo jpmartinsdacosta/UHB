@@ -229,7 +229,7 @@ void mac_menu(){
                 view_mac_configuration();
                 break;
             case 4:
-                reset_mac_configuration();
+                reset_mac_configuration(true);
                 break;
             case 5:
                 rem_mac_element();

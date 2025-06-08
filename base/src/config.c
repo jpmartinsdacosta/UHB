@@ -65,8 +65,13 @@ void reset_file_service_policy() {
 void apply_file_service_policy() {
     printf("MSG: Please double-check DAC, ACL and MAC configuration files!\n");
     if (get_yes_no_input("MSG: Apply DAC, ACL and MAC configuration to the system? (Y/N):") == 0){
-        apply_dac_configuration();
-        apply_acl_configuration();
+        if(validate_policy_conflicts()){
+            printf("ERR: Validation failed. CONFIGURATION WAS NOT APPLIED.\n");
+        }else{
+            apply_dac_configuration();
+            apply_acl_configuration();
+            //apply_mac_configuration();
+        }
     }
 }
 
@@ -77,7 +82,7 @@ void initialize_uhb() {
     if(acl_exists())
         reset_acl_configuration();
     if(mac_exists())
-        reset_mac_configuration();
+        reset_mac_configuration(load_from_backup);
     if(log_exists())
         initialize_logging(load_from_backup);  
     if(aud_exists()) 
@@ -88,7 +93,9 @@ void initialize_uhb() {
 }
 
 void terminate_uhb() {
+    free_dac();
     free_acl();
+    //free_mac();
     if(show_debug_messages)
         printf("DBG: All FlagCollections cleared.\n");
     clear_all_arrays();

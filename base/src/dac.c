@@ -110,3 +110,8 @@ void apply_dac_configuration() {
         fprintf(stderr,"ERR: Unable to apply DAC configuration.\n");
     }
 }
+
+void free_dac(){
+    free_fc(&set_dac_fc);
+    free_fc(&get_dac_fc);
+}
