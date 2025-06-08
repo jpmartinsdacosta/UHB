@@ -95,10 +95,11 @@ const char *aud_menu_options[] = {
 const char *fwl_menu_options[] = {
     "1. Add a firewall rule",
     "2. Remove remove last firewall rule",
-    "3. View current firewall configuration",
-    "4. Reset current firewall configuration",
-    "5. Apply current firewall configuration",
-    "6. View firewall manual",
+    "3. Configure firewall logging",
+    "4. View current firewall configuration",
+    "5. Reset current firewall configuration",
+    "6. Apply current firewall configuration",
+    "7. View firewall manual",
     "0. Return to Main Menu",
     NULL
 };
@@ -335,15 +336,18 @@ void fwl_menu(){
                 add_firewall_rule();
                 break;
             case 3:
-                view_firewall_configuration();
+                configure_firewall_logging();
                 break;
             case 4:
-                reset_firewall_configuration();
+                view_firewall_configuration();
                 break;
             case 5:
-                apply_firewall_configuration();
+                reset_firewall_configuration();
                 break;
             case 6:
+                apply_firewall_configuration();
+                break;
+            case 7:
                 view_firewall_manual();
                 break;
             case 0:

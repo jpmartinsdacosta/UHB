@@ -68,9 +68,22 @@ void reset_firewall_configuration() {
 
 void apply_firewall_configuration() {
     copy_file(BSD_FIREWALL_RULES_CURRENT, BSD_FIREWALL_RULES_ORIGINAL);
+    system("sudo ipfw -q flush");
+    system("sudo ipfw -q /etc/ipfw.rules");
+
 }
 
 void view_firewall_manual(){
     system("man ipfw");
     system("clear");
+}
+
+void configure_firewall_logging() {
+    if(get_yes_no_input("MSG: Allow for IPFW logging? (Y/N):") == 0){
+        append_to_file("add 100 deny log ip from any to any",BSD_FIREWALL_RULES_CURRENT);
+        append_to_file("add 200 allow ip from any to any",BSD_FIREWALL_RULES_CURRENT);
+    }else{
+        find_and_replace("add 100 deny log ip from any to any","",BSD_FIREWALL_RULES_CURRENT);
+        find_and_replace("add 200 allow ip from any to any","",BSD_FIREWALL_RULES_CURRENT);
+    }
 }

@@ -36,4 +36,6 @@ void view_firewall_configuration();
 
 void view_firewall_manual();
 
+void configure_firewall_logging();
+
 #endif // FWL_H

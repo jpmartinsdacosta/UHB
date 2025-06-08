@@ -15,7 +15,6 @@
 #define DEB_FIREWALL_CONFIG_ORIGINAL    "/etc/ufw/ufw.conf"
 #define DEB_FIREWALL_USERRULES_ORIGINAL "/etc/ufw/user.rules"
 
-
 // Filepath to the configuration files to be used/edited in UHB.
 #define DEB_FIREWALL_CONFIG_CURRENT     "../config/current/ufw.conf"
 #define DEB_FIREWALL_USERRULES_CURRENT  "../config/current/user.rules"
@@ -61,7 +60,13 @@ void add_firewall_rule() {
         opt = three_option_input("Is the information correct? (Y)es/(N)o/E(x)it",'Y','N','X');
     }
     if(opt == 0){
-        append_to_file(rule,DEB_FIREWALL_USERRULES_CURRENT);
+        char test_cmd[MAX_LINE_LENGTH + 32];
+        snprintf(test_cmd, sizeof(test_cmd), "ufw --dry-run %s > /dev/null 2>&1", rule);
+        if (system(test_cmd) == 0) {
+            append_to_file(rule, DEB_FIREWALL_USERRULES_CURRENT);
+        } else {
+            fprintf(stderr, "ERR: Invalid firewall rule syntax.\n");
+        }
     }
 }
 
@@ -86,4 +91,41 @@ void apply_firewall_configuration() {
 void view_firewall_manual(){
     system("man ufw");
     system("clear");
+}
+
+const char *fwl_logging_options[] = {
+    "1. Off: Disable logging",
+    "2. Low: Log only blocked packets (default)",
+    "3. Medium: Logs blocked + limited allowed packets",
+    "4. High: Logs most packets (no rate limiting)",
+    "5. Full: Logs everything (can be verbose)",
+    "0. Cancel and exit",
+    NULL
+};
+
+void configure_firewall_logging() {
+    int choice = -1;
+    while(choice != 0){
+        choice = select_string_array("UFW logging options", fwl_logging_options);
+        switch(choice){
+            case 1:
+                system("ufw logging off");
+                break;
+            case 2:
+                system("ufw logging low");
+                break;
+            case 3:
+                system("ufw logging medium");
+                break;
+            case 4:
+                system("ufw logging high");
+                break;
+            case 5:
+                system("ufw logging full");
+                break;
+            case 0:
+                break;
+            
+        }
+    }
 }
