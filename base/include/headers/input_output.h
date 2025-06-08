@@ -68,16 +68,4 @@ int parse_input_index_token(char *input, const char *delimiter, int index, char 
 
 bool is_empty_input(const char *string);
 
-/**
- * ACL Functions to be added:
- */
-
-void parse_acl_entry(const char *entry, char *typeBuf, size_t typeSize,char *nameBuf, size_t nameSize,char *permBuf, size_t permSize);
-
-int extract_acl_entries(const char *input, const char *flag, char *aclBuf, size_t aclBufSize);
-
-int extract_target_path(const char *input, char *targetBuf, size_t targetBufSize);
-
-void parse_setfacl_command(const char *input,char *aclFlag, size_t aclFlagSize,char *aclEntryBuf, size_t aclEntryBufSize,char *targetPathBuf, size_t targetBufSize);
-
 #endif // INPUT_OUTPUT_H

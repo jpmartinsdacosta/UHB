@@ -16,6 +16,7 @@
 #define UHB_ACL_CONFIG_CURRENT  "../config/current/acl.sh"
 
 FlagCollection get_acl_fc, set_acl_fc;
+static bool set_acl_fc_initialized = false;
 
 const char *non_acl_fs_types[] = {
     "vfat",
@@ -84,33 +85,166 @@ bool get_acl() {
     }
 }
 
+void parse_acl_entry(const char *entry, char *typeBuf, size_t typeSize,
+                     char *nameBuf, size_t nameSize,
+                     char *permBuf, size_t permSize) {
+    char temp[512];
+    strncpy(temp, entry, sizeof(temp));
+    temp[sizeof(temp) - 1] = '\0';
+
+    char *token = strtok(temp, ":");
+    if (token) strncpy(typeBuf, token, typeSize - 1);
+    typeBuf[typeSize - 1] = '\0';
+
+    token = strtok(NULL, ":");
+    if (token) strncpy(nameBuf, token, nameSize - 1);
+    nameBuf[nameSize - 1] = '\0';
+
+    token = strtok(NULL, ":");
+    if (token) strncpy(permBuf, token, permSize - 1);
+    permBuf[permSize - 1] = '\0';
+}
+
+// Extract ACL entries following -m, -x, etc.
+int extract_acl_entries(const char *input, const char *flag, char *aclBuf, size_t aclBufSize) {
+    char inputCopy[MAX_LINE_LENGTH];
+    strncpy(inputCopy, input, sizeof(inputCopy));
+    inputCopy[sizeof(inputCopy) - 1] = '\0';
+
+    char *token = strtok(inputCopy, " ");
+    while (token) {
+        if (strcmp(token, flag) == 0) {
+            token = strtok(NULL, " ");
+            if (token) {
+                strncpy(aclBuf, token, aclBufSize - 1);
+                aclBuf[aclBufSize - 1] = '\0';
+                return 1;
+            }
+        }
+        token = strtok(NULL, " ");
+    }
+    aclBuf[0] = '\0';
+    return 0;
+}
+
+// Find the last token (commonly used for the target path)
+int extract_target_path(const char *input, char *targetBuf, size_t targetBufSize) {
+    char inputCopy[MAX_LINE_LENGTH];
+    strncpy(inputCopy, input, sizeof(inputCopy));
+    inputCopy[sizeof(inputCopy) - 1] = '\0';
+
+    char *token = strtok(inputCopy, " ");
+    char *lastToken = NULL;
+    while (token) {
+        lastToken = token;
+        token = strtok(NULL, " ");
+    }
+
+    if (lastToken) {
+        strncpy(targetBuf, lastToken, targetBufSize - 1);
+        targetBuf[targetBufSize - 1] = '\0';
+        return 1;
+    }
+
+    targetBuf[0] = '\0';
+    return 0;
+}
+
+// Main parser function
+bool parse_setfacl_command(char *input, char *flagBuf, size_t flagBufSize,
+                            char *entryBuf, size_t entryBufSize,
+                            char *pathBuf, size_t pathBufSize,
+                            FlagCollection *fc)
+{
+    char *tokens[256];
+    int tokenCount = 0;
+
+    char *token = strtok(input, " \t\n");
+    while (token && tokenCount < 256) {
+        tokens[tokenCount++] = token;
+        token = strtok(NULL, " \t\n");
+    }
+
+    if (tokenCount < 2) {
+        fprintf(stderr, "ERR: parse_setfacl_command(): Not enough tokens.\n");
+        return false;
+    }
+
+    // Extract flags (e.g., from "setfacl -d")
+    if (tokens[1][0] == '-') {
+        strncpy(flagBuf, tokens[1], flagBufSize - 1);
+        flagBuf[flagBufSize - 1] = '\0';
+
+        if (!check_flags(flagBuf, fc)) {
+            fprintf(stderr, "ERR: Invalid or duplicate flags.\n");
+            return false;
+        }
+    } else {
+        fprintf(stderr, "ERR: Expected flag token after command.\n");
+        return false;
+    }
+
+    // Extract entry: first non-flag token after flag
+    for (int i = 2; i < tokenCount - 1; i++) {
+        if (tokens[i][0] != '-') {
+            strncpy(entryBuf, tokens[i], entryBufSize - 1);
+            entryBuf[entryBufSize - 1] = '\0';
+            break;
+        }
+    }
+
+    // Extract path: last token
+    strncpy(pathBuf, tokens[tokenCount - 1], pathBufSize - 1);
+    pathBuf[pathBufSize - 1] = '\0';
+
+    return true;
+}
+
 bool set_acl() {
     char input[MAX_LINE_LENGTH];
+    char input_copy[MAX_LINE_LENGTH];  // Copy for parsing
     char acl_flag[8];
     char acl_entries[512];
     char filepath[MAX_LINE_LENGTH];
+    if (!set_acl_fc_initialized) {
+        init_flag(&set_acl_fc, strlen(set_acl_flags), set_acl_flags);
+        set_acl_fc_initialized = true;
+    }
     int opt = 1;
     while (opt == 1) {
         get_user_input("MSG: Please enter ACL entry to be added:", input, sizeof(input));
-        parse_setfacl_command(input, acl_flag, sizeof(acl_flag),acl_entries, sizeof(acl_entries),filepath, sizeof(filepath));
+
+        // Make a copy for parsing so original stays intact
+        strncpy(input_copy, input, sizeof(input_copy));
+        input_copy[sizeof(input_copy) - 1] = '\0';
+
+        if (!parse_setfacl_command(input_copy, acl_flag, sizeof(acl_flag),
+                                   acl_entries, sizeof(acl_entries),
+                                   filepath, sizeof(filepath), &set_acl_fc)) {
+            fprintf(stderr, "ERR: Failed to parse ACL input.\n");
+            continue;
+        }
         printf("ACL Flag: %s\n", acl_flag);
         printf("ACL Entries: %s\n", acl_entries);
         printf("Target Path: %s\n", filepath);
         opt = three_option_input("MSG: Is the provided information correct? (Y)es/(N)o/E(x)it:", 'Y', 'N', 'X');
     }
     if (opt == 0) {
-        if(path_exists(filepath)){
+        if (path_exists(filepath)) {
             printf("MSG: Setting ACL...\n");
-            append_to_file(input, UHB_ACL_CONFIG_CURRENT);
-            add_acl_element(acl_flag,acl_entries,filepath);
-        }else{
-            fprintf(stderr, "MSG: Unable to add ACL entry.\n");
+            append_to_file(input, UHB_ACL_CONFIG_CURRENT);  // Append original, unmodified input
+            add_acl_element(acl_flag, acl_entries, filepath,is_recursive(acl_flag));
+            return true;
+        } else {
+            fprintf(stderr, "MSG: Unable to add ACL entry. File does not exist.\n");
         }
     }
+    return false;
 }
 
 void rem_acl_rule() {
     remove_last_n_lines(UHB_ACL_CONFIG_CURRENT,1);
+    rem_acl_element();
 }
 
 void view_acl_configuration() {
@@ -129,4 +263,10 @@ void apply_acl_configuration() {
     }else{
         fprintf(stderr,"ERR: Unable to apply ACL configuration.\n");
     }
+}
+
+void free_acl() {
+    free_fc(&set_acl_fc);
+    free_fc(&get_acl_fc);
+    set_acl_fc_initialized = false;
 }

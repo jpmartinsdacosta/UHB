@@ -88,7 +88,11 @@ void initialize_uhb() {
 }
 
 void terminate_uhb() {
+    free_acl();
+    if(show_debug_messages)
+        printf("DBG: All FlagCollections cleared.\n");
+    clear_all_arrays();
     if(show_debug_messages)
         printf("DBG: All DAC/ACL/MACStructs cleared.\n");
-    clear_all_arrays();
+    
 }

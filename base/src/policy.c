@@ -86,8 +86,7 @@ bool check_flags(char *command, FlagCollection *fc) {
         i++;
     }
 
-    reset_flag_used(fc);
-    free_fc(fc);
+    reset_flag_used(fc); // keep for reuse
     return correct;
 }
 
@@ -214,7 +213,7 @@ void get_acl_data(size_t i) {
            a->flag, a->entry, a->fp, a->recursive ? "true" : "false", ctime(&a->timestamp));
 }
 
-bool add_acl_element(const char *flag, const char *entry, const char *fp) {
+bool add_acl_element(const char *flag, const char *entry, const char *fp, bool is_recursive) {
     if (!flag || !entry || !fp) return false;
 
     if (acl_size == acl_capacity) {
@@ -231,7 +230,7 @@ bool add_acl_element(const char *flag, const char *entry, const char *fp) {
     a->entry[MAX_LINE_LENGTH - 1] = '\0';
     strncpy(a->fp, fp, MAX_FILEPATH_SIZE - 1);
     a->fp[MAX_FILEPATH_SIZE - 1] = '\0';
-    a->recursive = false;
+    a->recursive = is_recursive;
     a->timestamp = time(NULL);
 
     get_acl_data(acl_size - 1);

@@ -45,7 +45,7 @@ typedef struct{
  */
 
 typedef struct {
-    char flag[MAX_LINE_LENGTH];
+    char flag[MAX_LINE_LENGTH];     
     char entry[MAX_LINE_LENGTH];
     char fp[MAX_FILEPATH_SIZE];
     bool recursive;
@@ -69,7 +69,7 @@ typedef struct {
     char fp[MAX_FILEPATH_SIZE];
     char user[MAX_NAME_LENGTH];
     char group[MAX_NAME_LENGTH];
-    char dac[6];
+    char dac[6];                    // Permissions in octal format e.g. 4740
     bool recursive;
     time_t timestamp;
 } DACStruct;

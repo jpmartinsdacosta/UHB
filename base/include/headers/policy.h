@@ -6,128 +6,259 @@
 #include "global_var.h"
 
 /**
- * Flag management functions
- */
-
-/**
- * @brief Initializes a FlagCollection.
- * @param fc The FlagCollection to initialize.
- * @param numFlags The number of flags to support.
- * @note DO NOT USE THIS FUNCTION, USE init_flag() INSTEAD!
+ * Initializes a FlagCollection with the specified number of flags.
+ * Allocates memory and marks all flags as unused.
+ * 
+ * @param fc Pointer to FlagCollection to initialize.
+ * @param numFlags Number of flags to allocate space for.
  */
 void init_fc(FlagCollection *fc, int numFlags);
 
 /**
- * @brief Frees the memory allocated in a FlagCollection.
- * @param fc The FlagCollection structure.
- * @note THIS FUNCTION IS ALREADY USED IN check_flags()!
+ * Frees the memory allocated for the flags in the FlagCollection.
+ * Resets the count to zero.
+ * 
+ * @param fc Pointer to FlagCollection to free.
  */
 void free_fc(FlagCollection *fc);
 
 /**
- * @brief Set the flags of a FlagCollection from a predefined array.
- * @param fc The FlagCollection structure.
- * @param flagArray The predefined array.
- * @note DO NOT USE THIS FUNCTION, USE init_flag() INSTEAD!
+ * Sets the flag characters in the FlagCollection based on the given array.
+ * 
+ * @param fc Pointer to FlagCollection to set flags in.
+ * @param flagArray Array of flag characters.
  */
 void set_flags(FlagCollection *fc, const char *flagArray);
 
 /**
- * @brief Resets all the marked flags to false.
- * @param fc The FlagCollection structure.
- * @note THIS FUNCTION IS ALREADY USED IN check_flags()!
+ * Resets the 'used' status of all flags in the collection to false.
+ * 
+ * @param fc Pointer to FlagCollection to reset.
  */
 void reset_flag_used(FlagCollection *fc);
 
 /**
- * @brief Prints the available flags of a FlagCollection to the user.
- * @param fc The FlagCollection structure.
- * @note THIS FUNCTION IS ALREADY USED IN check_flags()!
+ * Prints all available flag options stored in the FlagCollection.
+ * 
+ * @param fc Pointer to FlagCollection whose flags will be printed.
  */
 void print_flags(FlagCollection *fc);
 
 /**
- * @brief Initializes and sets the flags to a FlagCollection to be used for an executable.
- * @param fc The FlagCollection structure.
- * @param numFlags The number of available flags in the flagArray
- * @param flagArray The list of valid flags for an executable.
+ * Initializes the FlagCollection with flags and prints them.
+ * Combines init_fc, set_flags, and print_flags calls.
+ * 
+ * @param fc Pointer to FlagCollection to initialize.
+ * @param numFlags Number of flags.
+ * @param flagArray Array of flag characters.
  */
 void init_flag(FlagCollection *fc, int numFlags, const char *flagArray);
 
 /**
- * @brief Find a given flag inside a FlagCollection and mark it.
- * @param flag Flag to be found.
- * @param fc The FlagCollection structure.
- * @returns True if found and marked, false otherwise.
- * @note THIS FUNCTION IS ALREADY USED IN check_flags()!
+ * Searches for a flag character in the FlagCollection.
+ * Marks the flag as used if found and unused.
+ * Returns false on duplicate or incompatible flags.
+ * 
+ * @param flag Character to search for.
+ * @param fc Pointer to FlagCollection to search.
+ * @return true if flag found and unused, false otherwise.
  */
 bool find_flag(char flag, FlagCollection *fc);
 
 /**
- * @brief Checks if the flags given by the user for a specific executable are correct.
- * @param command The 'flags' part of the user input to be checked
- * @param fc The FlagCollection which contains the valid available flags for the executable.
- * @returns True if correct, false if the input is invalid.
+ * Validates a flag command string against the allowed flags.
+ * Checks for leading '-' and ensures all flags are recognized and not duplicated.
+ * Resets used flags after checking.
+ * 
+ * @param command Flag command string (e.g., "-abc").
+ * @param fc Pointer to FlagCollection with allowed flags.
+ * @return true if all flags are valid and unique, false otherwise.
  */
 bool check_flags(char *command, FlagCollection *fc);
 
 /**
- * Generic struct memory allocation functions
+ * Allocates zero-initialized memory for an array of structures.
+ * 
+ * @param capacity Number of elements to allocate.
+ * @param element_size Size of each element in bytes.
+ * @return Pointer to allocated memory, or NULL on failure.
  */
-
-void* alloc_struct(size_t capacity, size_t size);
-
-void* realloc_struct(void *structure, size_t new_capacity, size_t size);
+void* alloc_struct(size_t capacity, size_t element_size);
 
 /**
- * DACStruct functions
+ * Reallocates memory for an array of structures to a new capacity.
+ * Frees the memory if new_capacity is zero.
+ * 
+ * @param structure Pointer to current memory block.
+ * @param new_capacity New number of elements.
+ * @param element_size Size of each element in bytes.
+ * @return Pointer to reallocated memory, or NULL if freed or failure.
  */
-
- bool init_dac_array();
-
- void clear_dac_array();
-
- void get_dac_data(size_t i);
-
- bool is_dac_contained(const char *fp);
-
- bool add_dac_element(const char *fp, const char *user, const char *group, const char *dac, bool recursive);
-
- bool rem_dac_element();
-
- int find_dac_index_by_filepath(const char *fp);
+void* realloc_struct(void *structure, size_t new_capacity, size_t element_size);
 
 /**
- * ACLStruct functions
+ * Initializes the DACStruct array with initial capacity.
+ * 
+ * @return true if successful, false otherwise.
  */
+bool init_dac_array();
 
+/**
+ * Frees and clears the DACStruct array and resets size and capacity.
+ */
+void clear_dac_array();
+
+/**
+ * Prints the contents of a DACStruct element at the given index.
+ * 
+ * @param i Index of the DACStruct element.
+ */
+void get_dac_data(size_t i);
+
+/**
+ * Checks if a given filepath is contained within any recursive DAC entry.
+ * 
+ * @param fp Filepath to check.
+ * @return true if contained, false otherwise.
+ */
+bool is_dac_contained(const char *fp);
+
+/**
+ * Adds a new DACStruct element to the array, reallocating if needed.
+ * Copies input data and sets timestamp.
+ * 
+ * @param fp Filepath string.
+ * @param user User string.
+ * @param group Group string.
+ * @param dac DAC permission string.
+ * @param recursive Whether entry applies recursively.
+ * @return true if added successfully, false otherwise.
+ */
+bool add_dac_element(const char *fp, const char *user, const char *group, const char *dac, bool recursive);
+
+/**
+ * Removes the most recent DACStruct element from the array.
+ * Frees memory if array becomes empty.
+ * 
+ * @return true on success, false on failure.
+ */
+bool rem_dac_element();
+
+/**
+ * Finds the index of a DACStruct element by filepath.
+ * 
+ * @param fp Filepath string to search.
+ * @return Index if found, -1 if not found.
+ */
+int find_dac_index_by_filepath(const char *fp);
+
+/**
+ * Initializes the ACLStruct array with initial capacity.
+ * 
+ * @return true if successful, false otherwise.
+ */
 bool init_acl_array();
+
+/**
+ * Frees and clears the ACLStruct array and resets size and capacity.
+ */
 void clear_acl_array();
+
+/**
+ * Prints the contents of an ACLStruct element at the given index.
+ * 
+ * @param i Index of the ACLStruct element.
+ */
 void get_acl_data(size_t i);
-bool add_acl_element(const char *flag, const char *entry, const char *fp);
+
+/**
+ * Adds a new ACLStruct element to the array, reallocating if needed.
+ * Copies input data and sets timestamp.
+ * 
+ * @param flag Flag string.
+ * @param entry Entry string.
+ * @param fp Filepath string.
+ * @param is_recursive Boolean.
+ * @return true if added successfully, false otherwise.
+ */
+bool add_acl_element(const char *flag, const char *entry, const char *fp, bool is_recursive);
+
+/**
+ * Removes the most recent ACLStruct element from the array.
+ * Reallocates memory to shrink the array.
+ * 
+ * @return true on success, false on failure.
+ */
 bool rem_acl_element();
+
+/**
+ * Finds the index of an ACLStruct element by filepath.
+ * 
+ * @param fp Filepath string to search.
+ * @return Index if found, -1 if not found.
+ */
 int find_acl_index_by_filepath(const char *fp);
 
 /**
- * MACStruct functions
+ * Initializes the MACStruct array with initial capacity.
+ * 
+ * @return true if successful, false otherwise.
  */
-
 bool init_mac_array();
+
+/**
+ * Frees and clears the MACStruct array and resets size and capacity.
+ */
 void clear_mac_array();
+
+/**
+ * Prints the contents of a MACStruct element at the given index.
+ * 
+ * @param i Index of the MACStruct element.
+ */
 void get_mac_data(size_t i);
+
+/**
+ * Adds a new MACStruct element to the array, reallocating if needed.
+ * Copies input data and sets timestamp.
+ * 
+ * @param fp Filepath string.
+ * @param input Input string.
+ * @param subject Subject string.
+ * @param uid UID string.
+ * @param gid GID string.
+ * @param object Object string.
+ * @param type Type string.
+ * @param mode Mode string.
+ * @return true if added successfully, false otherwise.
+ */
 bool add_mac_element(const char *fp, const char *input, const char *subject, const char *uid, const char *gid, const char *object, const char *type, const char *mode);
+
+/**
+ * Removes the most recent MACStruct element from the array.
+ * Reallocates memory to shrink the array.
+ * 
+ * @return true on success, false on failure.
+ */
 bool rem_mac_element();
+
+/**
+ * Finds the index of a MACStruct element by filepath.
+ * 
+ * @param fp Filepath string to search.
+ * @return Index if found, -1 if not found.
+ */
 int find_mac_index_by_filepath(const char *fp);
 
 /**
- * Common to all
+ * Initializes all policy-related arrays (DAC, ACL, MAC).
  */
+void init_all_arrays();
 
- void init_all_arrays();
-
- void clear_all_arrays();
 /**
- * Policy-checking functions
+ * Clears all policy-related arrays (DAC, ACL, MAC).
  */
+void clear_all_arrays();
+
 
 #endif // POLICY_H
