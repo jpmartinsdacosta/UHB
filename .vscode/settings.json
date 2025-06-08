@@ -1,6 +1,23 @@
 {
     "files.associations": {
         "stdio.h": "c",
-        "windows.h": "c"
+        "windows.h": "c",
+        "utils.h": "c",
+        "stdlib.h": "c",
+        "stdbool.h": "c",
+        "string.h": "c",
+        "config.h": "c",
+        "menu.h": "c",
+        "time.h": "c",
+        "global_var.h": "c",
+        "perms.h": "c",
+        "os_interface.h": "c",
+        "file.h": "c",
+        "io.h": "c",
+        "module_var.h": "c",
+        "input_output.h": "c",
+        "aud.h": "c",
+        "policy.h": "c",
+        "fwl.h": "c"
     }
 }
